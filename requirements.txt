@@ -1,0 +1,7 @@
+laspy[laszip]
+numpy
+scipy
+scikit-image
+shapely
+pyproj
+requests

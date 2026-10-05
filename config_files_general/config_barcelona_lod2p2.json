@@ -1,0 +1,60 @@
+{
+  "paths": {
+    "tiles_dir": "DATA/IN/Barcelona/PC",        // folder of input .laz/.las tiles
+    "output_dir": "DATA/OUT/Barcelona_lod2p2"   // trees for the lod2p2 building area
+  },
+  "translation": [429692.0, 4582890.0, 0.0],    // local origin = this area's POI
+  "lod": 2.1,                                   // detail: 1/2/3 crown only (block/primitive/hull), .1 adds trunk
+  "point_of_interest": [429692.0, 4582890.0, 0.0],  // centre of this building model's domain
+  "influence_region": 1000,                     // keep only trees within this radius (m) of the POI
+  "filtering": {
+    "high_veg_classes": [5],                    // ASPRS codes for high vegetation ([] = use NDVI)
+    "ground_classes": [2],                      // ASPRS codes for ground (DTM)
+    "multi_return_only": false                  // keep only multi-return points
+  },
+  "cleaning": {
+    "sor_neighbors": 20,                        // statistical-outlier-removal neighbours (0 disables)
+    "sor_std_ratio": 1.5,                       // SOR std-dev multiplier
+    "voxel_size": 0                             // voxel downsample size m (0 disables)
+  },
+  "segmentation": {
+    "cell_size": 0.5,                           // CHM raster resolution (m)
+    "smooth_sigma": 1.5,                        // CHM Gaussian smoothing (cells)
+    "min_height": 2.0,                          // min tree height above ground (m)
+    "peak_min_dist": 3.0,                       // min spacing between tree tops (m)
+    "min_tree_pts": 50                          // discard segments with fewer points
+  },
+  "trunk": {
+    "q_base": 0.20,                             // crown-z quantile for trunk base
+    "q_crown": 0.10,                            // crown-z quantile for crown base
+    "allom_a": 0.03,                            // allometric DBH = a * H^b (no-inventory fallback)
+    "allom_b": 1.2,                             // allometric exponent
+    "taper": 0.4,                               // trunk r_top / r_base
+    "n_sides": 12,                              // sides per trunk/primitive cone
+    "max_total_height": 0.0,                    // drop trees taller than this (m); 0 disables
+    "max_trunk_height": 15.0                    // drop trees with trunk longer than this (m); 0 disables
+  },
+  "crown": {
+    "voxel_size": 0.5,                          // crown grid resolution (m)
+    "sigma": 1.5,                               // crown Gaussian smoothing (cells)
+    "iso_level": 0.15,                          // marching-cubes isosurface level
+    "min_component_frac": 0.3                   // drop crown blobs < this fraction of the largest
+  },
+  "shape_filter": {
+    "enabled": false                            // drop pole/wall-like segments
+  },
+  "buildings": {
+    "enabled": true,                            // drop trees inside OSM footprints
+    "buffer": 1                                 // footprint dilation (m)
+  },
+  "inventory": {
+    "enabled": true,                            // match trees to the inventory CSV
+    "source": "barcelona_ckan",                 // extraction backend
+    "csv_path": "DATA/inventory/barcelona_lod2p2_trees.csv",  // per-area inventory CSV
+    "match_dist": 3.0                           // max centroid->inventory match distance (m)
+  },
+  "output": {
+    "merge_tiles": true,                        // combine all tiles into one .obj per LoD
+    "separate_crown_trunk": true                // write crown and trunk as separate .obj files
+  }
+}

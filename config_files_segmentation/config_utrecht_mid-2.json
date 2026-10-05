@@ -1,0 +1,60 @@
+{
+  "paths": {
+    "tiles_dir": "DATA/IN/utrecht_mid-2/laz",      
+    "output_dir": "DATA/OUT/utrecht_mid-2"     
+  },
+  "translation": [120000,485000, 0.0],  
+  "lod": 2.1,                           
+  "point_of_interest": [120000,485000, 0.0],
+  "influence_region": 1000,                
+  "filtering": {
+    "high_veg_classes": [],               
+    "ground_classes": [2],                 
+    "multi_return_only": false             
+  },
+  "cleaning": {
+    "sor_neighbors": 20,                   
+    "sor_std_ratio": 1.5,                  
+    "voxel_size": 0                        
+  },
+  "segmentation": {
+    "cell_size": 0.5,                      
+    "smooth_sigma": 1.5,                   
+    "min_height": 2.0,                     
+    "peak_min_dist": 3.0,                  
+    "min_tree_pts": 50                     
+  },
+  "trunk": {
+    "q_base": 0.20,                        
+    "q_crown": 0.10,                       
+    "allom_a": 0.03,                       
+    "allom_b": 1.2,                        
+    "taper": 0.4,                          
+    "n_sides": 12,                         
+    "max_total_height": 0.0,               
+    "max_trunk_height": 15.0               
+  },
+  "crown": {
+    "voxel_size": 0.5,                     
+    "sigma": 1.5,                          
+    "iso_level": 0.15,                     
+    "min_component_frac": 0.3              
+  },
+  "shape_filter": {
+    "enabled": false                       
+  },
+  "buildings": {
+    "enabled": true,                       
+    "buffer": 1                            
+  },
+  "inventory": {
+    "enabled": true,                       
+    "source": "barcelona_ckan",            
+    "csv_path": "DATA/inventory/vondelpark_trees.csv",
+    "match_dist": 3.0                      
+  },
+  "output": {
+    "merge_tiles": true,                   
+    "separate_crown_trunk": true           
+  }
+}

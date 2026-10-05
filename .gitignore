@@ -1,0 +1,31 @@
+# Ignore GitHub metadata directory
+.github/
+
+# Ignore files or directories starting with bcn_
+bcn_*
+
+# Ignore anything starting with Paris
+Paris*
+
+# Ignore Rotterdam files or directories
+Rotterdam
+
+# Ignore tyd file or directory
+tud
+
+DATA/*
+data-2/*
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store

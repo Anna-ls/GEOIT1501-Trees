@@ -1,0 +1,60 @@
+{
+  "paths": {
+    "tiles_dir": "DATA/IN/Barcelona/PC",      // folder of input .laz/.las tiles
+    "output_dir": "DATA/OUT/Barcelona"     // where .obj + .csv outputs are written
+  },
+  "translation": [429692.0, 4582890.0, 0.0],  // subtracted from all output coords (local origin); offset.txt records it
+  "lod": 2.1,                              // detail: 1/2/3 crown only (block/primitive/hull), .1 adds trunk
+  "point_of_interest": [429692.0, 4582890.0, 0.0],  // [x,y,z] in tile CRS, centre of region of interest
+  "influence_region": 1000,                // keep only trees within this radius (m) of the POI; 0 = all tiles/trees
+  "filtering": {
+    "high_veg_classes": [5],               // ASPRS class codes treated as high vegetation ([] = use NDVI)
+    "ground_classes": [2],                 // ASPRS class codes treated as ground (for the DTM)
+    "multi_return_only": false             // keep only multi-return points (canopy-penetrating pulses)
+  },
+  "cleaning": {
+    "sor_neighbors": 20,                   // statistical-outlier-removal neighbours (0 disables SOR)
+    "sor_std_ratio": 1.5,                  // SOR: drop points beyond mean + ratio*std of neighbour distance
+    "voxel_size": 0                        // downsample voxel size in m (0 disables; keeps all points)
+  },
+  "segmentation": {
+    "cell_size": 0.5,                      // CHM raster resolution (m)
+    "smooth_sigma": 1.5,                   // Gaussian smoothing of the CHM (grid cells) before peak finding
+    "min_height": 2.0,                     // minimum tree height above ground (m); shorter veg excluded
+    "peak_min_dist": 3.0,                  // minimum spacing between tree tops (m) — lower = denser segmentation
+    "min_tree_pts": 50                     // discard segments with fewer points than this
+  },
+  "trunk": {
+    "q_base": 0.20,                        // crown-z quantile for the trunk-base centroid
+    "q_crown": 0.10,                       // crown-z quantile used as the crown-base elevation
+    "allom_a": 0.03,                       // allometric DBH = allom_a * H^allom_b (used when no inventory DBH)
+    "allom_b": 1.2,                        // allometric exponent
+    "taper": 0.4,                          // trunk r_top / r_base
+    "n_sides": 12,                         // polygon sides per trunk/primitive cone
+    "max_total_height": 0.0,               // drop trees taller than this above ground (m); 0 disables
+    "max_trunk_height": 15.0               // drop trees whose trunk (ground->crown base) exceeds this (m); 0 disables
+  },
+  "crown": {
+    "voxel_size": 0.5,                     // crown occupancy-grid resolution (m) — finer = more detail (LoD 3)
+    "sigma": 1.5,                          // crown Gaussian smoothing (grid cells)
+    "iso_level": 0.15,                     // marching-cubes isosurface level (lower = larger, more enveloping crown)
+    "min_component_frac": 0.3              // drop crown components smaller than this fraction of the largest (0 disables)
+  },
+  "shape_filter": {
+    "enabled": false                       // drop pole/wall-like (tall, thin) segments; see config.py for thresholds
+  },
+  "buildings": {
+    "enabled": true,                       // drop trees whose centroid sits inside an OSM building footprint
+    "buffer": 1                            // dilate footprints by this many m before testing
+  },
+  "inventory": {
+    "enabled": true,                       // match trees to the universal inventory CSV (written by `tree4cfd inventory`)
+    "source": "barcelona_ckan",            // extraction backend: paris_ods | barcelona_ckan | "" (private CSV)
+    "csv_path": "DATA/inventory/barcelona_trees.csv",  // universal inventory CSV read by `run`
+    "match_dist": 3.0                      // max tree-centroid -> inventory distance for a match (m)
+  },
+  "output": {
+    "merge_tiles": true,                   // combine all tiles into one .obj (merged_lod<level>...)
+    "separate_crown_trunk": true           // write crown and trunk as separate .obj files
+  }
+}
