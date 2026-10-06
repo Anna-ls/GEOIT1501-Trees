@@ -6,9 +6,8 @@ import pandas as pd
 import argparse
 from tree4cfd.inspect_laz import profile_classes
 from tree4cfd.io import find_tiles
-from tree4cfd.validation import validation_pipeline
+from synthesis.validation import validation_pipeline
 import json
-import matplotlib.pyplot as plt
 import numpy as np
 from itertools import product
 
