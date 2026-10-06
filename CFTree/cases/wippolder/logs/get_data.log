@@ -1,0 +1,37 @@
+2026-10-06T09:38:16Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-06T09:38:16.990580+00:00Z========================================
+2026-10-06T09:38:16Z [INFO] [MainProcess] Logging to: cases\wippolder\logs\get_data.log
+2026-10-06T09:38:16Z [INFO] [MainProcess] Starting get_data for case: wippolder
+2026-10-06T09:38:16Z [INFO] [MainProcess] Parallel workers: 2 (from config)
+2026-10-06T09:38:16Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-06T09:38:16Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\cases\wippolder\case_area.geojson
+2026-10-06T09:38:16Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-06T09:38:17Z [INFO] [MainProcess] Created 1 records
+2026-10-06T09:38:17Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\cases\wippolder\case_area_buffered.geojson
+2026-10-06T09:38:17Z [INFO] [MainProcess] Created 1 records
+2026-10-06T09:38:17Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\data\wippolder\wippolder_aoi.gpkg
+2026-10-06T09:39:04Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-06T09:39:04.801352+00:00Z========================================
+2026-10-06T09:39:04Z [INFO] [MainProcess] Logging to: cases\wippolder\logs\get_data.log
+2026-10-06T09:39:04Z [INFO] [MainProcess] Starting get_data for case: wippolder
+2026-10-06T09:39:04Z [INFO] [MainProcess] Parallel workers: 2 (from config)
+2026-10-06T09:39:04Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-06T09:39:04Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\cases\wippolder\case_area.geojson
+2026-10-06T09:39:04Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-06T09:39:04Z [INFO] [MainProcess] Created 1 records
+2026-10-06T09:39:04Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\cases\wippolder\case_area_buffered.geojson
+2026-10-06T09:39:04Z [INFO] [MainProcess] Created 1 records
+2026-10-06T09:39:04Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\data\wippolder\wippolder_aoi.gpkg
+2026-10-06T09:39:05Z [INFO] [MainProcess] Found 2 intersecting tiles: ['37EN2_11', '37EN2_12']
+2026-10-06T09:39:05Z [INFO] [MainProcess] Running 2 tiles in parallel using 2 cores.
+2026-10-06T09:39:06Z [INFO] [MainProcess] [37EN2_11] ERROR: [WINERROR 2] HET SYSTEEM KAN HET OPGEGEVEN BESTAND NIET VINDEN
+2026-10-06T09:39:06Z [INFO] [MainProcess] [37EN2_12] ERROR: [WINERROR 2] HET SYSTEEM KAN HET OPGEGEVEN BESTAND NIET VINDEN
+2026-10-06T09:39:06Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-06T09:39:06Z [ERROR] [MainProcess] Clip and merge process failed. Error: No .laz files found to process.
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 122, in main
+    clip_and_merge_pointclouds(str(output_dir), "clipped_output.laz")
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 33, in clip_and_merge_pointclouds
+    raise FileNotFoundError("No .laz files found to process.")
+FileNotFoundError: No .laz files found to process.
+2026-10-06T09:39:06Z [INFO] [MainProcess] Completed get_data for case: wippolder

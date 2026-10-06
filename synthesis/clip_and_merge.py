@@ -13,6 +13,8 @@ def clip_and_merge_pointclouds(folder_path: str, outpout_filename: str = "clippe
     folder = Path(folder_path)
 
     gpkg_files = [f for f in folder.glob("*.gpkg") if not f.name.endswith("-trees.gpkg")]
+    if not gpkg_files:
+        raise FileNotFoundError(f"No .gpkg AOI file found in {folder_path}")
     gpkg_path = gpkg_files[0]
 
     gdf = gpd.read_file(gpkg_path)
@@ -24,8 +26,11 @@ def clip_and_merge_pointclouds(folder_path: str, outpout_filename: str = "clippe
 
     buffered_polygon = unbuffered.buffer(0.5)
 
-    laz_files = list(folder.glob("*.copc.laz"))
-    print(f"[+] Found {len(laz_files)} .copc.laz file(s) to process.")
+    laz_files = [f for f in folder.rglob("*.laz") if f.name != outpout_filename]
+    print(f"Found {len(laz_files)} .laz file(s) to process.")
+
+    if not laz_files:
+        raise FileNotFoundError("No .laz files found to process.")
 
     output_laz = folder / outpout_filename
     wkt = buffered_polygon.wkt
@@ -71,7 +76,7 @@ def clip_and_merge_pointclouds(folder_path: str, outpout_filename: str = "clippe
         offsets=clean_header.offsets
     )
     out.write(str(output_laz))
-    print(f"  [✓] Merged & clipped point cloud saved (laspy) -> {output_laz}")
+    print(f"Merged & clipped point cloud saved (laspy) -> {output_laz}")
 
 
 

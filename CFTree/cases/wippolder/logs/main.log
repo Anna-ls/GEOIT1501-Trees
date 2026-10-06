@@ -1,0 +1,9 @@
+2026-09-14T12:23:40Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-09-14T12:23:40.703209+00:00Z========================================
+2026-09-14T12:23:40Z [INFO] [MainProcess] Logging to: cases\wippolder\logs\main.log
+2026-09-14T12:23:42Z [INFO] [MainProcess] Case 'wippolder' requires 2 tiles: ['37EN2_11', '37EN2_12']
+2026-09-14T12:23:42Z [INFO] [MainProcess] 
+============================================================Starting full CFTree pipeline
+2026-09-14T12:23:42Z [INFO] [MainProcess] ==================== Stage 1: Data Acquisition
+2026-09-14T12:23:42Z [INFO] [MainProcess] buffer distance: 20.0 m
+2026-09-14T12:23:42Z [INFO] [MainProcess] running...	 ETA = ~ 2.0 minutes (assuming ~2.0 min per tile)
