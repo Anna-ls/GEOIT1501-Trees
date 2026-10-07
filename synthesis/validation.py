@@ -217,7 +217,7 @@ def validation_pipeline(case_name, parameters: dict):
     )
 
     print("  Filtering trees inside building footprints...")
-    epsg_code = CRS.to_epsg() if hasattr(CRS, "to_epsg") else int(CRS)
+    epsg_code = CRS.to_epsg() if hasattr(CRS, "to_epsg") else int(CRS.split(":")[-1])
     labels, removed_count = filter_trees_in_buildings(
         labels=labels,
         pts_xy=pts_veg[:, :2],
@@ -241,7 +241,7 @@ def validation_pipeline(case_name, parameters: dict):
     compare_counts(registry_inside, detected_inside, PARK_NAME)
 
     precision, recall, f1_score = evaluate_spatial_accuracy(detected_gdf, registry_inside, dist_thresh = 2.5)
-    with open("f1_scores.txt", "a") as f:
+    with open(f"../DATA/OUT/f1_scores.txt", "a") as f:
         f.write(f"{PARK_NAME}: Precision={precision:.3f}, Recall={recall:.3f}, F1={f1_score:.3f}\n")
 
     return registry_inside, detected_inside, precision, recall, f1_score, total_clipped_points

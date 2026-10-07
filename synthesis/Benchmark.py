@@ -163,10 +163,11 @@ class Benchmark:
                     self.inspect(file)
 
                     # Extract F1-score from the latest run in self.results
-                    latest_f1 = self.results["F1-score"][-1]
-                    sensitivity_export[param].append({"value": round(val, 3), "F1-score": latest_f1})
+                    latest_f1 = self.results["F1-Score"][-1]
+                    sensitivity_export[param].append({"value": round(val, 3), "F1-Score": latest_f1})
 
             export_path = root_dir / "DATA" / "OUT" / "Sensitivity" / f"sensitivity_results_{file}.json"
+
             with open(export_path, "w") as f:
                 json.dump(sensitivity_export, f, indent=4)
             print(f"\nSensitivity analysis for {file} saved to {export_path}")

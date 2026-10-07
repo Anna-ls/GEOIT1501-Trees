@@ -4,11 +4,10 @@
         "smooth_sigma",
         "min_height",
         "peak_min_dist_m",
-        "min_tree_points",
         "max_elongation",
         "max_offset_ratio",
         "bin_size",
-        "min_peak_dist",
+        "min_peak_dist_3d",
         "d_euclidean_thresh",
         "d_margin_thresh"
     ],
