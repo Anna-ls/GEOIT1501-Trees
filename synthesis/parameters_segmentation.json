@@ -1,0 +1,15 @@
+{
+    "cell_size": 0.5,
+    "smooth_sigma": 1.55,
+    "min_height": 2.5,
+    "peak_min_dist_m": 3.0,
+    "min_tree_points": 60,
+    "max_elongation": 3.0,
+    "max_offset_ratio": 1.5,
+    "resolve_multi_trees": true,
+    "num_angles": 4,
+    "bin_size": 0.5,
+    "min_peak_dist_3d": 3.0,
+    "d_euclidean_thresh": 2.5,
+    "d_margin_thresh": 1.5
+}

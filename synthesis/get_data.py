@@ -11,18 +11,32 @@ from CFTree.config import get_config, setup_logger
 from CFTree.download_geotiles import download_tile
 from clip_and_merge import clip_and_merge_pointclouds
 
-# Tile worker (must be top-level for multiprocessing)
+# ---------------------------------------------------------------
+# ----------------------- Tile worker ---------------------------
+# ---------------------------------------------------------------
 def process_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool) -> dict:
     """Download raw tile"""
     try:
-        # 1. Download raw tile
+        # Check if tile is already downloaded
+        tile_folder = output_dir / "tiles" / tile_id
+        if not overwrite and tile_folder.exists() and tile_folder.is_dir():
+            existing_laz = list(tile_folder.glob("*.laz"))
+            if existing_laz:
+                return {
+                    "tile_id": tile_id,
+                    "status": "ok (cached)",
+                    "paths": {
+                        "raw": str(existing_laz[0]),
+                    },
+                }
+        # If not, download raw tile
         result_dl = download_tile(tile_id, output_dir, base_url, overwrite=overwrite)
         laz_path = result_dl.get("paths", {}).get("laz")
 
         if result_dl["status"] != "ok" or not laz_path or not Path(laz_path).exists():
             return {"tile_id": tile_id, "status": "download_failed"}
 
-        # 2. Return tile summary
+        # Return tile summary
         return {
             "tile_id": tile_id,
             "status": "ok",
@@ -35,7 +49,9 @@ def process_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool)
         logging.exception(f"[{tile_id}] Unexpected error: {e}")
         return {"tile_id": tile_id, "status": f"error: {e}"}
 
-
+# ---------------------------------------------------------------
+# ----------------- Process the GeoJSON file --------------------
+# ---------------------------------------------------------------
 def process_geojson(
         geojson_path: str | Path,
         buffer_distance: float = 20.0,
@@ -59,14 +75,22 @@ def process_geojson(
     logging.info(f"Parallel workers: {n_cores}")
     logging.info(f"Buffer distance: {buffer_distance} m")
 
+    # ---------------------------------------------------
+    # -------------- Define directories -----------------
+    # ---------------------------------------------------
     root_dir = Path(__file__).resolve().parent.parent
     cftree_dir = root_dir / "CFTree"
     resources_dir = cftree_dir / "resources"
-    output_dir = root_dir / "DATA" / "OUT"
+
+    output_dir = geojson_path.parent
+    tiles_dir = root_dir / "DATA" / "OUT"
 
     buffered_aoi_path = output_dir / f"{case}_buffered.geojson"
     gpkg_aoi_path = output_dir / f"{case}_aoi.gpkg"
 
+    # ---------------------------------------------------
+    # ------------- Load and buffer AOI -----------------
+    # ---------------------------------------------------
     logging.info(f"Loading AOI from {geojson_path}")
     logging.info(f"CRS: {cfg['crs']}")
     aoi = gpd.read_file(geojson_path).to_crs(cfg["crs"])
@@ -78,6 +102,9 @@ def process_geojson(
     aoi.to_file(gpkg_aoi_path, driver="GPKG")
     logging.info(f"Saved AOI as GPKG to {gpkg_aoi_path}")
 
+    # ---------------------------------------------------
+    # ---------------- Find tile IDs --------------------
+    # ---------------------------------------------------
     tiles = gpd.read_file(resources_dir / "bladwijzer_AHN6.gpkg", layer="bladindeling").to_crs(cfg["crs"])
     intersecting = tiles[tiles.intersects(aoi.union_all())]
     tile_ids = intersecting.apply(
@@ -92,11 +119,14 @@ def process_geojson(
 
     base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
 
+    # ---------------------------------------------------
+    # ----------------- Download tiles ------------------
+    # ---------------------------------------------------
     if n_cores > 1:
         logging.info(f"Running {len(tile_ids)} tiles in parallel using {n_cores} cores.")
         with ProcessPoolExecutor(max_workers=n_cores) as pool:
             futures = {
-                pool.submit(process_tile, tid, output_dir, base_url, overwrite): tid
+                pool.submit(process_tile, tid, tiles_dir, base_url, overwrite): tid
                 for tid in tile_ids
             }
             for f in as_completed(futures):
@@ -109,13 +139,15 @@ def process_geojson(
     else:
         logging.info("Running serial mode.")
         for tid in tile_ids:
-            result = process_tile(tid, output_dir, base_url, overwrite)
+            result = process_tile(tid, tiles_dir, base_url, overwrite)
             logging.info(f"[{tid}] {result['status'].upper()}")
 
-    # Step 4: Clip and merge
+    # ---------------------------------------------------
+    # ---------- Clip and merge pointclouds -------------
+    # ---------------------------------------------------
     logging.info("Starting clip and merge process...")
     try:
-        clip_and_merge_pointclouds(str(output_dir), "clipped_output.laz")
+        clip_and_merge_pointclouds(str(tiles_dir), str(output_dir), gpkg_path=str(gpkg_aoi_path), tile_ids=tile_ids, output_filename="clipped_output.laz")
         logging.info("Clip and merge process is completed.")
     except Exception as e:
         logging.exception(f"Clip and merge process failed. Error: {e}")

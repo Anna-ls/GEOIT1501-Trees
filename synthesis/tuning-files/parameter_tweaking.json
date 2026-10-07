@@ -1,0 +1,28 @@
+{
+    "Tweaked Parameters": [
+        "cell_size",
+        "smooth_sigma",
+        "min_height",
+        "peak_min_dist_m",
+        "min_tree_points",
+        "max_elongation",
+        "max_offset_ratio",
+        "bin_size",
+        "min_peak_dist",
+        "d_euclidean_thresh",
+        "d_margin_thresh"
+    ],
+    "Ranges": {
+        "cell_size": [0.5, 2.5, 0.25],
+        "smooth_sigma": [1.0, 3.5, 0.5],
+        "min_height": [1.0, 3.5, 0.5],
+        "peak_min_dist_m": [1.0, 6.0, 1.0],
+        "min_tree_points": [30, 100, 10],
+        "max_elongation": [1.0, 6.0, 1.0],
+        "max_offset_ratio": [0.5, 3.0, 0.5],
+        "bin_size": [0.25, 1.25, 0.25],
+        "min_peak_dist_3d": [2.0, 5.0, 1.0],
+        "d_euclidean_thresh": [1.0, 3.5, 0.5],
+        "d_margin_thresh": [0.5, 2.5, 0.5]
+    }
+}

@@ -1,21 +1,26 @@
-import json
-import subprocess
-import copy
 from pathlib import Path
+from shapely import contains_xy
 
 import geopandas as gpd
 import laspy
 import numpy as np
-from shapely import contains_xy
 
 
-def clip_and_merge_pointclouds(folder_path: str, outpout_filename: str = "clipped_output.laz"):
-    folder = Path(folder_path)
+def clip_and_merge_pointclouds(
+        tiles_folder: str,
+        output_folder: str,
+        gpkg_path: str,
+        tile_ids: list[str] = None,
+        output_filename: str = "clipped_output.laz"
+):
+    tiles_dir = Path(tiles_folder)
+    out_dir = Path(output_folder)
 
-    gpkg_files = [f for f in folder.glob("*.gpkg") if not f.name.endswith("-trees.gpkg")]
-    if not gpkg_files:
-        raise FileNotFoundError(f"No .gpkg AOI file found in {folder_path}")
-    gpkg_path = gpkg_files[0]
+    # ---------------------------------------------------
+    # ------------ Find GKPG and buffer it --------------
+    # ---------------------------------------------------
+    if not Path(gpkg_path).exists():
+        raise FileNotFoundError(f"AOI file not found at {gpkg_path}")
 
     gdf = gpd.read_file(gpkg_path)
 
@@ -26,18 +31,28 @@ def clip_and_merge_pointclouds(folder_path: str, outpout_filename: str = "clippe
 
     buffered_polygon = unbuffered.buffer(0.5)
 
-    laz_files = [f for f in folder.rglob("*.laz") if f.name != outpout_filename]
+    # ---------------------------------------------------
+    # -- Check if the tile has been downloaded before ---
+    # ---------------------------------------------------
+    if tile_ids:
+        laz_files = []
+        for tile_id in tile_ids:
+            tile_folder = tiles_dir / "tiles" / tile_id
+            if tile_folder.exists() and tile_folder.is_dir():
+                laz_files.extend(list(tile_folder.rglob("*.laz")))
+    else:
+        laz_files = list(tiles_dir.rglob("*.laz"))
+
+    laz_files = [f for f in laz_files if f.name != output_filename]
     print(f"Found {len(laz_files)} .laz file(s) to process.")
 
     if not laz_files:
         raise FileNotFoundError("No .laz files found to process.")
 
-    output_laz = folder / outpout_filename
-    wkt = buffered_polygon.wkt
-
-    pipeline_steps = [str(tile) for tile in laz_files]
-    pipeline_steps.append({"type": "filters.crop", "polygon": wkt})
-    pipeline_steps.append(str(output_laz))
+    # ---------------------------------------------------
+    # --------- Clip each LAZ file to the AOI -----------
+    # ---------------------------------------------------
+    output_laz = out_dir / output_filename
 
     points_list = []
     clean_header = None

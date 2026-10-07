@@ -1,6 +1,10 @@
-import json
+import sys
 from pathlib import Path
 
+root_dir = Path(__file__).resolve().parent.parent
+sys.path.append(str(root_dir))
+
+import json
 import geopandas as gpd
 import laspy
 import numpy as np
@@ -12,16 +16,16 @@ from tree4cfd.segmentation import segment_trees_chm
 # ---- CONFIGURATION ---------------------------------------------------
 def configuration(case_name):
     PARK_NAME = case_name
-    with open(f"DATA/IN/{case_name}/validation_config.json", "r") as f:
+    with open(root_dir / "DATA" / "IN" / case_name / "validation_config.json", "r") as f:
         config = json.load(f)
-    PARK_POLYGON_PATH = Path(config["PARK_POLYGON_PATH"])
+    PARK_POLYGON_PATH = root_dir / config["PARK_POLYGON_PATH"]
 
     AHN_INPUT_TILES = [
-        Path(tile) for tile in config["AHN_INPUT_TILES"]
+        root_dir / tile for tile in config["AHN_INPUT_TILES"]
     ]
 
-    AHN_CLIPPED_OUT = Path(config["AHN_CLIPPED_OUT"])
-    TREE_REGISTRY_PARQUET = Path(config["TREE_REGISTRY_PARQUET"])
+    AHN_CLIPPED_OUT = root_dir / config["AHN_CLIPPED_OUT"]
+    TREE_REGISTRY_PARQUET = root_dir / config["TREE_REGISTRY_PARQUET"]
 
     CLIP_BUFFER_M = 3.0
     CRS = "EPSG:28992"  # RD New
@@ -147,32 +151,26 @@ def evaluate_spatial_accuracy(detected_gdf: gpd.GeoDataFrame, registry_gdf: gpd.
 
 def validation_pipeline(case_name, parameters: dict):
     PARK_NAME, PARK_POLYGON_PATH, AHN_INPUT_TILES, AHN_CLIPPED_OUT, TREE_REGISTRY_PARQUET, CLIP_BUFFER_M, CRS = configuration(case_name)
-    
-    cell_size = parameters["cell_size"]
-    smooth_sigma = parameters["smooth_sigma"]
-    min_height = parameters["min_height"]
-    peak_min_dist_m = parameters["peak_min_dist_m"]
-    min_tree_points = parameters["min_tree_points"]
-    max_elongation = parameters["max_elongation"]
-    max_offset_ratio = parameters["max_offset_ratio"]
-    resolve_multi_trees = parameters["resolve_multi_trees"]
 
-    num_angles = parameters["num_angles"]
-    bin_size = parameters["bin_size"]
-    min_peak_dist = parameters["min_peak_dist"]
-    d_euclidean_thresh = parameters["d_euclidean_thresh"]
-    d_margin_thresh = parameters["d_margin_thresh"]
+    multi_tree_kwargs = {
+        "max_elongation": parameters["max_elongation"],
+        "max_offset_ratio": parameters["max_offset_ratio"],
+        "num_angles": parameters["num_angles"],
+        "bin_size": parameters["bin_size"],
+        "peak_min_dist_m": parameters["min_peak_dist_3d"],
+        "d_euclidean_thresh": parameters["d_euclidean_thresh"],
+        "d_margin_thresh": parameters["d_margin_thresh"]
+    }
 
-    
     print(f"--- Running Validation Pipeline for {PARK_NAME} ---")
 
-    # 1. Boundary setup
     unbuffered = load_park_polygon(PARK_POLYGON_PATH, CRS)
-    buffered = unbuffered.buffer(CLIP_BUFFER_M)
-
+    # ---------------------------------------------------
     # 3. Read LAZ and extract vegetation/ground coordinates
-    print(f"  [+] Loading point cloud data...")
+    # ---------------------------------------------------
+    print(f"  Loading point cloud data...")
     las = laspy.read(str(AHN_CLIPPED_OUT))
+    total_clipped_points = len(las.points)
 
     unique_classes, counts = np.unique(
     las.classification,
@@ -183,9 +181,7 @@ def validation_pipeline(case_name, parameters: dict):
     for cls, count in zip(unique_classes, counts):
         print(f"    Class {cls:2d}: {count:,} points")
 
-    # Ground
     is_ground = las.classification == 2
-    # Vegetation / tree candidates
     is_veg = las.classification == 1
 
     pts_ground = np.column_stack((
@@ -193,7 +189,6 @@ def validation_pipeline(case_name, parameters: dict):
         las.y[is_ground],
         las.z[is_ground]
     ))
-
     pts_veg = np.column_stack((
         las.x[is_veg],
         las.y[is_veg],
@@ -201,32 +196,27 @@ def validation_pipeline(case_name, parameters: dict):
     ))
 
     print(
-        f"  [✓] Loaded {len(pts_veg):,} vegetation points "
+        f"  Loaded {len(pts_veg):,} vegetation points "
         f"and {len(pts_ground):,} ground points."
     )
 
-    # 4. Call Anna's external segmentation module
-    print("  [+] Executing Anna's CHM segmentation...")
-    labels, dtm, geo_transform = segment_trees_chm(
-        #parameters for CHM segmentation
-        pts_veg, pts_ground
-        , cell_size=cell_size
-        , smooth_sigma=smooth_sigma
-        , min_height=min_height
-        , peak_min_dist_m=peak_min_dist_m
-        , min_tree_points=min_tree_points
-        , max_elongation=max_elongation
-        , max_offset_ratio=max_offset_ratio
-        , resolve_multi_trees=resolve_multi_trees
-        # Additional parameters for find_secondary_peak
-        , num_angles=num_angles
-        , bin_size=bin_size
-        , min_peak_dist=min_peak_dist
-        , d_euclidean_thresh=d_euclidean_thresh
-        , d_margin_thresh=d_margin_thresh
+    # ---------------------------------------------------
+    # 4. Call external segmentation module
+    # ---------------------------------------------------
+    print("  Executing additional CHM segmentation...")
+    labels, _, _ = segment_trees_chm(
+        pts_veg,
+        pts_ground,
+        cell_size=parameters["cell_size"],
+        smooth_sigma=parameters["smooth_sigma"],
+        min_height=parameters["min_height"],
+        peak_min_dist_m=parameters["peak_min_dist_m"],
+        min_tree_points=parameters["min_tree_points"],
+        resolve_multi_trees=parameters["resolve_multi_trees"],
+        multi_tree_kwargs=multi_tree_kwargs
     )
 
-    print("  [+] Filtering trees inside building footprints...")
+    print("  Filtering trees inside building footprints...")
     epsg_code = CRS.to_epsg() if hasattr(CRS, "to_epsg") else int(CRS)
     labels, removed_count = filter_trees_in_buildings(
         labels=labels,
@@ -235,14 +225,18 @@ def validation_pipeline(case_name, parameters: dict):
         epsg=epsg_code,
         buffer=0.5
     )
-    print(f"    [✓] Removed {removed_count} trees overlapping with buildings.")
+    print(f"    Removed {removed_count} trees overlapping with buildings.")
 
+    # ---------------------------------------------------
     # 5. Extract tree centroids and count trees inside unbuffered park boundary
+    # ---------------------------------------------------
     detected_gdf = extract_detected_trees(pts_veg, labels, CRS)
     detected_gdf.to_file(f"{case_name}_detected_trees.gpkg", driver="GPKG")
     detected_inside = detected_gdf[detected_gdf.geometry.within(unbuffered)]
 
+    # ---------------------------------------------------
     # 6. Load ground truth registry and compare counts
+    # ---------------------------------------------------
     registry_inside = count_registry_trees(unbuffered, TREE_REGISTRY_PARQUET, PARK_NAME, CRS)
     compare_counts(registry_inside, detected_inside, PARK_NAME)
 
@@ -250,7 +244,7 @@ def validation_pipeline(case_name, parameters: dict):
     with open("f1_scores.txt", "a") as f:
         f.write(f"{PARK_NAME}: Precision={precision:.3f}, Recall={recall:.3f}, F1={f1_score:.3f}\n")
 
-    return registry_inside, detected_inside
+    return registry_inside, detected_inside, precision, recall, f1_score, total_clipped_points
 
 if __name__ == "__main__":
     validation_pipeline("vondelpark")

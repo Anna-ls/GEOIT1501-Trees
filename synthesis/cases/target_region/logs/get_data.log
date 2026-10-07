@@ -234,3 +234,122 @@ FileNotFoundError: No .laz files found to process.
 2026-10-07T07:47:04Z [INFO] [MainProcess] Starting clip and merge process...
 2026-10-07T07:47:08Z [INFO] [MainProcess] Clip and merge process is completed.
 2026-10-07T07:47:08Z [INFO] [MainProcess] Completed get_data for case: target_region
+2026-10-07T09:10:11Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-07T09:10:11.502924+00:00Z========================================
+2026-10-07T09:10:11Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-07T09:10:11Z [INFO] [MainProcess] Starting get_data for case: target_region
+2026-10-07T09:10:11Z [INFO] [MainProcess] Input GeoJSON: C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:10:11Z [INFO] [MainProcess] Parallel workers: 2
+2026-10-07T09:10:11Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-07T09:10:11Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:10:11Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-07T09:10:11Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:10:11Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_buffered.geojson
+2026-10-07T09:10:11Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:10:11Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_aoi.gpkg
+2026-10-07T09:10:11Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-07T09:10:11Z [INFO] [MainProcess] Running 1 tiles in parallel using 2 cores.
+2026-10-07T09:10:19Z [INFO] [MainProcess] [092000_438000] OK
+2026-10-07T09:10:20Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-07T09:10:20Z [ERROR] [MainProcess] Clip and merge process failed. Error: clip_and_merge_pointclouds() got an unexpected keyword argument 'output_filename'
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 118, in process_geojson
+    clip_and_merge_pointclouds(str(output_dir), tile_ids=tile_ids, gpkg_path=gpkg_aoi_path, output_filename="clipped_output.laz")
+TypeError: clip_and_merge_pointclouds() got an unexpected keyword argument 'output_filename'
+2026-10-07T09:10:20Z [INFO] [MainProcess] Completed get_data for case: target_region
+2026-10-07T09:12:31Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-07T09:12:31.738229+00:00Z========================================
+2026-10-07T09:12:31Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-07T09:12:31Z [INFO] [MainProcess] Starting get_data for case: target_region
+2026-10-07T09:12:31Z [INFO] [MainProcess] Input GeoJSON: C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:12:31Z [INFO] [MainProcess] Parallel workers: 2
+2026-10-07T09:12:31Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-07T09:12:31Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:12:31Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-07T09:12:31Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:12:31Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_buffered.geojson
+2026-10-07T09:12:31Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:12:31Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_aoi.gpkg
+2026-10-07T09:12:32Z [INFO] [MainProcess] Found 2 intersecting tiles: ['091000_438000', '092000_438000']
+2026-10-07T09:12:32Z [INFO] [MainProcess] Running 2 tiles in parallel using 2 cores.
+2026-10-07T09:12:40Z [INFO] [MainProcess] [091000_438000] OK
+2026-10-07T09:12:45Z [INFO] [MainProcess] [092000_438000] OK
+2026-10-07T09:12:45Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-07T09:12:45Z [ERROR] [MainProcess] Clip and merge process failed. Error: AOI file not found at gpkg_aoi_path
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 118, in process_geojson
+    clip_and_merge_pointclouds(str(output_dir), gpkg_path="gpkg_aoi_path", tile_ids=tile_ids, output_filename="clipped_output.laz")
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 16, in clip_and_merge_pointclouds
+    raise FileNotFoundError(f"AOI file not found at {gpkg_path}")
+FileNotFoundError: AOI file not found at gpkg_aoi_path
+2026-10-07T09:12:45Z [INFO] [MainProcess] Completed get_data for case: target_region
+2026-10-07T09:14:43Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-07T09:14:43.051047+00:00Z========================================
+2026-10-07T09:14:43Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-07T09:14:43Z [INFO] [MainProcess] Starting get_data for case: target_region
+2026-10-07T09:14:43Z [INFO] [MainProcess] Input GeoJSON: C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:14:43Z [INFO] [MainProcess] Parallel workers: 2
+2026-10-07T09:14:43Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-07T09:14:43Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:14:43Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-07T09:14:43Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:14:43Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_buffered.geojson
+2026-10-07T09:14:43Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:14:43Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_aoi.gpkg
+2026-10-07T09:14:43Z [INFO] [MainProcess] Found 2 intersecting tiles: ['091000_438000', '092000_438000']
+2026-10-07T09:14:43Z [INFO] [MainProcess] Running 2 tiles in parallel using 2 cores.
+2026-10-07T09:14:52Z [INFO] [MainProcess] [091000_438000] OK
+2026-10-07T09:14:56Z [INFO] [MainProcess] [092000_438000] OK
+2026-10-07T09:14:57Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-07T09:14:57Z [ERROR] [MainProcess] Clip and merge process failed. Error: No .laz files found to process.
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 118, in process_geojson
+    clip_and_merge_pointclouds(str(output_dir), gpkg_path=str(gpkg_aoi_path), tile_ids=tile_ids, output_filename="clipped_output.laz")
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 40, in clip_and_merge_pointclouds
+    raise FileNotFoundError("No .laz files found to process.")
+FileNotFoundError: No .laz files found to process.
+2026-10-07T09:14:57Z [INFO] [MainProcess] Completed get_data for case: target_region
+2026-10-07T09:16:24Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-07T09:16:24.260454+00:00Z========================================
+2026-10-07T09:16:24Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-07T09:16:24Z [INFO] [MainProcess] Starting get_data for case: target_region
+2026-10-07T09:16:24Z [INFO] [MainProcess] Input GeoJSON: C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:16:24Z [INFO] [MainProcess] Parallel workers: 2
+2026-10-07T09:16:24Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-07T09:16:24Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region.geojson
+2026-10-07T09:16:24Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-07T09:16:24Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:16:24Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_buffered.geojson
+2026-10-07T09:16:24Z [INFO] [MainProcess] Created 1 records
+2026-10-07T09:16:24Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\target_region_aoi.gpkg
+2026-10-07T09:16:24Z [INFO] [MainProcess] Found 2 intersecting tiles: ['091000_438000', '092000_438000']
+2026-10-07T09:16:24Z [INFO] [MainProcess] Running 2 tiles in parallel using 2 cores.
+2026-10-07T09:16:38Z [INFO] [MainProcess] [092000_438000] OK
+2026-10-07T09:16:38Z [INFO] [MainProcess] [091000_438000] OK
+2026-10-07T09:16:38Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-07T09:16:50Z [INFO] [MainProcess] Clip and merge process is completed.
+2026-10-07T09:16:50Z [INFO] [MainProcess] Completed get_data for case: target_region
+2026-10-07T10:36:03Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-07T10:36:03.069061+00:00Z========================================
+2026-10-07T10:36:03Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-07T10:36:03Z [INFO] [MainProcess] Starting get_data for case: target_region
+2026-10-07T10:36:03Z [INFO] [MainProcess] Input GeoJSON: C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261007_123603\target_region.geojson
+2026-10-07T10:36:03Z [INFO] [MainProcess] Parallel workers: 2
+2026-10-07T10:36:03Z [INFO] [MainProcess] Buffer distance: 20.0 m
+2026-10-07T10:36:03Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261007_123603\target_region.geojson
+2026-10-07T10:36:03Z [INFO] [MainProcess] CRS: EPSG:28992
+2026-10-07T10:36:03Z [INFO] [MainProcess] Created 1 records
+2026-10-07T10:36:03Z [INFO] [MainProcess] Buffered AOI saved to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261007_123603\target_region_buffered.geojson
+2026-10-07T10:36:03Z [INFO] [MainProcess] Created 1 records
+2026-10-07T10:36:03Z [INFO] [MainProcess] Saved AOI as GPKG to C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261007_123603\target_region_aoi.gpkg
+2026-10-07T10:36:03Z [INFO] [MainProcess] Found 6 intersecting tiles: ['091000_439000', '091000_438000', '092000_439000', '092000_438000', '093000_439000', '093000_438000']
+2026-10-07T10:36:03Z [INFO] [MainProcess] Running 6 tiles in parallel using 2 cores.
+2026-10-07T10:36:05Z [INFO] [MainProcess] [091000_438000] OK (CACHED)
+2026-10-07T10:36:12Z [INFO] [MainProcess] [091000_439000] OK
+2026-10-07T10:36:12Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-07T10:36:20Z [INFO] [MainProcess] [093000_439000] OK
+2026-10-07T10:36:20Z [INFO] [MainProcess] [093000_438000] OK (CACHED)
+2026-10-07T10:36:22Z [INFO] [MainProcess] [092000_439000] OK
+2026-10-07T10:36:22Z [INFO] [MainProcess] Starting clip and merge process...
+2026-10-07T10:36:47Z [INFO] [MainProcess] Clip and merge process is completed.
+2026-10-07T10:36:47Z [INFO] [MainProcess] Completed get_data for case: target_region

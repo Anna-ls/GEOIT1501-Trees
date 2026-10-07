@@ -58,7 +58,7 @@ def find_secondary_peak(
         num_angles: int = 4,
         bin_size: float = 0.5,
         smooth_sigma: float = 1.0,
-        min_peak_dist: float = 3.5,
+        peak_min_dist_m: float = 3.5,
         d_euclidean_thresh: float = 2.5,
         d_margin_thresh: float = 1.5
 ) -> np.ndarray:
@@ -73,7 +73,7 @@ def find_secondary_peak(
 
     angles = np.linspace(0, np.pi, num_angles, endpoint=False)
     candidate_peaks = []
-    min_dist_bins = max(1, int(min_peak_dist / bin_size))
+    min_dist_bins = max(1, int(peak_min_dist_m / bin_size))
 
     for angle in angles:
         # Project XY points onto the 2D vector defined by the angle
@@ -111,7 +111,7 @@ def find_secondary_peak(
     candidate_peaks = np.array(candidate_peaks)
 
     # Clustering merges duplicate detection across different angles
-    cluster_labels = DBSCAN(eps=min_peak_dist * 0.75, min_samples=1).fit_predict(candidate_peaks[:, :2])
+    cluster_labels = DBSCAN(eps=peak_min_dist_m * 0.75, min_samples=1).fit_predict(candidate_peaks[:, :2])
 
     # Filter treetops using Euclidean distance and margin to the edge
     final_peaks = []
@@ -144,17 +144,10 @@ def segment_trees_chm(
     cell_size: float = 0.5,
     smooth_sigma: float = 1.55,
     min_height: float = 2.5,
-    peak_min_dist_m: float = 1.0,
+    peak_min_dist_m: float = 3.0,
     min_tree_points: int = 60,
-    max_elongation: float = 3,
-    max_offset_ratio: float = 1.5,
     resolve_multi_trees: bool = True,
-    # Additional parameters for find_secondary_peak
-    num_angles: int = 4,
-    bin_size: float = 0.5,
-    min_peak_dist: float = 3.5,
-    d_euclidean_thresh: float = 2.5,
-    d_margin_thresh: float = 1.5
+    multi_tree_kwargs: dict = None
 ) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float]]:
     """Segment individual trees from a CHM.
 
@@ -167,6 +160,11 @@ def segment_trees_chm(
     (x_min, y_min, cell_size) :
         Georeferencing of the raster.
     """
+    if multi_tree_kwargs is None:
+        multi_tree_kwargs = {}
+    max_elongation = multi_tree_kwargs.pop("max_elongation", 3.0)
+    max_offset_ratio = multi_tree_kwargs.pop("max_offset_ratio", 1.5)
+
     x_min = min(pts_veg[:, 0].min(), pts_ground[:, 0].min())
     y_min = min(pts_veg[:, 1].min(), pts_ground[:, 1].min())
     x_max = max(pts_veg[:, 0].max(), pts_ground[:, 0].max())
@@ -180,14 +178,18 @@ def segment_trees_chm(
         r = np.clip(((pts[:, 1] - y_min) / cell_size).astype(int), 0, ny - 1)
         return r, c
 
+    # ---------------------------------------------------
     # DSM: max vegetation Z per cell
+    # ---------------------------------------------------
     flat_dsm = np.full(ny * nx, -np.inf, dtype=np.float64)
     r_v, c_v = to_rc(pts_veg)
     np.maximum.at(flat_dsm, r_v * nx + c_v, pts_veg[:, 2])
     dsm = flat_dsm.reshape(ny, nx)
     dsm[dsm == -np.inf] = np.nan
 
+    # ---------------------------------------------------
     # DTM: mean ground Z per cell, gaps filled by nearest valid cell
+    # ---------------------------------------------------
     dtm_sum = np.zeros(ny * nx, dtype=np.float64)
     dtm_cnt = np.zeros(ny * nx, dtype=np.int32)
     r_g, c_g = to_rc(pts_ground)
@@ -205,15 +207,14 @@ def segment_trees_chm(
         )
         dtm = dtm[tuple(fill_idx)]
 
+    # ---------------------------------------------------
     # CHM = DSM - DTM, clamped to >= 0
+    # ---------------------------------------------------
     chm = np.where(~np.isnan(dsm), dsm - dtm, 0.0)
     chm = np.maximum(chm, 0.0)
     chm_masked = np.where(chm >= min_height, chm, 0.0)
     chm_smooth = gaussian_filter(chm_masked, sigma=smooth_sigma)
 
-    # Tree tops: local maxima in smoothed CHM. The mask requires the smoothed
-    # canopy height to still be >= min_height (not just > 0), so Gaussian bleed
-    # below the threshold isn't segmented (keeps low skirts / bushes out).
     tree_mask = chm_smooth >= min_height
     min_dist_cells = max(1, int(peak_min_dist_m / cell_size))
     peaks = peak_local_max(
@@ -251,40 +252,34 @@ def segment_trees_chm(
             dropped_count += 1
             continue
 
-        mask = labels == lbl
-        cluster_pts = pts_veg[mask]
+        if resolve_multi_trees:
+            mask = labels == lbl
+            cluster_pts = pts_veg[mask]
 
-        metrics = analyse_cluster(cluster_pts)
+            metrics = analyse_cluster(cluster_pts)
 
-        is_elongated = metrics["elongation"] > max_elongation
-        is_uncetered = metrics["offset_ratio"] > max_offset_ratio
+            is_elongated = metrics["elongation"] > max_elongation
+            is_uncetered = metrics["offset_ratio"] > max_offset_ratio
 
-        if is_elongated or is_uncetered:
-            suspect_count += 1
+            if is_elongated or is_uncetered:
+                suspect_count += 1
 
-            peaks_3d = find_secondary_peak(cluster_pts
-                                           , min_peak_dist=min_peak_dist
-                                           , num_angles = num_angles
-                                           , bin_size = bin_size
-                                           , smooth_sigma = smooth_sigma
-                                           , d_euclidean_thresh = d_euclidean_thresh
-                                           , d_margin_thresh = d_margin_thresh
-                                           )
-            
-            if len(peaks_3d) > 1:
-                dists = cdist(cluster_pts[:, :2], peaks_3d[:, :2])
-            
-                sub_labels = np.argmin(dists, axis=1)
-                original_indices = np.where(mask)[0]
-            
-                for peak_idx in range(1, len(peaks_3d)):
-                    new_label_mask = (sub_labels == peak_idx)
-                    indices_to_change = original_indices[new_label_mask]
-            
-                    labels[indices_to_change] = next_new_label
-                    next_new_label += 1
-            
-                added_trees += (len(peaks_3d) - 1)
+                peaks_3d = find_secondary_peak(cluster_pts, **multi_tree_kwargs)
+
+                if len(peaks_3d) > 1:
+                    dists = cdist(cluster_pts[:, :2], peaks_3d[:, :2])
+
+                    sub_labels = np.argmin(dists, axis=1)
+                    original_indices = np.where(mask)[0]
+
+                    for peak_idx in range(1, len(peaks_3d)):
+                        new_label_mask = (sub_labels == peak_idx)
+                        indices_to_change = original_indices[new_label_mask]
+
+                        labels[indices_to_change] = next_new_label
+                        next_new_label += 1
+
+                    added_trees += (len(peaks_3d) - 1)
 
     n_trees = int((np.unique(labels) > 0).sum())
 
