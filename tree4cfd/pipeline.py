@@ -40,32 +40,6 @@ from .shapes import filter_pole_wall_trees
 from .trunk import estimate_trunk_params, make_trunk_mesh
 
 
-def _tile_intersects_region(tile: Path, poi, radius: float) -> bool:
-    """True if the tile's bbox comes within ``radius`` of ``poi`` (same CRS)."""
-    (xmn, ymn, xmx, ymx), _ = read_header_bounds(tile)
-    cx = min(max(poi[0], xmn), xmx)   # closest bbox point to the POI
-    cy = min(max(poi[1], ymn), ymx)
-    return (poi[0] - cx) ** 2 + (poi[1] - cy) ** 2 <= radius ** 2
-
-
-def _filter_region(labels, pts_xy, translation, poi, radius):
-    """Zero out labels of trees whose centroid is outside the influence region.
-
-    ``pts_xy`` is ``(N, 2)`` in local coords; the POI is in projected coords.
-    Returns ``(labels, n_kept)``.
-    """
-    uniq = np.unique(labels[labels > 0])
-    if len(uniq) == 0:
-        return labels, 0
-    tx, ty = float(translation[0]), float(translation[1])
-    cnt = np.bincount(labels)
-    cx = np.bincount(labels, weights=pts_xy[:, 0])[uniq] / cnt[uniq] + tx
-    cy = np.bincount(labels, weights=pts_xy[:, 1])[uniq] / cnt[uniq] + ty
-    outside = uniq[(cx - poi[0]) ** 2 + (cy - poi[1]) ** 2 > radius ** 2]
-    if len(outside):
-        labels[np.isin(labels, outside)] = 0
-    return labels, len(uniq) - len(outside)
-
 
 def _tile_name(tile: Path) -> str:
     """Derive a short tile name (the embedded 6-digit id, else the stem)."""
@@ -304,14 +278,6 @@ def build_tile(tile: Path, cfg: Config, inventory=None) -> Optional[TileMeshes]:
     print(f"    segmentation: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 
-    # 3b. Keep only trees within the influence region of the point of interest
-    if cfg.influence_region > 0 and cfg.point_of_interest is not None:
-        labels, n_kept = _filter_region(
-            labels, pts_veg[:, :2], cfg.translation,
-            cfg.point_of_interest, cfg.influence_region)
-        print(f"    region: kept {n_kept} trees within "
-              f"{cfg.influence_region:g} m of POI")
-
     # 4. Drop pole-like / wall-like segments (lamp posts, facade slivers, ...)
     if cfg.shape_filter.enabled:
         labels, n_poles, n_walls = filter_pole_wall_trees(
@@ -415,7 +381,6 @@ def run_pipeline(cfg: Config) -> None:
                 "run `python -m tree4cfd inventory` first — skipping matching.\n"
             )
 
-    roi = cfg.influence_region > 0 and cfg.point_of_interest is not None
     label = parse_lod(cfg.lod)[2]
     sep = cfg.output.separate_crown_trunk
     merge = cfg.output.merge_tiles
@@ -426,14 +391,11 @@ def run_pipeline(cfg: Config) -> None:
     for i, tile in enumerate(tiles, 1):
         print(f"[{i}/{len(tiles)}]", end=" ")
         name = _tile_name(tile)
-        if name in seen:  # duplicate tile (e.g. a "... copy.laz")
+        if name in seen:
             print(f"  {tile.name}  ->  duplicate of {name}, skipping")
             continue
         seen.add(name)
-        if roi and not _tile_intersects_region(
-                tile, cfg.point_of_interest, cfg.influence_region):
-            print(f"  {tile.name}  ->  outside influence region, skipping")
-            continue
+
         stem = out_dir / f"{name}_lod{label}"
         if not merge:
             primary = stem.with_name(stem.name + ("_crown.obj" if sep else ".obj"))
