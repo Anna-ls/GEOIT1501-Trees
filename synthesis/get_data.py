@@ -6,6 +6,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import geopandas as gpd
+import time
 
 from CFTree.config import get_config, setup_logger
 from CFTree.download_geotiles import download_tile
@@ -114,7 +115,7 @@ def process_geojson(
 
     if not tile_ids:
         logging.info("No intersecting tiles found.")
-        return
+        return 0.0, 0.0
     logging.info(f"Found {len(tile_ids)} intersecting tiles: {tile_ids if len(tile_ids) <= 10 else '...'}")
 
     base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
@@ -122,6 +123,7 @@ def process_geojson(
     # ---------------------------------------------------
     # ----------------- Download tiles ------------------
     # ---------------------------------------------------
+    t_start_download = time.time()
     if n_cores > 1:
         logging.info(f"Running {len(tile_ids)} tiles in parallel using {n_cores} cores.")
         with ProcessPoolExecutor(max_workers=n_cores) as pool:
@@ -141,18 +143,22 @@ def process_geojson(
         for tid in tile_ids:
             result = process_tile(tid, tiles_dir, base_url, overwrite)
             logging.info(f"[{tid}] {result['status'].upper()}")
+    download_time = time.time() - t_start_download
 
     # ---------------------------------------------------
     # ---------- Clip and merge pointclouds -------------
     # ---------------------------------------------------
+    t_start_clip = time.time()
     logging.info("Starting clip and merge process...")
     try:
         clip_and_merge_pointclouds(str(tiles_dir), str(output_dir), gpkg_path=str(gpkg_aoi_path), tile_ids=tile_ids, output_filename="clipped_output.laz")
         logging.info("Clip and merge process is completed.")
     except Exception as e:
         logging.exception(f"Clip and merge process failed. Error: {e}")
-
+    clip_time = time.time() - t_start_clip
     logging.info(f"Completed get_data for case: {case}")
+
+    return download_time, clip_time
 
 
 # Entry point

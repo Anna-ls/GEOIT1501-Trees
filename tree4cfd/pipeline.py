@@ -266,7 +266,7 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
-def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) -> Optional[TileMeshes]:
+def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
     ``inventory`` is a preloaded ``(lonlat, records)`` tuple from the universal
@@ -313,6 +313,8 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
     if progress_callback:
         progress_callback("Running CHM segmentation...")
 
+    t_start_segment = time.time()
+
     # 3. CHM segmentation (also returns the DTM for trunk ground lookup)
     labels, dtm, georef = segment_trees_chm(
         pts_veg, pts_ground,
@@ -332,6 +334,9 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
         labels = group_touching_crowns(pts_veg, labels, threshold=0.5)
         n_after = len(np.unique(labels[labels > 0]))
         print(f"    merged touching: reduced from {n_before} to {n_after} unique crowns")
+
+    segmentation_time = time.time() - t_start_segment
+    t_start_clean = time.time()
 
     # 4. Drop pole-like / wall-like segments (lamp posts, facade slivers, ...)
     if cfg.shape_filter.enabled:
@@ -360,21 +365,24 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
 
     # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None
-    if cfg.inventory.enabled and inventory is not None:
-        inv_csv = cfg.paths.output_dir / f"{tile_name}_trees.csv"
-        n_matched, n_alive, n_dbh = annotate_and_write(
-            inv_csv, labels, pts_veg[:, :2], cfg.translation, epsg,
-            inventory, cfg.inventory.match_dist
-        )
-        print(
-            f"    inventory: matched {n_matched}/{n_alive} trees, "
-            f"{len(n_dbh)} with DBH -> {inv_csv.name}"
-        )
-        inv_lonlat, inv_recs = inventory
-        inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
+    # if cfg.inventory.enabled and inventory is not None:
+    #     inv_csv = cfg.paths.output_dir / f"{tile_name}_trees.csv"
+    #     n_matched, n_alive, n_dbh = annotate_and_write(
+    #         inv_csv, labels, pts_veg[:, :2], cfg.translation, epsg,
+    #         inventory, cfg.inventory.match_dist
+    #     )
+    #     print(
+    #         f"    inventory: matched {n_matched}/{n_alive} trees, "
+    #         f"{len(n_dbh)} with DBH -> {inv_csv.name}"
+    #     )
+    #     inv_lonlat, inv_recs = inventory
+    #     inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
 
     if progress_callback:
         progress_callback(f"Reconstructing 3D meshes...")
+
+    cleaning_time = time.time() - t_start_clean
+    t_start_mesh = time.time()
 
     # 7. Mesh every tree (crown + inventory-driven trunks)
     tm = _build_tile_meshes(pts_veg, labels, dtm, georef, cfg, inv_local, inv_recs)
@@ -388,7 +396,9 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
         f"    {tm.n_crowns} trees → {len(tm.crown_v) + len(tm.trunk_v):,} vertices  "
         f"{n_faces:,} faces  ({time.perf_counter() - t0:.1f} s total)"
     )
-    return tm
+
+    meshing_time = time.time() - t_start_mesh
+    return tm, segmentation_time, cleaning_time, meshing_time
 
 
 def _write_meshes(stem: Path, tm: TileMeshes, separate: bool) -> None:
@@ -425,7 +435,7 @@ def _merge_tiles(metas) -> TileMeshes:
     return TileMeshes(cvv, cff, tvv, tff, nc, nt)
 
 
-def run_pipeline(cfg: Config, progress_callback=None) -> None:
+def run_pipeline(cfg: Config, progress_callback=None):
     """Process every tile in the configured tiles directory."""
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -452,8 +462,13 @@ def run_pipeline(cfg: Config, progress_callback=None) -> None:
     merge = cfg.output.merge_tiles
     out_dir = cfg.paths.output_dir
 
+    total_seg = 0.0
+    total_clean = 0.0
+    total_mesh = 0.0
+
     metas = []  # collected meshes for merging
     seen = set()
+
     for i, tile in enumerate(tiles, 1):
         print(f"[{i}/{len(tiles)}]", end=" ")
         name = _tile_name(tile)
@@ -468,9 +483,15 @@ def run_pipeline(cfg: Config, progress_callback=None) -> None:
             if primary.exists():
                 print(f"  {tile.name}  ->  already done, skipping")
                 continue
-        tm = build_tile(tile, cfg, inventory, progress_callback)
-        if tm is None:
+        result = build_tile(tile, cfg, inventory, progress_callback)
+        if result is None:
             continue
+
+        tm, seg_time, clean_time, mesh_time = result
+        total_seg += seg_time
+        total_clean += clean_time
+        total_mesh += mesh_time
+
         if merge:
             metas.append(tm)
         else:
@@ -483,3 +504,5 @@ def run_pipeline(cfg: Config, progress_callback=None) -> None:
         _write_meshes(stem, merged, sep)
         print(f"\nMerged {len(metas)} tiles → {merged.n_crowns} trees, "
               f"{len(merged.crown_f) + len(merged.trunk_f):,} faces → {stem.name}*.obj")
+
+    return total_seg, total_clean, total_mesh

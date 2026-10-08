@@ -1,4 +1,6 @@
 import sys
+import time
+import pandas as pd
 from pathlib import Path
 
 root_dir = Path(__file__).resolve().parent.parent
@@ -100,11 +102,16 @@ if st.button("Run Reconstruction Pipeline"):
             if laz_output.exists():
                 laz_output.unlink()
 
+            execution_times = {}
+
             # ---------------------------------------------------
             # ------------- Run data collection -----------------
             # ---------------------------------------------------
             with st.spinner('Downloading, clipping, and merging AHN tiles...'):
-                process_geojson(geojson_path, buffer_distance=20.0, overwrite=False)
+                dl_time, clip_time = process_geojson(geojson_path, buffer_distance=20.0, overwrite=False)
+
+            execution_times['1. Download LiDAR Tiles'] = dl_time
+            execution_times['2. Clip & Merge Pointcloud'] = clip_time
 
             # ---------------------------------------------------
             # ---- Generate the config file for the pipeline ----
@@ -179,11 +186,24 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                run_pipeline(cfg, progress_callback=update_ui)
+                seg_time, clean_time, mesh_time = run_pipeline(cfg, progress_callback=update_ui)
+            execution_times['3. Tree Segmentation'] = seg_time
+            execution_times['4. Filter & Clean'] = clean_time
+            execution_times['5. Reconstruct 3D Meshes'] = mesh_time
 
             status_text.empty()
+            st.success(f"Tree reconstruction complete! Download output file using the button;")
 
-            st.success(f"Tree reconstruction complete! Output .obj file saved to {out_dir} or download using the button;")
+            total_time = sum(execution_times.values())
+
+            st.subheader("Execution Time Summary")
+
+            # Format the dictionary for a clean Streamlit table
+            summary_data = {
+                "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
+                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
+            }
+            st.table(pd.DataFrame(summary_data))
 
             # Expose the resulting .obj file for download
             output_obj_path = out_dir / f"merged_lod{int(lod_value)}.obj"
