@@ -117,7 +117,7 @@ def process_geojson(
         return
     logging.info(f"Found {len(tile_ids)} intersecting tiles: {tile_ids if len(tile_ids) <= 10 else '...'}")
 
-    base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
+    base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN4_KM/01_LAZ"
 
     # ---------------------------------------------------
     # ----------------- Download tiles ------------------

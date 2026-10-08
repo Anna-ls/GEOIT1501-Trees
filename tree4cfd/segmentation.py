@@ -57,8 +57,8 @@ def find_secondary_peak(
         cluster_pts: np.ndarray,
         num_angles: int = 4,
         bin_size: float = 0.5,
-        smooth_sigma: float = 1.0,
-        peak_min_dist_m: float = 3.5,
+        smooth_sigma: float = 1.55,
+        peak_min_dist_m: float = 3.0,
         d_euclidean_thresh: float = 2.5,
         d_margin_thresh: float = 1.5
 ) -> np.ndarray:
@@ -141,12 +141,12 @@ def segment_trees_chm(
     #paramters for CHM segmentation
     pts_veg: np.ndarray,
     pts_ground: np.ndarray,
-    cell_size: float = 0.5,
+    cell_size: float = 1.0,
     smooth_sigma: float = 1.55,
     min_height: float = 2.5,
     peak_min_dist_m: float = 3.0,
     min_tree_points: int = 60,
-    resolve_multi_trees: bool = True,
+    resolve_multi_trees: bool = False,
     multi_tree_kwargs: dict = None
 ) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float]]:
     """Segment individual trees from a CHM.

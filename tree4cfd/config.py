@@ -163,6 +163,7 @@ class Output:
     """How meshes are written out."""
     merge_tiles: bool = False          # combine all tiles into one .obj (per LoD)
     separate_crown_trunk: bool = False  # write crown and trunk as separate .obj files
+    merge_touching_crowns: bool = False
 
 
 @dataclass

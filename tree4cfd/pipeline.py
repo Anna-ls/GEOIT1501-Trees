@@ -15,6 +15,8 @@ from .cleaning import remove_outliers_sor, voxel_downsample
 from .config import Config
 from .crown import kept_component_mask, segment_to_marching_cubes
 from scipy.spatial import cKDTree
+from scipy.sparse import lil_matrix
+from scipy.sparse.csgraph import connected_components
 
 from .inventory import (
     annotate_and_write,
@@ -222,6 +224,47 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
     tv, tf = _stack(trunk_v, trunk_f)
     return TileMeshes(cv, cf, tv, tf, n_crowns, n_trunks)
 
+def group_touching_crowns(pts, labels, threshold=0.5):
+    """Merges labels of crowns if their points are within the distance threshold."""
+    unique_lbls = np.unique(labels[labels > 0])
+    if len(unique_lbls) <= 1:
+        return labels
+
+    voxel_size = threshold / 2.0
+    coords = np.floor(pts / voxel_size).astype(int)
+    _, unique_idx = np.unique(coords, axis=0, return_index=True)
+
+    ds_pts = pts[unique_idx]
+    ds_labels = labels[unique_idx]
+
+    valid = ds_labels > 0
+    ds_pts = ds_pts[valid]
+    ds_labels = ds_labels[valid]
+
+    tree = cKDTree(ds_pts)
+    pairs = tree.query_pairs(r=threshold)
+
+    lbl_to_idx = {lbl: i for i, lbl in enumerate(unique_lbls)}
+    idx_to_lbl = {i: lbl for i, lbl in enumerate(unique_lbls)}
+    n_lbls = len(unique_lbls)
+
+    adj = lil_matrix((n_lbls, n_lbls), dtype=int)
+    for i, j in pairs:
+        l1, l2 = ds_labels[i], ds_labels[j]
+        if l1 != l2:
+            u, v = lbl_to_idx[l1], lbl_to_idx[l2]
+            adj[u, v] = 1
+            adj[v, u] = 1
+
+    _, comp_labels = connected_components(adj, directed=False)
+
+    new_labels = labels.copy()
+    for i, comp in enumerate(comp_labels):
+        orig_lbl = idx_to_lbl[i]
+        new_labels[labels == orig_lbl] = comp + 1  # +1 keeps the background at 0
+
+    return new_labels
+
 
 def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) -> Optional[TileMeshes]:
     """Process one tile end to end and return its crown/trunk meshes.
@@ -282,6 +325,14 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
     print(f"    segmentation: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 
+    if getattr(cfg.output, 'merge_touching_crowns', False):
+        if progress_callback:
+            progress_callback("Merging touching crowns...")
+        n_before = len(np.unique(labels[labels > 0]))
+        labels = group_touching_crowns(pts_veg, labels, threshold=0.5)
+        n_after = len(np.unique(labels[labels > 0]))
+        print(f"    merged touching: reduced from {n_before} to {n_after} unique crowns")
+
     # 4. Drop pole-like / wall-like segments (lamp posts, facade slivers, ...)
     if cfg.shape_filter.enabled:
         labels, n_poles, n_walls = filter_pole_wall_trees(
@@ -289,7 +340,6 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) 
         )
         print(f"    shape filter: removed {n_poles} poles, {n_walls} walls")
 
-    print(epsg)
     # 5. Drop trees whose centroid sits inside an OSM building footprint
     if cfg.buildings.enabled:
         if epsg == 7415:

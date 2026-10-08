@@ -231,7 +231,7 @@ def validation_pipeline(case_name, parameters: dict):
     # 5. Extract tree centroids and count trees inside unbuffered park boundary
     # ---------------------------------------------------
     detected_gdf = extract_detected_trees(pts_veg, labels, CRS)
-    detected_gdf.to_file(f"{case_name}_detected_trees.gpkg", driver="GPKG")
+    detected_gdf.to_file(f"../DATA/OUT/{case_name}_detected_trees.gpkg", driver="GPKG")
     detected_inside = detected_gdf[detected_gdf.geometry.within(unbuffered)]
 
     # ---------------------------------------------------

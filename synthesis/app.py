@@ -24,6 +24,11 @@ input_method = st.radio("Choose input method:", ("Draw on Map", "Upload GeoJSON"
 lod_choice = st.radio("Choose Level of Detail (LoD):", ("LoD2", "LoD3"))
 lod_value = 2.0 if lod_choice == "LoD2" else 3.0
 
+if lod_choice == "LoD3":
+    merge_touching = st.checkbox("Merge touching crowns into a single mesh", value=False)
+else:
+    merge_touching = False
+
 st_data = None
 uploaded_file = None
 
@@ -157,7 +162,8 @@ if st.button("Run Reconstruction Pipeline"):
                 },
                 "output": {
                     "merge_tiles": True,
-                    "separate_crown_trunk": False
+                    "separate_crown_trunk": False,
+                    "merge_touching_crowns": merge_touching
                 }
             }
             with open(config_json_path, "w") as f:
@@ -177,7 +183,7 @@ if st.button("Run Reconstruction Pipeline"):
 
             status_text.empty()
 
-            st.success("Tree reconstruction complete!")
+            st.success(f"Tree reconstruction complete! Output .obj file saved to {out_dir} or download using the button;")
 
             # Expose the resulting .obj file for download
             output_obj_path = out_dir / f"merged_lod{int(lod_value)}.obj"

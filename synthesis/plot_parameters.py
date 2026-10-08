@@ -9,7 +9,7 @@ from pathlib import Path
 root_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(root_dir))
 
-directory_path = str(root_dir) + '/DATA/OUT/Sensitivity'
+directory_path = str(root_dir) + '/DATA/OUT/Sensitivity/delft'
 file_pattern = 'sensitivity_results_*.json'
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
 markers = ['o', 's', '^', 'D', 'v', 'P']
