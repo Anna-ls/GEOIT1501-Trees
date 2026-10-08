@@ -54,45 +54,40 @@ def clip_and_merge_pointclouds(
     # ---------------------------------------------------
     output_laz = out_dir / output_filename
 
-    points_list = []
-    clean_header = None
+    with laspy.open(str(laz_files[0])) as first_las:
+        clean_header = laspy.LasHeader(version=first_las.header.version, point_format=first_las.header.point_format)
+        clean_header.scales = first_las.header.scales
+        clean_header.offsets = first_las.header.offsets
 
-    for tile_path in laz_files:
-        las = laspy.read(str(tile_path))
-        if clean_header is None:
-            clean_header = laspy.LasHeader(version=las.header.version, point_format=las.header.point_format)
-            clean_header.scales = las.header.scales
-            clean_header.offsets = las.header.offsets
+        for vlr in first_las.header.vlrs:
+            if getattr(vlr, "user_id", "") != "copc":
+                clean_header.vlrs.append(vlr)
 
-            for vlr in las.header.vlrs:
-                if getattr(vlr, "user_id", "") != "copc":
-                    clean_header.vlrs.append(vlr)
+        for evlr in first_las.header.evlrs:
+            if getattr(evlr, "user_id", "") != "copc":
+                clean_header.evlrs.append(evlr)
 
-            for evlr in las.header.evlrs:
-                if getattr(evlr, "user_id", "") != "copc":
-                    clean_header.evlrs.append(evlr)
-        # Make sure at the next laz file it uses that offset
-        else:
-            las.change_scaling(scales=clean_header.scales, offsets=clean_header.offsets)
+    points_found = False
 
-        mask = contains_xy(buffered_polygon, las.x, las.y)
-        points_list.append(las.points[mask].array)
+    with laspy.open(str(output_laz), mode="w", header=clean_header) as writer:
+        for tile_path in laz_files:
+            with laspy.open(str(tile_path)) as las:
 
-    if not points_list:
+                # Load 1 million points into memory at a time
+                for points in las.chunk_iterator(1_000_000):
+                    mask = contains_xy(buffered_polygon, points.x, points.y)
+
+                    if np.any(mask):
+                        # The writer automatically handles scale and offset alignments
+                        writer.write_points(points[mask])
+                        points_found = True
+
+    if not points_found:
+        # Clean up the empty file if no points matched
+        output_laz.unlink(missing_ok=True)
         raise ValueError("No points found within the buffered geometry.")
 
-    concatenated_array = np.concatenate(points_list)
-
-    out = laspy.LasData(clean_header)
-    out.points = laspy.ScaleAwarePointRecord(
-        concatenated_array,
-        point_format=clean_header.point_format,
-        scales=clean_header.scales,
-        offsets=clean_header.offsets
-    )
-    out.write(str(output_laz))
-    print(f"Merged & clipped point cloud saved (laspy) -> {output_laz}")
-
+    print(f"Merged & clipped point cloud saved (laspy chunked) -> {output_laz}")
 
 
 if __name__ == "__main__":
