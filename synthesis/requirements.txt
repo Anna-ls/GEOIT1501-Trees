@@ -4,3 +4,5 @@ streamlit-folium
 geopandas
 numpy
 scipy
+scikit-learn
+
