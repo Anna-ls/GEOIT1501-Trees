@@ -21,7 +21,14 @@ def download_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool
     try:
         if overwrite or not laz_path.exists():
             logging.info(f"[{tile_id}] Downloading COPC.LAZ")
-            urllib.request.urlretrieve(laz_url, str(laz_path))
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+            req = urllib.request.Request(laz_url, headers=headers)
+
+            with urllib.request.urlopen(req) as response, open(str(laz_path), 'wb') as out_file:
+                out_file.write(response.read())
+
         else:
             logging.info(f"[{tile_id}] Skipping existing LAZ")
 
