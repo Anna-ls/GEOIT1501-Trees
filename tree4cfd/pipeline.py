@@ -10,6 +10,7 @@ from typing import NamedTuple, Optional
 import numpy as np
 
 from .buildings import filter_trees_in_buildings
+from synthesis.building_filtering_bag import filter_trees_in_buildings_bag
 from .cleaning import remove_outliers_sor, voxel_downsample
 from .config import Config
 from .crown import kept_component_mask, segment_to_marching_cubes
@@ -222,7 +223,7 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
     return TileMeshes(cv, cf, tv, tf, n_crowns, n_trunks)
 
 
-def build_tile(tile: Path, cfg: Config, inventory=None) -> Optional[TileMeshes]:
+def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None) -> Optional[TileMeshes]:
     """Process one tile end to end and return its crown/trunk meshes.
 
     ``inventory`` is a preloaded ``(lonlat, records)`` tuple from the universal
@@ -266,6 +267,9 @@ def build_tile(tile: Path, cfg: Config, inventory=None) -> Optional[TileMeshes]:
 
     t0 = time.perf_counter()
 
+    if progress_callback:
+        progress_callback("Running CHM segmentation...")
+
     # 3. CHM segmentation (also returns the DTM for trunk ground lookup)
     labels, dtm, georef = segment_trees_chm(
         pts_veg, pts_ground,
@@ -285,15 +289,24 @@ def build_tile(tile: Path, cfg: Config, inventory=None) -> Optional[TileMeshes]:
         )
         print(f"    shape filter: removed {n_poles} poles, {n_walls} walls")
 
+    print(epsg)
     # 5. Drop trees whose centroid sits inside an OSM building footprint
     if cfg.buildings.enabled:
-        labels, n_removed = filter_trees_in_buildings(
-            labels, pts_veg[:, :2], cfg.translation, epsg,
-            buffer=cfg.buildings.buffer,
-            overpass_url=cfg.buildings.overpass_url,
-            cache_dir=cfg.buildings.cache_dir,
-        )
-        print(f"    buildings: removed {n_removed} trees inside footprints")
+        if epsg == 7415:
+            labels, n_removed = filter_trees_in_buildings_bag(
+                labels, pts_veg[:, :2], cfg.translation, epsg,
+                buffer=cfg.buildings.buffer
+            )
+            print(f"    buildings (BAG): removed {n_removed} trees inside footprints")
+
+        else:
+            labels, n_removed = filter_trees_in_buildings(
+                labels, pts_veg[:, :2], cfg.translation, epsg,
+                buffer=cfg.buildings.buffer,
+                overpass_url=cfg.buildings.overpass_url,
+                cache_dir=cfg.buildings.cache_dir,
+            )
+            print(f"    buildings (OSM): removed {n_removed} trees inside footprints")
 
     # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None
@@ -309,6 +322,9 @@ def build_tile(tile: Path, cfg: Config, inventory=None) -> Optional[TileMeshes]:
         )
         inv_lonlat, inv_recs = inventory
         inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
+
+    if progress_callback:
+        progress_callback(f"Reconstructing 3D meshes...")
 
     # 7. Mesh every tree (crown + inventory-driven trunks)
     tm = _build_tile_meshes(pts_veg, labels, dtm, georef, cfg, inv_local, inv_recs)
@@ -359,7 +375,7 @@ def _merge_tiles(metas) -> TileMeshes:
     return TileMeshes(cvv, cff, tvv, tff, nc, nt)
 
 
-def run_pipeline(cfg: Config) -> None:
+def run_pipeline(cfg: Config, progress_callback=None) -> None:
     """Process every tile in the configured tiles directory."""
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -402,7 +418,7 @@ def run_pipeline(cfg: Config) -> None:
             if primary.exists():
                 print(f"  {tile.name}  ->  already done, skipping")
                 continue
-        tm = build_tile(tile, cfg, inventory)
+        tm = build_tile(tile, cfg, inventory, progress_callback)
         if tm is None:
             continue
         if merge:

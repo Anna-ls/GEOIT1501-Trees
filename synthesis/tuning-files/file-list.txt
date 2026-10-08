@@ -1,6 +1,7 @@
-delft_dense-1
-delft_dense-2
-delft_low-1
-delft_low-2
-delft_mid-1
+utrecht_mid-2
 delft_mid-2
+amsterdam_dense-2
+amsterdam_low-1
+amsterdam_low-2
+amsterdam_mid-1
+amsterdam_mid-2

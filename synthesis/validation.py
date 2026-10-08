@@ -247,4 +247,8 @@ def validation_pipeline(case_name, parameters: dict):
     return registry_inside, detected_inside, precision, recall, f1_score, total_clipped_points
 
 if __name__ == "__main__":
-    validation_pipeline("vondelpark")
+    with open(f"./parameters_segmentation.json", "r") as f:
+        params = json.load(f)
+
+
+    validation_pipeline("vondelpark", params)

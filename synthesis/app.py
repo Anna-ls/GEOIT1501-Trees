@@ -16,10 +16,13 @@ from tree4cfd.pipeline import run_pipeline
 from tree4cfd.config import load_config
 
 st.title("Urban Tree Reconstruction")
-st.write("Draw a polygon on the map to define the region for AHN tile extraction and 3D tree meshing.")
+st.write("Draw or upload a polygon and generate tree meshes within that area.")
 
 # Adds option to either draw a polygon or upload one
 input_method = st.radio("Choose input method:", ("Draw on Map", "Upload GeoJSON"))
+
+lod_choice = st.radio("Choose Level of Detail (LoD):", ("LoD2", "LoD3"))
+lod_value = 2.0 if lod_choice == "LoD2" else 3.0
 
 st_data = None
 uploaded_file = None
@@ -108,12 +111,10 @@ if st.button("Run Reconstruction Pipeline"):
                     "output_dir": str(out_dir)
                 },
                 "translation": [0.0, 0.0, 0.0],
-                "lod": 3.0,
-                "point_of_interest": [0.0, 0.0, 0.0],
-                "influence_region": 1250,
+                "lod": lod_value,
                 "filtering": {
                     "high_veg_classes": [1],
-                    "multi_return_only": False
+                    "multi_return_only": True
                 },
                 "cleaning": {
                     "sor_neighbors": 20,
@@ -142,10 +143,10 @@ if st.button("Run Reconstruction Pipeline"):
                     "min_component_frac": 0.3
                 },
                 "shape_filter": {
-                    "enabled": False
+                    "enabled": True
                 },
                 "buildings": {
-                    "enabled": False,
+                    "enabled": True,
                     "buffer": 1
                 },
                 "inventory": {
@@ -156,7 +157,7 @@ if st.button("Run Reconstruction Pipeline"):
                 },
                 "output": {
                     "merge_tiles": True,
-                    "separate_crown_trunk": True
+                    "separate_crown_trunk": False
                 }
             }
             with open(config_json_path, "w") as f:
@@ -166,13 +167,20 @@ if st.button("Run Reconstruction Pipeline"):
             # ---------------------------------------------------
             # -------------- Execute pipeline.py ----------------
             # ---------------------------------------------------
+            status_text = st.empty()
+
+            def update_ui(msg):
+                status_text.info(msg)
+
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                run_pipeline(cfg)
+                run_pipeline(cfg, progress_callback=update_ui)
+
+            status_text.empty()
 
             st.success("Tree reconstruction complete!")
 
             # Expose the resulting .obj file for download
-            output_obj_path = out_dir / "merged_lod2.obj"
+            output_obj_path = out_dir / f"merged_lod{int(lod_value)}.obj"
             if output_obj_path.exists():
                 with open(output_obj_path, "rb") as file:
                     st.download_button(
