@@ -5,3 +5,10 @@ scikit-image
 shapely
 pyproj
 requests
+streamlit
+folium
+streamlit-folium
+geopandas
+numpy
+scikit-learn
+laspy

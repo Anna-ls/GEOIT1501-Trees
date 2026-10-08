@@ -1,9 +1,14 @@
+laspy[laszip]
+numpy
+scipy
+scikit-image
+shapely
+pyproj
+requests
 streamlit
 folium
 streamlit-folium
 geopandas
 numpy
-scipy
 scikit-learn
 laspy
-skimage
