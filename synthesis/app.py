@@ -38,7 +38,9 @@ uploaded_file = None
 # --- Show either the map or the uploader based on the choice ---
 # ---------------------------------------------------------------
 if input_method == "Draw on Map":
-    m = folium.Map(location=[51.9244, 4.4777], zoom_start=13)
+    m = folium.Map(location=[51.9244, 4.4777], zoom_start=13, tiles=None)
+    folium.TileLayer("OpenStreetMap", overlay=True, name="OpenStreetMap").add_to(m)
+
     draw = Draw(
         draw_options={
             'polyline': False,
@@ -154,9 +156,6 @@ if st.button("Run Reconstruction Pipeline"):
                     "iso_level": 0.15,
                     "min_component_frac": 0.3
                 },
-                "shape_filter": {
-                    "enabled": True
-                },
                 "buildings": {
                     "enabled": True,
                     "buffer": 1
@@ -196,14 +195,14 @@ if st.button("Run Reconstruction Pipeline"):
 
             total_time = sum(execution_times.values())
 
-            st.subheader("Execution Time Summary")
+            json_dir = root_dir / "DATA" / "OUT" / "Times"
+            json_dir.mkdir(parents=True, exist_ok=True)
 
-            # Format the dictionary for a clean Streamlit table
-            summary_data = {
-                "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
-                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
-            }
-            st.table(pd.DataFrame(summary_data))
+            json_data = {step: round(time, 2) for step, time in execution_times.items()}
+            json_data["Total Execution Time"] = round(total_time, 2)
+
+            with open(json_dir / "time-summary.json", "w") as f:
+                json.dump(json_data, f, indent=4)
 
             # Expose the resulting .obj file for download
             output_obj_path = out_dir / f"merged_lod{int(lod_value)}.obj"
@@ -217,6 +216,15 @@ if st.button("Run Reconstruction Pipeline"):
                     )
             else:
                 st.warning(f"Pipeline finished, but {output_obj_path.name} was not found in {out_dir}.")
+
+            st.subheader("Execution Time Summary")
+
+            # Format the dictionary for a clean Streamlit table
+            summary_data = {
+                "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
+                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
+            }
+            st.table(pd.DataFrame(summary_data))
 
         except Exception as e:
             st.error(f"An error occurred while running the pipeline: {e}")

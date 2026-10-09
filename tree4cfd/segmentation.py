@@ -26,7 +26,6 @@ def analyse_cluster(cluster_pts: np.ndarray) -> Dict[str, float]:
     """
     xy = cluster_pts[:, :2]
     z = cluster_pts[:, 2]
-
     centroid = np.mean(xy, axis=0)
 
     # PCA Eigenvalue decomposition
@@ -36,22 +35,21 @@ def analyse_cluster(cluster_pts: np.ndarray) -> Dict[str, float]:
     std_minor = np.sqrt(max(evals[0], 0))
     std_major = np.sqrt(max(evals[1], 0))
 
-    elongation = std_major / std_minor
+    elongation = std_major / std_minor if std_minor > 0 else 999.0
 
-    # Centeredness
     max_z_idx = np.argmax(z)
     highest_xy = xy[max_z_idx]
-
     dist_to_centroid = np.linalg.norm(highest_xy - centroid)
 
-    # Normalised distance
-    offset_ratio = dist_to_centroid / std_major
+    offset_ratio = dist_to_centroid / std_major if std_major > 0 else 0.0
 
     return {
         "elongation": elongation,
-        "offset_ratio": offset_ratio
+        "offset_ratio": offset_ratio,
+        "std_minor": std_minor,
+        "std_major": std_major,
+        "z_range": np.ptp(z),
     }
-
 
 def find_secondary_peak(
         cluster_pts: np.ndarray,
@@ -113,7 +111,7 @@ def find_secondary_peak(
     # Clustering merges duplicate detection across different angles
     cluster_labels = DBSCAN(eps=peak_min_dist_m * 0.75, min_samples=1).fit_predict(candidate_peaks[:, :2])
 
-    # Filter treetops using Euclidean distance and margin to the edge
+    # Filter treetops using Euclidean distance to dominant peak and margin to the edge
     final_peaks = []
     for label in np.unique(cluster_labels):
         if label == -1:
@@ -146,7 +144,7 @@ def segment_trees_chm(
     min_height: float = 2.5,
     peak_min_dist_m: float = 3.0,
     min_tree_points: int = 60,
-    resolve_multi_trees: bool = False,
+    resolve_multi_trees: bool = True,
     multi_tree_kwargs: dict = None
 ) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float]]:
     """Segment individual trees from a CHM.
@@ -229,43 +227,55 @@ def segment_trees_chm(
             (x_min, y_min, cell_size),
         )
 
+    # WATERSHED
     markers = np.zeros((ny, nx), dtype=np.int32)
     markers[peaks[:, 0], peaks[:, 1]] = np.arange(1, len(peaks) + 1)
     labels_2d = watershed(-chm_smooth, markers, mask=tree_mask)
 
     labels = labels_2d[r_v, c_v].astype(np.int32)
-
-    # Drop tiny segments
     unique_lbls, counts = np.unique(labels, return_counts=True)
 
     next_new_label = labels.max() + 1
     suspect_count = 0
-    dropped_count = 0
+    small_dropped = 0
     added_trees = 0
+    pole_wall_dropped = 0
 
+    # FILTERING
     for lbl, cnt in zip(unique_lbls, counts):
         if lbl == 0:
             continue
 
+        mask = labels == lbl
+        cluster_pts = pts_veg[mask]
+        metrics = analyse_cluster(cluster_pts)
+
+        # Drop tiny segments
         if cnt < min_tree_points:
             labels[labels == lbl] = 0
-            dropped_count += 1
+            small_dropped += 1
             continue
 
+        # Drop poles and walls
+        is_pole = metrics["z_range"] > 3.0 and metrics["std_major"] < 0.6
+        is_wall = metrics["z_range"] > 3.0 and metrics["std_minor"] < 0.4 and metrics["elongation"] > 4.0
+
+        if is_pole or is_wall:
+            labels[mask] = 0
+            pole_wall_dropped += 1
+            continue
+
+        # Further segment multi-tree clusters
         if resolve_multi_trees:
-            mask = labels == lbl
-            cluster_pts = pts_veg[mask]
-
-            metrics = analyse_cluster(cluster_pts)
-
             is_elongated = metrics["elongation"] > max_elongation
-            is_uncetered = metrics["offset_ratio"] > max_offset_ratio
+            is_uncentered = metrics["offset_ratio"] > max_offset_ratio
 
-            if is_elongated or is_uncetered:
+            if is_elongated or is_uncentered:
                 suspect_count += 1
 
                 peaks_3d = find_secondary_peak(cluster_pts, **multi_tree_kwargs)
 
+                # Assign points to the nearest (2D Euclidean distance) secondary peak identified
                 if len(peaks_3d) > 1:
                     dists = cdist(cluster_pts[:, :2], peaks_3d[:, :2])
 
@@ -281,11 +291,8 @@ def segment_trees_chm(
 
                     added_trees += (len(peaks_3d) - 1)
 
-    n_trees = int((np.unique(labels) > 0).sum())
-
     print(f"    CHM: {len(peaks)} initial peaks found.")
-    print(f"    Filter: {dropped_count} tiny segments (< {min_tree_points} pts) dropped.")
+    print(f"    Filter: {small_dropped} tiny segments (< {min_tree_points} pts) and {pole_wall_dropped} pole or wall like segments dropped.")
     print(f"    PCA: {suspect_count} multi-tree clusters detected, adding {added_trees} new trees.")
-    print(f"    Final: {n_trees} distinct trees.")
 
     return labels, dtm, (x_min, y_min, cell_size)

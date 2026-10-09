@@ -266,7 +266,7 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
-def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
+def build_tile(tile: Path, cfg: Config, progress_callback=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
     ``inventory`` is a preloaded ``(lonlat, records)`` tuple from the universal
@@ -278,7 +278,9 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
     print(f"  {tile.name}")
     translation = np.array(cfg.translation)
 
-    # 1. Load tile once; extract vegetation and ground
+    # ---------------------------------------------------
+    # -- Load tile once; extract vegetation and ground --
+    # ---------------------------------------------------
     las = read_las(tile)
     crs = las.header.parse_crs()
     epsg = crs.to_epsg() if crs else None
@@ -291,12 +293,14 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
         print("    Too few ground points to build DTM, skipping.\n")
         return None
 
-    # 2. Clean vegetation
+    # ---------------------------------------------------
+    # -------------- Clean vegetation -------------------
+    # ---------------------------------------------------
     if cfg.cleaning.sor_neighbors > 0:
         pts_veg = remove_outliers_sor(
             pts_veg, cfg.cleaning.sor_neighbors, cfg.cleaning.sor_std_ratio
         )
-        print(f"    after SOR:              {len(pts_veg):>10,} pts")
+        print(f"    after SOR: {len(pts_veg):>10,} pts")
     if cfg.cleaning.voxel_size > 0:
         pts_veg = voxel_downsample(pts_veg, cfg.cleaning.voxel_size)
         print(f"    after voxel downsample: {len(pts_veg):>10,} pts")
@@ -313,9 +317,11 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
     if progress_callback:
         progress_callback("Running CHM segmentation...")
 
-    t_start_segment = time.time()
+    t_start_segment = time.perf_counter()
 
-    # 3. CHM segmentation (also returns the DTM for trunk ground lookup)
+    # -------------------------------------------------------------------
+    # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
+    # -------------------------------------------------------------------
     labels, dtm, georef = segment_trees_chm(
         pts_veg, pts_ground,
         cell_size=cfg.segmentation.cell_size,
@@ -324,7 +330,7 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
     )
-    print(f"    segmentation: {time.perf_counter() - t0:.1f} s")
+    print(f"    -> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 
     if getattr(cfg.output, 'merge_touching_crowns', False):
@@ -335,15 +341,8 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
         n_after = len(np.unique(labels[labels > 0]))
         print(f"    merged touching: reduced from {n_before} to {n_after} unique crowns")
 
-    segmentation_time = time.time() - t_start_segment
-    t_start_clean = time.time()
-
-    # 4. Drop pole-like / wall-like segments (lamp posts, facade slivers, ...)
-    if cfg.shape_filter.enabled:
-        labels, n_poles, n_walls = filter_pole_wall_trees(
-            labels, pts_veg, cfg.shape_filter
-        )
-        print(f"    shape filter: removed {n_poles} poles, {n_walls} walls")
+    segmentation_time = time.perf_counter() - t_start_segment
+    t_start_clean = time.perf_counter()
 
     # 5. Drop trees whose centroid sits inside an OSM building footprint
     if cfg.buildings.enabled:
@@ -381,8 +380,8 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
     if progress_callback:
         progress_callback(f"Reconstructing 3D meshes...")
 
-    cleaning_time = time.time() - t_start_clean
-    t_start_mesh = time.time()
+    cleaning_time = time.perf_counter() - t_start_clean
+    t_start_mesh = time.perf_counter()
 
     # 7. Mesh every tree (crown + inventory-driven trunks)
     tm = _build_tile_meshes(pts_veg, labels, dtm, georef, cfg, inv_local, inv_recs)
@@ -397,7 +396,7 @@ def build_tile(tile: Path, cfg: Config, inventory=None, progress_callback=None):
         f"{n_faces:,} faces  ({time.perf_counter() - t0:.1f} s total)"
     )
 
-    meshing_time = time.time() - t_start_mesh
+    meshing_time = time.perf_counter() - t_start_mesh
     return tm, segmentation_time, cleaning_time, meshing_time
 
 
@@ -440,22 +439,22 @@ def run_pipeline(cfg: Config, progress_callback=None):
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 
     tiles = find_tiles(cfg.paths.tiles_dir)
-    print(f"Processing {len(tiles)} tiles -> {cfg.paths.output_dir}/\n")
+    print(f"Processing {len(tiles)} tile -> {cfg.paths.output_dir}/\n")
 
     write_offset(cfg.paths.output_dir / "offset.txt", cfg.translation)
 
-    # Load the universal inventory CSV once, shared across all tiles.
-    inventory = None
-    if cfg.inventory.enabled:
-        path = Path(cfg.inventory.csv_path)
-        if cfg.inventory.csv_path and path.exists():
-            inventory = load_inventory_csv(path)
-            print(f"Inventory: {len(inventory[1]):,} trees from {path}\n")
-        else:
-            print(
-                f"Inventory enabled but CSV not found ({cfg.inventory.csv_path or '<unset>'}); "
-                "run `python -m tree4cfd inventory` first — skipping matching.\n"
-            )
+    # # Load the universal inventory CSV once, shared across all tiles.
+    # inventory = None
+    # if cfg.inventory.enabled:
+    #     path = Path(cfg.inventory.csv_path)
+    #     if cfg.inventory.csv_path and path.exists():
+    #         inventory = load_inventory_csv(path)
+    #         print(f"Inventory: {len(inventory[1]):,} trees from {path}\n")
+    #     else:
+    #         print(
+    #             f"Inventory enabled but CSV not found ({cfg.inventory.csv_path or '<unset>'}); "
+    #             "run `python -m tree4cfd inventory` first — skipping matching.\n"
+    #         )
 
     label = parse_lod(cfg.lod)[2]
     sep = cfg.output.separate_crown_trunk
@@ -470,7 +469,7 @@ def run_pipeline(cfg: Config, progress_callback=None):
     seen = set()
 
     for i, tile in enumerate(tiles, 1):
-        print(f"[{i}/{len(tiles)}]", end=" ")
+        print(f"Processing: ", end=" ")
         name = _tile_name(tile)
         if name in seen:
             print(f"  {tile.name}  ->  duplicate of {name}, skipping")
@@ -483,7 +482,7 @@ def run_pipeline(cfg: Config, progress_callback=None):
             if primary.exists():
                 print(f"  {tile.name}  ->  already done, skipping")
                 continue
-        result = build_tile(tile, cfg, inventory, progress_callback)
+        result = build_tile(tile, cfg, progress_callback)
         if result is None:
             continue
 
