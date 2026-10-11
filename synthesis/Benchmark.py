@@ -216,7 +216,7 @@ class Benchmark:
     def plot_results(self, file):
         print(self.parameters_results)
         df = pd.DataFrame(self.parameters_results["results"], columns=self.parameters_results["tweaked_parameter"] + ["F1-Score"])
-        df.to_json(f"benchmark_results_{file}.json", orient="records", indent=4)
+        df.to_json(f"DATA/OUT/parameter_tweaking/benchmark_results_{file}.json", orient="records", indent=4)
         print(df)
 
     def print_results(self):

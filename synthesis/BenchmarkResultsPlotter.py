@@ -9,7 +9,7 @@ from scipy.interpolate import griddata
 
 
 def main():
-    folder = Path("Benchmark_Results")
+    folder = Path("DATA/OUT/parameter_tweaking")
 
     json_files = list(folder.glob("*.json"))
 
@@ -21,33 +21,33 @@ def main():
         if "dense" in json_file.name:
             with open(json_file, "r") as f:
                 data = json.load(f)
-            perc = 9999
+            perc = 0
             params = {}
             for temp in data:
-                if temp.get("Difference") < perc:
-                    perc = temp.get("Difference")
+                if temp.get("F1-Score") > perc:
+                    perc = temp.get("F1-Score")
                     params = temp
             best_parameters_dense[json_file.stem] = params
 
         elif "low" in json_file.name:
             with open(json_file, "r") as f:
                 data = json.load(f)
-            perc = 9999
+            perc = 0
             params = {}
             for temp in data:
-                if temp.get("Difference") < perc:
-                    perc = temp.get("Difference")
+                if temp.get("F1-Score") > perc:
+                    perc = temp.get("F1-Score")
                     params = temp
             best_parameters_low[json_file.stem] = params
 
         elif "mid" in json_file.name:
             with open(json_file, "r") as f:
                 data = json.load(f)
-            perc = 9999
+            perc = 0
             params = {}
             for temp in data:
-                if temp.get("Difference") < perc:
-                    perc = temp.get("Difference")
+                if temp.get("F1-Score") > perc:
+                    perc = temp.get("F1-Score")
                     params = temp
             best_parameters_mid[json_file.stem] = params
 
@@ -59,21 +59,21 @@ def main():
     print(best_parameters_mid)
 
         
-    for param in ["smooth_sigma", "cell_size", "d_euclidean_thresh"]:
+    for param in ["smooth_sigma", "cell_size", "peak_min_dist_m"]:
         avg = 0
         for temp in best_parameters_dense.values():
             avg+= temp.get(param)
         avg /= len(best_parameters_dense)
         print(f"Average {param} for dense datasets: {avg}")
 
-    for param in ["smooth_sigma", "cell_size", "d_euclidean_thresh"]:
+    for param in ["smooth_sigma", "cell_size", "peak_min_dist_m"]:
         avg = 0
         for temp in best_parameters_low.values():
             avg+= temp.get(param)
         avg /= len(best_parameters_low)
         print(f"Average {param} for low datasets: {avg}")
 
-    for param in ["smooth_sigma", "cell_size", "d_euclidean_thresh"]:
+    for param in ["smooth_sigma", "cell_size", "peak_min_dist_m"]:
         avg = 0
         for temp in best_parameters_mid.values():
             avg+= temp.get(param)
@@ -82,21 +82,21 @@ def main():
 
     avg = 0
     for temp in best_parameters_dense.values():
-        avg += temp.get("Difference")
+        avg += temp.get("F1-Score")
     avg /= len(best_parameters_dense)
-    print(f"Average difference for dense datasets: {avg}")
+    print(f"Average F1-Score for dense datasets: {avg}")
 
     avg = 0
     for temp in best_parameters_low.values():
-        avg += temp.get("Difference")   
+        avg += temp.get("F1-Score")
     avg /= len(best_parameters_low)
-    print(f"Average difference for low datasets: {avg}")
+    print(f"Average F1-Score for low datasets: {avg}")
 
     avg = 0
     for temp in best_parameters_mid.values():
-        avg += temp.get("Difference")
+        avg += temp.get("F1-Score")
     avg /= len(best_parameters_mid)
-    print(f"Average difference for mid datasets: {avg}")
+    print(f"Average F1-Score for mid datasets: {avg}")
 
 
     for file in json_files:
@@ -104,11 +104,11 @@ def main():
         with open(file, "r") as f:
             data = json.load(f)
         for temp in data:
-            if (temp["smooth_sigma"], temp["cell_size"]) in plotted_data:
-                plotted_data[(temp["smooth_sigma"], temp["cell_size"])] += temp["Difference"] 
-                plotted_data[(temp["smooth_sigma"], temp["cell_size"])] /= 2
+            if (temp["peak_min_dist_m"], temp["cell_size"]) in plotted_data:
+                plotted_data[(temp["peak_min_dist_m"], temp["cell_size"])] += temp["F1-Score"]
+                plotted_data[(temp["peak_min_dist_m"], temp["cell_size"])] /= 2
             else:
-                plotted_data[(temp["smooth_sigma"], temp["cell_size"])] = temp["Difference"]
+                plotted_data[(temp["peak_min_dist_m"], temp["cell_size"])] = temp["F1-Score"]
 
         x = np.array([])
         y = np.array([])
@@ -139,9 +139,9 @@ def main():
         # Show original measurement locations
         plt.scatter(x, y, c=z, edgecolor="black", cmap="viridis")
 
-        plt.xlabel("Smooth Sigma")
+        plt.xlabel("Peak Minimum Distance (m)")
         plt.ylabel("Cell Size")
-        plt.colorbar(label="Difference (%)")
+        plt.colorbar(label="F1-Score")
         plt.title(f"Interpolated Heat Map for Accuracy for {file.stem.replace('benchmark_results_', '')}")
 
         plt.show()
