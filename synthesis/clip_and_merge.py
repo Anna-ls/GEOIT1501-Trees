@@ -2,7 +2,12 @@ from pathlib import Path
 import geopandas as gpd
 import laspy
 import numpy as np
+import trimesh
+import logging
+
+from cvxpy import concatenate
 from shapely import box, contains_xy
+from shapely import Point
 
 def clip_and_merge_pointclouds(
         tiles_folder: str,
@@ -10,7 +15,6 @@ def clip_and_merge_pointclouds(
         gpkg_path: str,
         tile_ids: list[str] = None,
         output_filename: str = "clipped_output.laz",
-        max_workers: int = None
 ):
     tiles_dir = Path(tiles_folder)
     out_dir = Path(output_folder)
@@ -20,7 +24,7 @@ def clip_and_merge_pointclouds(
     # ------------ Find GKPG and buffer it --------------
     # ---------------------------------------------------
     if not Path(gpkg_path).exists():
-        raise FileNotFoundError(f"AOI file not found at {gpkg_path}")
+        logging.exception(f"AOI file not found at {gpkg_path}")
 
     gdf = gpd.read_file(gpkg_path)
     unbuffered = gdf.geometry.union_all() if len(gdf) > 1 else gdf.geometry.iloc[0]
@@ -41,9 +45,9 @@ def clip_and_merge_pointclouds(
 
     output_laz = out_dir / output_filename
     laz_files = [f for f in laz_files if f.resolve() != output_laz.resolve()]
-    print(f"Found {len(laz_files)} .laz file(s) to process.")
+    logging.info(f"Found {len(laz_files)} .laz file(s) to process.")
     if not laz_files:
-        raise FileNotFoundError("No .laz files found to process.")
+        logging.exception("No .laz files found to process.")
 
     # ---------------------------------------------------
     # --------- Clip each LAZ file to the AOI -----------
@@ -113,14 +117,72 @@ def clip_and_merge_pointclouds(
 
     if points_written == 0:
         output_laz.unlink(missing_ok=True)
-        raise ValueError("No points found within the buffered geometry.")
+        logging.exception("No points found within the buffered geometry.")
 
     with laspy.open(str(output_laz), mode="a") as dst:
         dst.header.mins = all_mins
         dst.header.maxs = all_maxs
 
-    print(f"Merged & clipped point cloud saved (laspy chunked) -> {output_laz}")
+    logging.info(f"Merged & clipped point cloud saved")
 
+def clip_and_merge_objs(obj_paths: list, aoi_gpkg_path: str, output_obj_path: Path):
+    """Merges multiple .obj files into a single .obj file"""
+    if not obj_paths:
+        logging.exception("No .obj files found for the selected LoD.")
+        return False
+
+    aoi_gdf = gpd.read_file(aoi_gpkg_path)
+    aoi_polygon = aoi_gdf.union_all()
+    buffered_polygon = aoi_polygon.buffer(0.5)
+    p_minx, p_miny, p_maxx, p_maxy = buffered_polygon.bounds
+
+    all_kept_meshes: list[trimesh.Trimesh] = []
+
+    for obj_path in obj_paths:
+        try:
+            mesh = trimesh.load(obj_path, force='mesh')
+
+            if not isinstance(mesh, trimesh.Trimesh):
+                continue
+            if getattr(mesh, 'is_empty', True):
+                continue
+
+            x = mesh.vertices[:, 0]
+            y = mesh.vertices[:, 1]
+            bbox_mask = (x >= p_minx) & (x <= p_maxx) & (y >= p_miny) & (y <= p_maxy)
+
+            if not np.any(bbox_mask):
+                continue
+
+            can_idx = np.flatnonzero(bbox_mask)
+            poly_mask = contains_xy(buffered_polygon, x[can_idx], y[can_idx])
+
+            if not np.any(poly_mask):
+                continue
+
+            v_valid = np.zeros(len(mesh.vertices), dtype=bool)
+            v_valid[can_idx[poly_mask]] = True
+
+            face_mask = v_valid[mesh.faces].any(axis=1)
+
+            if np.any(face_mask):
+                clipped = trimesh.Trimesh(vertices=mesh.vertices, faces=mesh.faces[face_mask], process=False)
+                clipped.remove_unreferenced_vertices()
+                all_kept_meshes.append(clipped)
+
+        except Exception as e:
+            logging.exception(f"Error processing {Path(obj_path).name}: {e}")
+
+    if all_kept_meshes:
+        merged_mesh = trimesh.util.concatenate(*all_kept_meshes)
+
+        if not getattr(merged_mesh, 'is_empty', True):
+            merged_mesh.export(str(output_obj_path))
+            logging.info("3D BAG clip and merge process completed.")
+            return True
+
+    logging.warning("Something went wrong when merging .obj files")
+    return False
 
 if __name__ == "__main__":
     script_dir = Path(__file__).parent

@@ -23,6 +23,7 @@ st.write("Draw or upload a polygon and generate tree meshes within that area.")
 # Adds option to either draw a polygon or upload one
 input_method = st.radio("Choose input method:", ("Draw on Map", "Upload GeoJSON"))
 
+st.subheader("Tree Settings")
 lod_choice = st.radio("Choose Level of Detail (LoD):", ("LoD2", "LoD3"))
 lod_value = 2.0 if lod_choice == "LoD2" else 3.0
 
@@ -30,6 +31,13 @@ if lod_choice == "LoD3":
     merge_touching = st.checkbox("Merge touching crowns into a single mesh", value=False)
 else:
     merge_touching = False
+
+st.subheader("Building Settings")
+include_buildings = st.checkbox("Download and include 3D BAG buildings", value=False)
+if include_buildings:
+    bag_lod_choice = st.radio("Choose Building Level of Detail:", ("LoD1.2", "LoD1.3", "LoD2.2"))
+    lod_map = {"LoD1.2": "LoD12", "LoD1.3": "LoD13", "LoD2.2": "LoD22"}
+    bag_lod = lod_map[bag_lod_choice]
 
 st_data = None
 uploaded_file = None
@@ -110,10 +118,11 @@ if st.button("Run Reconstruction Pipeline"):
             # ------------- Run data collection -----------------
             # ---------------------------------------------------
             with st.spinner('Downloading, clipping, and merging AHN tiles...'):
-                dl_time, clip_time = process_geojson(geojson_path, buffer_distance=20.0, overwrite=False)
+                dl_time, ahn_clip_time, bag_clip_time = process_geojson(geojson_path, buffer_distance=10.0, overwrite=False, download_buildings=include_buildings, bag_lod=bag_lod)
 
             execution_times['1. Download LiDAR Tiles'] = dl_time
-            execution_times['2. Clip & Merge Pointcloud'] = clip_time
+            execution_times['2. Clip & Merge Pointcloud'] = ahn_clip_time
+            execution_times['3. Clip & Merge 3D buildings'] = bag_clip_time
 
             # ---------------------------------------------------
             # ---- Generate the config file for the pipeline ----
@@ -186,9 +195,9 @@ if st.button("Run Reconstruction Pipeline"):
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
                 seg_time, clean_time, mesh_time = run_pipeline(cfg, progress_callback=update_ui)
-            execution_times['3. Tree Segmentation'] = seg_time
-            execution_times['4. Filter & Clean'] = clean_time
-            execution_times['5. Reconstruct 3D Meshes'] = mesh_time
+            execution_times['4. Tree Segmentation'] = seg_time
+            execution_times['5. Filter & Clean'] = clean_time
+            execution_times['6. Reconstruct 3D Meshes'] = mesh_time
 
             status_text.empty()
             st.success(f"Tree reconstruction complete! Download output file using the button;")

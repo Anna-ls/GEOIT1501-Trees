@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 
 import numpy as np
+import logging
 
 from .buildings import filter_trees_in_buildings
 from synthesis.building_filtering_bag import filter_trees_in_buildings_bag
@@ -275,7 +276,6 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
     caller (``run_pipeline``) so tiles can be merged.
     """
     tile_name = _tile_name(tile)
-    print(f"  {tile.name}")
     translation = np.array(cfg.translation)
 
     # ---------------------------------------------------
@@ -287,10 +287,10 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
     pts_veg = filter_vegetation(las, cfg.filtering)
     pts_ground = filter_ground(las, cfg.filtering)
     del las
-    print(f"    vegetation: {len(pts_veg):>10,} pts    ground: {len(pts_ground):>10,} pts")
+    logging.info(f"Found {len(pts_veg):>10,} vegetation pts and {len(pts_ground):>10,} ground pts (for DTM)")
 
     if len(pts_ground) < 100:
-        print("    Too few ground points to build DTM, skipping.\n")
+        logging.exception("Too few ground points to build DTM, skipping.")
         return None
 
     # ---------------------------------------------------
@@ -300,13 +300,13 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
         pts_veg = remove_outliers_sor(
             pts_veg, cfg.cleaning.sor_neighbors, cfg.cleaning.sor_std_ratio
         )
-        print(f"    after SOR: {len(pts_veg):>10,} pts")
+        logging.info(f"After SOR: {len(pts_veg):>10,} pts remaining")
     if cfg.cleaning.voxel_size > 0:
         pts_veg = voxel_downsample(pts_veg, cfg.cleaning.voxel_size)
-        print(f"    after voxel downsample: {len(pts_veg):>10,} pts")
+        logging.info(f"After voxel downsample: {len(pts_veg):>10,} pts remaining")
 
     if len(pts_veg) < 100:
-        print("    Too few vegetation points, skipping.\n")
+        logging.exception("Too few vegetation points, skipping.")
         return None
 
     pts_veg -= translation
@@ -330,7 +330,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
     )
-    print(f"    -> Segmentation done in: {time.perf_counter() - t0:.1f} s")
+    logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 
     if getattr(cfg.output, 'merge_touching_crowns', False):
@@ -339,7 +339,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
         n_before = len(np.unique(labels[labels > 0]))
         labels = group_touching_crowns(pts_veg, labels, threshold=0.5)
         n_after = len(np.unique(labels[labels > 0]))
-        print(f"    merged touching: reduced from {n_before} to {n_after} unique crowns")
+        logging.info(f"Merged touching crowns: reduced from {n_before} to {n_after} unique crowns")
 
     segmentation_time = time.perf_counter() - t_start_segment
     t_start_clean = time.perf_counter()
@@ -351,7 +351,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
                 labels, pts_veg[:, :2], cfg.translation, epsg,
                 buffer=cfg.buildings.buffer
             )
-            print(f"    buildings (BAG): removed {n_removed} trees inside footprints")
+            logging.info(f"Buildings (BAG): removed {n_removed} trees inside footprints")
 
         else:
             labels, n_removed = filter_trees_in_buildings(
@@ -360,7 +360,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
                 overpass_url=cfg.buildings.overpass_url,
                 cache_dir=cfg.buildings.cache_dir,
             )
-            print(f"    buildings (OSM): removed {n_removed} trees inside footprints")
+            logging.info(f"Buildings (OSM): removed {n_removed} trees inside footprints")
 
     # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None
@@ -439,7 +439,7 @@ def run_pipeline(cfg: Config, progress_callback=None):
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 
     tiles = find_tiles(cfg.paths.tiles_dir)
-    print(f"Processing {len(tiles)} tile -> {cfg.paths.output_dir}/\n")
+    logging.info(f"Processing {len(tiles)} tile -> {cfg.paths.output_dir}/")
 
     write_offset(cfg.paths.output_dir / "offset.txt", cfg.translation)
 
@@ -469,10 +469,9 @@ def run_pipeline(cfg: Config, progress_callback=None):
     seen = set()
 
     for i, tile in enumerate(tiles, 1):
-        print(f"Processing: ", end=" ")
         name = _tile_name(tile)
         if name in seen:
-            print(f"  {tile.name}  ->  duplicate of {name}, skipping")
+            logging.info(f"{tile.name}  ->  duplicate of {name}, skipping")
             continue
         seen.add(name)
 
@@ -480,7 +479,7 @@ def run_pipeline(cfg: Config, progress_callback=None):
         if not merge:
             primary = stem.with_name(stem.name + ("_crown.obj" if sep else ".obj"))
             if primary.exists():
-                print(f"  {tile.name}  ->  already done, skipping")
+                logging.info(f"{tile.name}  ->  already done, skipping")
                 continue
         result = build_tile(tile, cfg, progress_callback)
         if result is None:
@@ -495,13 +494,12 @@ def run_pipeline(cfg: Config, progress_callback=None):
             metas.append(tm)
         else:
             _write_meshes(stem, tm, sep)
-            print(f"    → {stem.name}.obj\n")
+            logging.info(f"→ {stem.name}.obj\n")
 
     if merge and metas:
         merged = _merge_tiles(metas)
         stem = out_dir / f"merged_lod{label}"
         _write_meshes(stem, merged, sep)
-        print(f"\nMerged {len(metas)} tiles → {merged.n_crowns} trees, "
-              f"{len(merged.crown_f) + len(merged.trunk_f):,} faces → {stem.name}*.obj")
+        logging.info(f"Merged {len(metas)} tiles → {merged.n_crowns} trees, {len(merged.crown_f) + len(merged.trunk_f):,} faces → {stem.name}*.obj")
 
     return total_seg, total_clean, total_mesh

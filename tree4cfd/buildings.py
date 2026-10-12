@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import time
+import logging
 from pathlib import Path
 from typing import List, Optional, Sequence, Tuple
 
@@ -56,7 +57,7 @@ def _overpass_query(query: str, overpass_url: str, max_retries: int = 5) -> dict
             if attempt == max_retries - 1:
                 break
             wait = min(60, 5 * 2 ** attempt)
-            print(f"    buildings: Overpass {url} failed ({err}); retry in {wait}s")
+            logging.exception(f"Buildings (OSM): Overpass {url} failed ({err}); retry in {wait}s")
             time.sleep(wait)
     raise last_err
 
@@ -133,6 +134,7 @@ def load_building_polygons(
     if not rings:
         return []
 
+    n_buildings = 0
     t = Transformer.from_crs(4326, epsg, always_xy=True)
     polys: List[Polygon] = []
     for ring in rings:
@@ -144,10 +146,12 @@ def load_building_polygons(
         poly = Polygon(zip(xs, ys))
         if poly.is_valid:
             polys.append(poly)
+            n_buildings += 1
         else:  # self-touching rings happen; zero-width buffer repairs them
             repaired = poly.buffer(0)
             if not repaired.is_empty:
                 polys.append(repaired)
+    logging.info(f"Found {n_buildings} building footprints")
     return polys
 
 
@@ -184,7 +188,7 @@ def filter_trees_in_buildings(
     number of trees removed.
     """
     if epsg is None:
-        print("    buildings: tile has no CRS — skipping footprint filter")
+        logging.exception("Buildings (OSM): tile has no CRS — skipping footprint filter")
         return labels, 0
 
     unique = np.unique(labels[labels > 0])
@@ -204,6 +208,7 @@ def filter_trees_in_buildings(
         pts_xy[:, 0].min() + tx, pts_xy[:, 1].min() + ty,
         pts_xy[:, 0].max() + tx, pts_xy[:, 1].max() + ty,
     )
+    logging.info("Querying OSM buildings")
     polys = load_building_polygons(bounds, epsg, overpass_url, cache_dir)
     if not polys:
         return labels, 0

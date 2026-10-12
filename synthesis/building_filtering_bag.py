@@ -1,6 +1,7 @@
 import geopandas as gpd
 from pathlib import Path
 import requests
+import logging
 import numpy as np
 from shapely.geometry import Polygon, Point
 from shapely.strtree import STRtree
@@ -14,25 +15,17 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
     if isinstance(polygon, (str, Path)):
         polygon_gdf = gpd.read_file(polygon)
         if polygon_gdf.empty:
-            raise ValueError(
-                f"No geometries found in {polygon}"
-            )
+            logging.exception(f"No geometries found in {polygon}")
         if polygon_gdf.crs is None:
-            raise ValueError(
-                "Input polygon has no CRS."
-            )
+            logging.exception("Input polygon has no CRS.")
         polygon_gdf = polygon_gdf.to_crs(crs)
 
     elif isinstance(polygon, gpd.GeoDataFrame):
         polygon_gdf = polygon.copy()
         if polygon_gdf.empty:
-            raise ValueError(
-                "Input GeoDataFrame contains no geometries."
-            )
+            logging.exception("Input GeoDataFrame contains no geometries.")
         if polygon_gdf.crs is None:
-            raise ValueError(
-                "Input GeoDataFrame has no CRS."
-            )
+            logging.exception("Input GeoDataFrame has no CRS.")
         polygon_gdf = polygon_gdf.to_crs(crs)
 
     else:
@@ -47,7 +40,7 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
     polygon_geom = polygon_gdf.geometry.union_all()
     minx, miny, maxx, maxy = polygon_geom.bounds
 
-    print("Querying BAG buildings")
+    logging.info("Querying BAG buildings")
 
     # ---------------------------------------------------------------
     # 2. BAG OGC API
@@ -76,7 +69,7 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
         page_features = data.get("features", [])
         features.extend(page_features)
 
-        print(f"Retrieved {len(page_features):,} features (total: {len(features):,})")
+        logging.info(f"Retrieved {len(page_features):,} features (total: {len(features):,})")
 
         # Find next page
         next_url = None
@@ -93,7 +86,7 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
     # 4. Convert GeoJSON → GeoDataFrame
     # ---------------------------------------------------------------
     if not features:
-        print("No BAG buildings returned.")
+        logging.exception("No BAG buildings returned.")
         return gpd.GeoDataFrame(
             geometry=[],
             crs=crs
@@ -106,7 +99,7 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
     buildings = buildings[buildings.geometry.intersects(polygon_geom)].copy()
     buildings.reset_index(drop=True, inplace=True)
 
-    print(f"Found {len(buildings):,} BAG building footprints.")
+    logging.info(f"Found {len(buildings):,} BAG building footprints.")
     return buildings
 
 def filter_trees_in_buildings_bag(labels, pts_xy, translation, epsg, buffer=0.5):
@@ -138,7 +131,7 @@ def filter_trees_in_buildings_bag(labels, pts_xy, translation, epsg, buffer=0.5)
     try:
         buildings = get_building_footprints(bbox_poly, crs=f"EPSG:{epsg}")
     except Exception as e:
-        print(f"    buildings (BAG): API failed ({e}), no trees removed.")
+        logging.exception(f"Buildings (BAG): API failed ({e}), no trees removed.")
         return labels, 0
 
     if buildings.empty:

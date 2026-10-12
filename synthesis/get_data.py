@@ -7,16 +7,19 @@ import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import geopandas as gpd
 import time
+import requests
+import zipfile
 
 from CFTree.config import get_config, setup_logger
 from CFTree.download_geotiles import download_tile
 from clip_and_merge import clip_and_merge_pointclouds
+from clip_and_merge import clip_and_merge_objs
 
 # ---------------------------------------------------------------
 # ----------------------- Tile worker ---------------------------
 # ---------------------------------------------------------------
-def process_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool) -> dict:
-    """Download raw tile"""
+def download_ahn_tiles(tile_id: str, output_dir: Path, base_url: str, overwrite: bool) -> dict:
+    """Download raw AHN tile"""
     try:
         # Check if tile is already downloaded
         tile_folder = output_dir / "tiles" / tile_id
@@ -50,14 +53,54 @@ def process_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool)
         logging.exception(f"[{tile_id}] Unexpected error: {e}")
         return {"tile_id": tile_id, "status": f"error: {e}"}
 
+def download_bag_obj(download_url: str, output_dir: Path, tile_id: str, overwrite: bool) -> dict:
+    """Download BAG 3D obj tile"""
+    try:
+        if not download_url:
+            return {"tile_id": tile_id, "status": "no_url"}
+
+        bag_dir = Path(output_dir) / "3dbag_tiles"
+        url_parts = download_url.split("/")
+        filename = url_parts[-1]
+        zip_path = bag_dir / filename
+
+        nested_folder_parts = url_parts[-4:-1]
+        expected_dir = bag_dir.joinpath(*nested_folder_parts)
+
+        if not overwrite and expected_dir.exists():
+            return {"tile_id": tile_id, "status": "ok (cached)", "path": str(expected_dir)}
+
+        zip_path.parent.mkdir(parents=True, exist_ok=True)
+
+        response = requests.get(download_url, stream=True)
+        response.raise_for_status()
+
+        with open(zip_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        if zip_path.suffix == '.zip':
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                zip_ref.extractall(bag_dir)
+            zip_path.unlink()
+            return {"tile_id": tile_id, "status": "ok (extracted from zip)", "path": str(expected_dir)}
+        else:
+            return {"tile_id": tile_id, "status": "ok", "path": str(zip_path)}
+
+    except Exception as e:
+        logging.exception(f"[3D BAG {tile_id}] Unexpected error: {e}")
+        return {"tile_id": tile_id, "status": f"error: {e}"}
+
 # ---------------------------------------------------------------
 # ----------------- Process the GeoJSON file --------------------
 # ---------------------------------------------------------------
 def process_geojson(
         geojson_path: str | Path,
-        buffer_distance: float = 20.0,
+        buffer_distance: float = 10.0,
         overwrite: bool = False,
         log_level: str = "INFO",
+        download_buildings: bool = False,
+        bag_lod: str = "LoD22",
 ):
     """Run get_data pipeline for a specific GeoJSON area of interest."""
     geojson_path = Path(geojson_path).resolve()
@@ -71,17 +114,12 @@ def process_geojson(
 
     setup_logger(case, "get_data", log_level)
 
-    logging.info(f"Starting get_data for case: {case}")
-    logging.info(f"Input GeoJSON: {geojson_path}")
-    logging.info(f"Parallel workers: {n_cores}")
-    logging.info(f"Buffer distance: {buffer_distance} m")
-
+    logging.info(f"Starting data download for the defined AOI")
     # ---------------------------------------------------
     # -------------- Define directories -----------------
     # ---------------------------------------------------
     root_dir = Path(__file__).resolve().parent.parent
-    cftree_dir = root_dir / "CFTree"
-    resources_dir = cftree_dir / "resources"
+    resources_dir = root_dir / "resources"
 
     output_dir = geojson_path.parent
     tiles_dir = root_dir / "DATA" / "OUT"
@@ -93,19 +131,17 @@ def process_geojson(
     # ------------- Load and buffer AOI -----------------
     # ---------------------------------------------------
     logging.info(f"Loading AOI from {geojson_path}")
-    logging.info(f"CRS: {cfg['crs']}")
     aoi = gpd.read_file(geojson_path).to_crs(cfg["crs"])
     aoi["geometry"] = aoi.buffer(buffer_distance)
 
     aoi.to_file(buffered_aoi_path, driver="GeoJSON")
-    logging.info(f"Buffered AOI saved to {buffered_aoi_path}")
-
     aoi.to_file(gpkg_aoi_path, driver="GPKG")
-    logging.info(f"Saved AOI as GPKG to {gpkg_aoi_path}")
+    logging.info(f"Buffered AOI saved as GPKG and GeoJSON")
 
     # ---------------------------------------------------
-    # ---------------- Find tile IDs --------------------
+    # ---------------- Find AHN tile IDs ----------------
     # ---------------------------------------------------
+    logging.info("Loading AHN index to find intersections...")
     tiles = gpd.read_file(resources_dir / "bladwijzer_AHN6.gpkg", layer="bladindeling").to_crs(cfg["crs"])
     intersecting = tiles[tiles.intersects(aoi.union_all())]
     tile_ids = intersecting.apply(
@@ -121,44 +157,106 @@ def process_geojson(
     base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
 
     # ---------------------------------------------------
+    # ---------------- Find BAG tile IDs ----------------
+    # ---------------------------------------------------
+    bag_index_path = resources_dir / "tile_index.fgb"
+    bag_downloads = []
+
+    if download_buildings:
+        logging.info(f"Loading 3D BAG index to find intersections...")
+        bag_tiles = gpd.read_file(bag_index_path).to_crs(cfg["crs"])
+        intersecting_bag = bag_tiles[bag_tiles.intersects(aoi.union_all())]
+
+        if not intersecting_bag.empty:
+            bag_downloads = intersecting_bag[["tile_id", "obj_download"]].dropna().to_dict("records")
+
+        if not bag_downloads:
+            logging.info("No intersecting 3D BAG tiles found.")
+        else:
+            logging.info(f"Found {len(bag_downloads)} intersecting 3D BAG tiles")
+
+    # ---------------------------------------------------
     # ----------------- Download tiles ------------------
     # ---------------------------------------------------
-    t_start_download = time.time()
+    t_start_download = time.perf_counter()
     if n_cores > 1:
-        logging.info(f"Running {len(tile_ids)} tiles in parallel using {n_cores} cores.")
+        logging.info(f"Processing {len(tile_ids)} AHN tiles and {len(bag_downloads)} 3D BAG tiles in parallel using {n_cores} cores.")
         with ProcessPoolExecutor(max_workers=n_cores) as pool:
-            futures = {
-                pool.submit(process_tile, tid, tiles_dir, base_url, overwrite): tid
+            ahn_futures = {
+                pool.submit(download_ahn_tiles, tid, tiles_dir, base_url, overwrite): tid
                 for tid in tile_ids
             }
-            for f in as_completed(futures):
-                tid = futures[f]
+            for f in as_completed(ahn_futures):
+                tid = ahn_futures[f]
                 try:
                     result = f.result()
                     logging.info(f"[{tid}] {result['status'].upper()}")
                 except Exception as e:
                     logging.warning(f"[{tid}] Exception: {e}")
+
+            if download_buildings:
+                bag_futures = {
+                    pool.submit(download_bag_obj, item["obj_download"], tiles_dir, item["tile_id"], overwrite): item["tile_id"]
+                    for item in bag_downloads
+                }
+                for f in as_completed(bag_futures):
+                    tid = bag_futures[f]
+                    try:
+                        result = f.result()
+                        logging.info(f"[3D BAG {tid}] {result['status'].upper()}")
+                    except Exception as e:
+                        logging.warning(f"[3D BAG {tid}] Exception: {e}")
     else:
         logging.info("Running serial mode.")
         for tid in tile_ids:
-            result = process_tile(tid, tiles_dir, base_url, overwrite)
-            logging.info(f"[{tid}] {result['status'].upper()}")
-    download_time = time.time() - t_start_download
+            result = download_ahn_tiles(tid, tiles_dir, base_url, overwrite)
+            logging.info(f"[AHN {tid}] {result['status'].upper()}")
+        if download_buildings:
+            for item in bag_downloads:
+                result = download_bag_obj(item["obj_download"], tiles_dir, item["tile_id"], overwrite)
+                logging.info(f"[3D BAG {item['tile_id']}] {result['status'].upper()}")
+    download_time = time.perf_counter() - t_start_download
 
     # ---------------------------------------------------
-    # ---------- Clip and merge pointclouds -------------
+    # ---------------- Clip and merge -------------------
     # ---------------------------------------------------
-    t_start_clip = time.time()
-    logging.info("Starting clip and merge process...")
+    t_start_clip = time.perf_counter()
+    logging.info("Starting clip and merge of AHN tiles...")
     try:
         clip_and_merge_pointclouds(str(tiles_dir), str(output_dir), gpkg_path=str(gpkg_aoi_path), tile_ids=tile_ids, output_filename="clipped_output.laz")
-        logging.info("Clip and merge process is completed.")
+        logging.info("AHN clip and merge process completed.")
     except Exception as e:
-        logging.exception(f"Clip and merge process failed. Error: {e}")
-    clip_time = time.time() - t_start_clip
-    logging.info(f"Completed get_data for case: {case}")
+        logging.exception(f"AHN clip and merge process failed. Error: {e}")
 
-    return download_time, clip_time
+    ahn_clip_time = time.perf_counter() - t_start_clip
+
+    bag_clip_time = 0.0
+
+    if download_buildings:
+        bag_start_time = time.perf_counter()
+        logging.info("Starting clip and merge of 3D BAG tiles...")
+        try:
+            bag_dir = Path(tiles_dir) / "3dbag_tiles"
+            target_objs = list(bag_dir.rglob(f"*-{bag_lod}-3D.obj"))
+
+            clipped_buildings_path = Path(output_dir) / "clipped_buildings.obj"
+
+            clip_and_merge_objs(
+                obj_paths=target_objs,
+                aoi_gpkg_path=str(gpkg_aoi_path),
+                output_obj_path=clipped_buildings_path,
+            )
+
+        except Exception as e:
+            logging.exception(f"3D BAG clip and merge process failed. Error: {e}")
+
+        bag_clip_time = time.perf_counter() - bag_start_time
+
+
+    total_time = ahn_clip_time + bag_clip_time + download_time
+    logging.info(f"Completed data collection in {total_time:.1f} seconds.")
+
+    return download_time, ahn_clip_time, bag_clip_time
 
 
 # Entry point

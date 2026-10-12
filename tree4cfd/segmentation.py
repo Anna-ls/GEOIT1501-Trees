@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Tuple, List, Dict
 
 import numpy as np
+import logging
 from scipy.ndimage import distance_transform_edt, gaussian_filter
 from scipy.signal import find_peaks
 from scipy.spatial import ConvexHull
