@@ -34,6 +34,7 @@ else:
 
 st.subheader("Building Settings")
 include_buildings = st.checkbox("Download and include 3D BAG buildings", value=False)
+bag_lod = "0"
 if include_buildings:
     bag_lod_choice = st.radio("Choose Building Level of Detail:", ("LoD1.2", "LoD1.3", "LoD2.2"))
     lod_map = {"LoD1.2": "LoD12", "LoD1.3": "LoD13", "LoD2.2": "LoD22"}

@@ -388,13 +388,10 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
     del pts_veg, dtm
 
     if tm.is_empty():
-        print("    No meshes produced, skipping.\n")
+        logging.warning("No meshes produced, skipping.\n")
         return None
     n_faces = len(tm.crown_f) + len(tm.trunk_f)
-    print(
-        f"    {tm.n_crowns} trees → {len(tm.crown_v) + len(tm.trunk_v):,} vertices  "
-        f"{n_faces:,} faces  ({time.perf_counter() - t0:.1f} s total)"
-    )
+    logging.info(f"{tm.n_crowns} trees -> {len(tm.crown_v) + len(tm.trunk_v):,} vertices {n_faces:,} faces  ({time.perf_counter() - t0:.1f} s total)")
 
     meshing_time = time.perf_counter() - t_start_mesh
     return tm, segmentation_time, cleaning_time, meshing_time
@@ -500,6 +497,6 @@ def run_pipeline(cfg: Config, progress_callback=None):
         merged = _merge_tiles(metas)
         stem = out_dir / f"merged_lod{label}"
         _write_meshes(stem, merged, sep)
-        logging.info(f"Merged {len(metas)} tiles → {merged.n_crowns} trees, {len(merged.crown_f) + len(merged.trunk_f):,} faces → {stem.name}*.obj")
+        logging.info(f"Merged {len(metas)} tiles -> {merged.n_crowns} trees, {len(merged.crown_f) + len(merged.trunk_f):,} faces -> {stem.name}*.obj")
 
     return total_seg, total_clean, total_mesh

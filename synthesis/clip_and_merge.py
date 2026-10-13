@@ -1,13 +1,11 @@
-from pathlib import Path
 import geopandas as gpd
 import laspy
 import numpy as np
 import trimesh
 import logging
 
-from cvxpy import concatenate
 from shapely import box, contains_xy
-from shapely import Point
+from pathlib import Path
 
 def clip_and_merge_pointclouds(
         tiles_folder: str,
@@ -174,7 +172,7 @@ def clip_and_merge_objs(obj_paths: list, aoi_gpkg_path: str, output_obj_path: Pa
             logging.exception(f"Error processing {Path(obj_path).name}: {e}")
 
     if all_kept_meshes:
-        merged_mesh = trimesh.util.concatenate(*all_kept_meshes)
+        merged_mesh = trimesh.util.concatenate(all_kept_meshes)
 
         if not getattr(merged_mesh, 'is_empty', True):
             merged_mesh.export(str(output_obj_path))

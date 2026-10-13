@@ -11,7 +11,7 @@ from typing import Tuple, List, Dict
 
 import numpy as np
 import logging
-from scipy.ndimage import distance_transform_edt, gaussian_filter
+from scipy.ndimage import distance_transform_edt, gaussian_filter, maximum_filter
 from scipy.signal import find_peaks
 from scipy.spatial import ConvexHull
 from scipy.spatial.distance import cdist
@@ -25,6 +25,15 @@ def analyse_cluster(cluster_pts: np.ndarray) -> Dict[str, float]:
 
     Returns a dictionary containing elongation and offset-ratio metrics
     """
+    if len(cluster_pts) < 2:
+        return {
+            "elongation": 999.0,
+            "offset_ratio": 0.0,
+            "std_minor": 0.0,
+            "std_major": 0.0,
+            "z_range": 0.0 if len(cluster_pts) == 0 else float(np.ptp(cluster_pts[:, 2])),
+        }
+
     xy = cluster_pts[:, :2]
     z = cluster_pts[:, 2]
     centroid = np.mean(xy, axis=0)
@@ -136,6 +145,83 @@ def find_secondary_peak(
 
     return np.array(final_peaks)
 
+def find_peaks_variable_window(
+        chm_smooth: np.ndarray,
+        window_bins: list,
+        cell_size: float
+):
+    detected_peaks = []
+    chm_search = chm_smooth.copy()
+    ny, nx = int(chm_smooth.shape[0]), int(chm_smooth.shape[1])
+
+    for h_min, h_max, w_radius in window_bins:
+        w_radius = max(1, int(round(w_radius / cell_size)))
+
+        y, x = np.ogrid[-w_radius:w_radius+1, -w_radius:w_radius+1]
+        footprint = x**2 + y**2 <= w_radius**2
+
+        local_max = maximum_filter(chm_search, footprint=footprint)
+        peak_mask = (chm_search == local_max) & (chm_search >= h_min) & (chm_search <= h_max)
+        peaks_y, peaks_x = np.where(peak_mask)
+
+        for py, px in zip(peaks_y, peaks_x):
+            py, px = int(py), int(px)
+
+            if chm_search[py, px] == 0:
+                continue
+
+            detected_peaks.append((py, px))
+            y_start, y_end = max(0, py - w_radius), min(ny, py + w_radius + 1)
+            x_start, x_end = max(0, px - w_radius), min(nx, px + w_radius + 1)
+
+            rr, cc = np.ogrid[y_start:y_end, x_start:x_end]
+            dist_sq = (rr - py)**2 + (cc - px)**2
+            mask_area = dist_sq <= w_radius**2
+
+            chm_search[y_start:y_end, x_start:x_end][mask_area] = 0
+
+    if not detected_peaks:
+        return np.empty((0, 2), dtype=int)
+
+    return np.array(detected_peaks)
+
+def generate_window_bins(area_type: str, min_height: float = 2.5) -> list:
+    # Equation: radius = a + b*h + c*h^2
+    # Curves are formulas taken from the paper bc too much work to compute them ourselves (I think)
+    curves = {
+        # Low Built-up / Parks (High canopy overlap, intricate multi-layered structure)
+        # Mapped to Plot 6: Complex, Multi-Layered Mixed forest (95-121 pts/m2)
+        "low_built_up": {"a": 0.065, "b": -0.042, "c": 0.003},
+
+        # Mid Built-up / Suburban (Moderate overlap, mix of gardens and street trees)
+        # Mapped to Plot 5: Complex, Single-Layered Mixed forest (30 pts/m2)
+        "mid_built_up": {"a": -0.765, "b": 0.098, "c": -0.0003},
+
+        # Densely Built-up (Isolated street trees, constrained crowns, clear boundaries)
+        # Mapped to Plot 2: Simple, Mixed forest (11 pts/m2 - clear crown boundaries)
+        "dense_built_up": {"a": 0.707, "b": -0.059, "c": 0.003}
+    }
+
+    coeffs = curves.get(area_type, curves["mid_built_up"])
+
+    height_tiers = [
+        (20.0, 999.0),
+        (10.0, 20.0),
+        (min_height, 10.0)
+    ]
+
+    window_bins = []
+
+    for h_min, h_max in height_tiers:
+        h_eval = h_min if h_max == 999.0 else (h_min + h_max) / 2.0
+        r_calc = coeffs["a"] + (coeffs["b"] * h_eval) + (coeffs["c"] * (h_eval ** 2))
+
+        r_final = max(1.0, float(r_calc))
+
+        window_bins.append((h_min, h_max, r_final))
+
+    return window_bins
+
 def segment_trees_chm(
     #paramters for CHM segmentation
     pts_veg: np.ndarray,
@@ -144,6 +230,7 @@ def segment_trees_chm(
     smooth_sigma: float = 1.55,
     min_height: float = 2.5,
     peak_min_dist_m: float = 3.0,
+    area_type: str = "mid_built_up",
     min_tree_points: int = 60,
     resolve_multi_trees: bool = True,
     multi_tree_kwargs: dict = None
@@ -214,14 +301,14 @@ def segment_trees_chm(
     chm_masked = np.where(chm >= min_height, chm, 0.0)
     chm_smooth = gaussian_filter(chm_masked, sigma=smooth_sigma)
 
+    window_bins = generate_window_bins(area_type, min_height)
+    logging.info("Generated window bins")
+
+    peaks = find_peaks_variable_window(chm_smooth, window_bins, cell_size=cell_size)
     tree_mask = chm_smooth >= min_height
-    min_dist_cells = max(1, int(peak_min_dist_m / cell_size))
-    peaks = peak_local_max(
-        chm_smooth, min_distance=min_dist_cells, labels=tree_mask
-    )
 
     if len(peaks) == 0:
-        print("    CHM: no peaks found — check min_height or point density")
+        logging.warning("CHM: no peaks found — check min_height or point density")
         return (
             np.zeros(len(pts_veg), dtype=np.int32),
             dtm,
@@ -247,15 +334,15 @@ def segment_trees_chm(
         if lbl == 0:
             continue
 
-        mask = labels == lbl
-        cluster_pts = pts_veg[mask]
-        metrics = analyse_cluster(cluster_pts)
-
         # Drop tiny segments
         if cnt < min_tree_points:
             labels[labels == lbl] = 0
             small_dropped += 1
             continue
+
+        mask = labels == lbl
+        cluster_pts = pts_veg[mask]
+        metrics = analyse_cluster(cluster_pts)
 
         # Drop poles and walls
         is_pole = metrics["z_range"] > 3.0 and metrics["std_major"] < 0.6
@@ -292,8 +379,8 @@ def segment_trees_chm(
 
                     added_trees += (len(peaks_3d) - 1)
 
-    print(f"    CHM: {len(peaks)} initial peaks found.")
-    print(f"    Filter: {small_dropped} tiny segments (< {min_tree_points} pts) and {pole_wall_dropped} pole or wall like segments dropped.")
-    print(f"    PCA: {suspect_count} multi-tree clusters detected, adding {added_trees} new trees.")
+    logging.info(f"CHM: {len(peaks)} initial peaks found.")
+    logging.info(f"Filter: {small_dropped} tiny segments (< {min_tree_points} pts) and {pole_wall_dropped} pole or wall like segments dropped.")
+    logging.info(f"PCA: {suspect_count} multi-tree clusters detected, adding {added_trees} new trees.")
 
     return labels, dtm, (x_min, y_min, cell_size)
