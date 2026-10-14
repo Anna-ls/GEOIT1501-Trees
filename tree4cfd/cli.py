@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import logging
 
 from .config import load_config
 from .inspect_laz import print_class_table, profile_classes
@@ -55,6 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     cfg = load_config(args.config)
+    logging.basicConfig(level=logging.INFO)
 
     if args.command == "inspect":
         tiles = find_tiles(cfg.paths.tiles_dir)

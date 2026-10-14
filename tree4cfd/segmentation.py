@@ -345,8 +345,8 @@ def segment_trees_chm(
         metrics = analyse_cluster(cluster_pts)
 
         # Drop poles and walls
-        is_pole = metrics["z_range"] > 3.0 and metrics["std_major"] < 0.6
-        is_wall = metrics["z_range"] > 3.0 and metrics["std_minor"] < 0.4 and metrics["elongation"] > 4.0
+        is_pole = metrics["z_range"] > 3.0 and metrics["std_major"] < 0.3
+        is_wall = metrics["z_range"] > 3.0 and metrics["std_minor"] < 0.3 and metrics["elongation"] > 4.0
 
         if is_pole or is_wall:
             labels[mask] = 0

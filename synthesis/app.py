@@ -1,5 +1,4 @@
 import sys
-import time
 import pandas as pd
 from pathlib import Path
 
@@ -8,14 +7,16 @@ sys.path.append(str(root_dir))
 
 import streamlit as st
 import folium
+import json
+
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 from datetime import datetime
-import json
 
 from get_data import process_geojson
 from tree4cfd.pipeline import run_pipeline
 from tree4cfd.config import load_config
+from validation import extract_detected_trees
 
 st.title("Urban Tree Reconstruction")
 st.write("Draw or upload a polygon and generate tree meshes within that area.")
@@ -25,7 +26,7 @@ input_method = st.radio("Choose input method:", ("Draw on Map", "Upload GeoJSON"
 
 st.subheader("Tree Settings")
 lod_choice = st.radio("Choose Level of Detail (LoD):", ("LoD2", "LoD3"))
-lod_value = 2.0 if lod_choice == "LoD2" else 3.0
+lod_value = 2.1 if lod_choice == "LoD2" else 3.1
 
 if lod_choice == "LoD3":
     merge_touching = st.checkbox("Merge touching crowns into a single mesh", value=False)
@@ -205,17 +206,14 @@ if st.button("Run Reconstruction Pipeline"):
 
             total_time = sum(execution_times.values())
 
-            json_dir = root_dir / "DATA" / "OUT" / "Times"
-            json_dir.mkdir(parents=True, exist_ok=True)
-
             json_data = {step: round(time, 2) for step, time in execution_times.items()}
             json_data["Total Execution Time"] = round(total_time, 2)
 
-            with open(json_dir / "time-summary.json", "w") as f:
+            with open(out_dir / "time-summary.json", "w") as f:
                 json.dump(json_data, f, indent=4)
 
             # Expose the resulting .obj file for download
-            output_obj_path = out_dir / f"merged_lod{int(lod_value)}.obj"
+            output_obj_path = out_dir / f"merged_lod{int(lod_value)}.1.obj"
             if output_obj_path.exists():
                 with open(output_obj_path, "rb") as file:
                     st.download_button(
