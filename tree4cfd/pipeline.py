@@ -6,6 +6,7 @@ import re
 import time
 from pathlib import Path
 from typing import NamedTuple, Optional
+import geopandas as gpd
 
 import numpy as np
 import logging
@@ -267,6 +268,30 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
+def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs) -> gpd.GeoDataFrame:
+    """Converts segmented tree point labels into GeoPandas point centroids."""
+    tree_records = []
+    unique_labels = np.unique(labels)
+
+    for lbl in unique_labels:
+        if lbl == 0:
+            continue
+        cluster = pts_veg[labels == lbl]
+
+        # Take highest point (tree top) as point geometry
+        max_idx = np.argmax(cluster[:, 2])
+        top_x, top_y, top_z = cluster[max_idx]
+
+        tree_records.append({
+            "tree_id": int(lbl),
+            "geometry": gpd.points_from_xy([top_x], [top_y])[0],
+            "z_max": float(top_z),
+            "point_count": len(cluster)
+        })
+
+    return gpd.GeoDataFrame(tree_records, crs=crs)
+
+
 def build_tile(tile: Path, cfg: Config, progress_callback=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
@@ -361,6 +386,15 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
                 cache_dir=cfg.buildings.cache_dir,
             )
             logging.info(f"Buildings (OSM): removed {n_removed} trees inside footprints")
+
+    if progress_callback:
+        progress_callback("Exporting tree locations...")
+
+    trees_gdf = extract_detected_trees(pts_veg, labels, crs)
+    if not trees_gdf.empty:
+        out_file = cfg.paths.output_dir / f"{tile_name}_tree_locations.gpkg"
+        trees_gdf.to_file(out_file, driver="GPKG")
+        logging.info(f"Exported {len(trees_gdf)} tree locations to {out_file.name}")
 
     # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None

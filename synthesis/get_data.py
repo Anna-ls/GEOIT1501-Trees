@@ -12,8 +12,7 @@ import zipfile
 
 from CFTree.config import get_config, setup_logger
 from CFTree.download_geotiles import download_tile
-from clip_and_merge import clip_and_merge_pointclouds
-from clip_and_merge import clip_and_merge_objs
+from clip_and_merge import clip_and_merge_pointclouds, clip_and_merge_objs
 
 # ---------------------------------------------------------------
 # ----------------------- Tile worker ---------------------------
