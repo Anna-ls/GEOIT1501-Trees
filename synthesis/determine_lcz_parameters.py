@@ -156,12 +156,13 @@ def plot_results(
     title: str = "Feature Comparison by Urban Class",
     features: list = None,
 ):
-    # Convert nested dictionary to DataFrame
+    # -----------------------------
+    # 1. Prepare the data
+    # -----------------------------
     df = pd.DataFrame.from_dict(input, orient="index")
     df.index.name = "Area"
     df = df.reset_index()
 
-    # Extract class and city from area names, if present
     if "class" not in df.columns:
         df["class"] = df["Area"].str.extract(
             r"_(dense|low|mid)-"
@@ -172,6 +173,20 @@ def plot_results(
             r"^(delft|utrecht|amsterdam)_"
         )
 
+    class_order = list(class_order)
+
+    # Consistent colours across every feature
+    palette = {
+        "dense": "#F7C027",  # Blue
+        "mid":   "#BCEC20",  # Teal
+        "low":   "#0DBF0A",  # Warm orange
+    }
+
+    # Allow custom class names without causing errors
+    for cls in class_order:
+        if cls not in palette:
+            palette[cls] = "#999999"
+
     # Automatically select numerical features
     if features is None:
         exclude = {"Area", "class", "city"}
@@ -180,52 +195,147 @@ def plot_results(
             if col not in exclude
         ]
     else:
-        # Validate the requested features
         missing = [f for f in features if f not in df.columns]
         if missing:
             raise ValueError(f"Features not found: {missing}")
 
+        non_numeric = [
+            f for f in features
+            if not pd.api.types.is_numeric_dtype(df[f])
+        ]
+        if non_numeric:
+            raise ValueError(
+                f"Features must be numerical: {non_numeric}"
+            )
+
     if not features:
         raise ValueError("No numerical features found to plot.")
 
+    # -----------------------------
+    # 2. Set a clean visual style
+    # -----------------------------
+    sns.set_theme(
+        style="whitegrid",
+        context="notebook",
+        font="DejaVu Sans",
+        rc={
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "axes.labelcolor": "#333333",
+            "text.color": "#222222",
+            "xtick.color": "#444444",
+            "ytick.color": "#444444",
+            "grid.color": "#D9DEE5",
+            "grid.linewidth": 0.7,
+            "axes.axisbelow": True,
+        },
+    )
 
-    # Create a flexible grid of plots
+    # Flexible grid layout
     ncols = min(3, len(features))
     nrows = math.ceil(len(features) / ncols)
 
     fig, axes = plt.subplots(
-        nrows, ncols,
-        figsize=(5 * ncols, 4 * nrows),
-        squeeze=False
+        nrows,
+        ncols,
+        figsize=(5.2 * ncols, 4.2 * nrows),
+        squeeze=False,
     )
     axes = axes.flatten()
 
+    # -----------------------------
+    # 3. Plot each feature
+    # -----------------------------
     for ax, feature in zip(axes, features):
         sns.boxplot(
-            data=df, x="class", y=feature,
-            order=list(class_order), ax=ax,
-            showfliers=False
+            data=df,
+            x="class",
+            y=feature,
+            order=class_order,
+            hue="class",
+            hue_order=class_order,
+            palette=palette,
+            dodge=False,
+            legend=False,
+            showfliers=False,
+            width=0.55,
+            linewidth=1.3,
+            saturation=0.9,
+            boxprops={"edgecolor": "#FFFFFF"},
+            whiskerprops={"color": "#555555", "linewidth": 1.2},
+            capprops={"color": "#555555", "linewidth": 1.2},
+            medianprops={"color": "#222222", "linewidth": 2},
+            ax=ax,
         )
-        sns.stripplot(
-            data=df, x="class", y=feature,
-            order=list(class_order), ax=ax,
-            color="black", alpha=0.65,
-            jitter=True, size=4
-        )
-        ax.set_title(feature.replace("_", " ").title())
-        ax.grid(axis="y", alpha=0.25)
 
-    # Remove unused axes entirely
+        # Overlay individual observations
+        sns.stripplot(
+            data=df,
+            x="class",
+            y=feature,
+            order=class_order,
+            hue="class",
+            hue_order=class_order,
+            palette=palette,
+            dodge=False,
+            legend=False,
+            jitter=0.14,
+            size=4,
+            alpha=0.7,
+            edgecolor="white",
+            linewidth=0.4,
+            ax=ax,
+        )
+
+        # Titles and labels
+        ax.set_title(
+            feature.replace("_", " ").title(),
+            fontsize=12,
+            fontweight="semibold",
+            loc="left",
+            pad=12,
+        )
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+
+        ax.tick_params(axis="x", labelsize=10, length=0)
+        ax.tick_params(axis="y", labelsize=9)
+
+        ax.grid(axis="y", linestyle="-", alpha=0.65)
+        ax.grid(axis="x", visible=False)
+        ax.set_facecolor("#FFFFFF")
+
+    # Remove unused axes
     for ax in axes[len(features):]:
         fig.delaxes(ax)
 
-    fig.suptitle(title, fontsize=16)
-    fig.tight_layout()
-    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    # -----------------------------
+    # 4. Final layout and export
+    # -----------------------------
+    fig.suptitle(
+        title,
+        fontsize=17,
+        fontweight="bold",
+        x=0.06,
+        ha="left",
+        y=1.01,
+    )
+
+    fig.patch.set_facecolor("#FFFFFF")
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
+
+    fig.savefig(
+        output_path,
+        dpi=300,
+        bbox_inches="tight",
+        facecolor="white",
+    )
+
     plt.show()
     plt.close(fig)
 
     return df
+
 
 def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     """
@@ -537,15 +647,15 @@ def main():
 
         #Low urban areas
         "data/in/delft_low-1/delft-low-1.gpkg",
-        "data/in/delft_low-2/delft-low-2.gpkg",
-        "data/in/utrecht_low-1/utrecht-low-1.gpkg",
+        # "data/in/delft_low-2/delft-low-2.gpkg",
+        # "data/in/utrecht_low-1/utrecht-low-1.gpkg",
         "data/in/utrecht_low-2/utrecht-low-2.gpkg",
         "data/in/amsterdam_low-1/amsterdam-low-1.gpkg",
         "data/in/amsterdam_low-2/amsterdam-low-2.gpkg",
 
         #Mid urban areas
         "data/in/delft_mid-1/delft-mid-1.gpkg",
-        "data/in/delft_mid-2/delft-mid-2.gpkg",
+        # "data/in/delft_mid-2/delft-mid-2.gpkg",
         "data/in/utrecht_mid-1/utrecht-mid-1.gpkg",
         "data/in/utrecht_mid-2/utrecht-mid-2.gpkg",
         "data/in/amsterdam_mid-1/amsterdam-mid-1.gpkg",
@@ -591,12 +701,8 @@ def main():
     
     #Plot the results of the selected features
     plot_results(results, output_path="ndvi_features_plot.png", features=["building_coverage_ratio", 
-                                                                          "buildings_per_hectare", 
-                                                                          "mean_building_area_m2", 
-                                                                          "mean_building_compactness",
                                                                           "ndvi_mean",
                                                                           "ndvi_median",
-                                                                          "vegetation_fraction"
                                                                           ], title="Building and NDVIFeatures by Urban Class")
 
     with open("synthesis/tuning-files/ndvi_building_features.json", "w") as f:
