@@ -195,7 +195,7 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                seg_time, clean_time, mesh_time = run_pipeline(cfg, progress_callback=update_ui)
+                seg_time, clean_time, mesh_time = run_pipeline(cfg, geojson_geometry, progress_callback=update_ui)
             execution_times['4. Tree Segmentation'] = seg_time
             execution_times['5. Filter & Clean'] = clean_time
             execution_times['6. Reconstruct 3D Meshes'] = mesh_time

@@ -6,6 +6,8 @@ import re
 import time
 from pathlib import Path
 from typing import NamedTuple, Optional
+import json
+import geopandas as gpd
 
 import numpy as np
 import logging
@@ -18,6 +20,7 @@ from .crown import kept_component_mask, segment_to_marching_cubes
 from scipy.spatial import cKDTree
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
+from synthesis.determine_lcz_of_area import determine_lcz_of_area
 
 from .inventory import (
     annotate_and_write,
@@ -267,7 +270,7 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
-def build_tile(tile: Path, cfg: Config, progress_callback=None):
+def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
     ``inventory`` is a preloaded ``(lonlat, records)`` tuple from the universal
@@ -318,6 +321,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
+    area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
@@ -329,6 +333,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None):
         min_height=cfg.segmentation.min_height,
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
+        area_type=area_type
     )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
@@ -431,7 +436,7 @@ def _merge_tiles(metas) -> TileMeshes:
     return TileMeshes(cvv, cff, tvv, tff, nc, nt)
 
 
-def run_pipeline(cfg: Config, progress_callback=None):
+def run_pipeline(cfg: Config, polygon=None, progress_callback=None):
     """Process every tile in the configured tiles directory."""
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -478,7 +483,7 @@ def run_pipeline(cfg: Config, progress_callback=None):
             if primary.exists():
                 logging.info(f"{tile.name}  ->  already done, skipping")
                 continue
-        result = build_tile(tile, cfg, progress_callback)
+        result = build_tile(tile, cfg, progress_callback, polygon)
         if result is None:
             continue
 

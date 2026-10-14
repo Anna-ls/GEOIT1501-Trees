@@ -78,15 +78,14 @@ def clip_and_merge_pointclouds(
     points_written = 0
     all_mins = [np.inf, np.inf, np.inf]
     all_maxs = [-np.inf, -np.inf, -np.inf]
-
+    logging.info("Opening laz file")
     with laspy.open(str(output_laz), mode="w", header=clean_header) as writer:
         for tile_path in candidate_tiles:
-            with laspy.open(str(tile_path)) as las:
+            with laspy.open(str(tile_path), laz_backend=laspy.LazBackend.Laszip) as las:
                 t_minx, t_miny, _ = las.header.mins
                 t_maxx, t_maxy, _ = las.header.maxs
                 tile_box = box(t_minx, t_miny, t_maxx, t_maxy)
                 is_fully_contained = buffered_polygon.contains(tile_box)
-
                 for chunk in las.chunk_iterator(1_000_000):
                     if is_fully_contained:
                         matched = chunk
@@ -106,6 +105,8 @@ def clip_and_merge_pointclouds(
                             continue
 
                         matched = chunk[cand_idx[poly_mask]]
+
+                    logging.info(f"writing {len(matched)} points")
 
                     writer.write_points(matched)
                     points_written += len(matched)

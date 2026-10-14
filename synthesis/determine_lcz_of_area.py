@@ -1,15 +1,38 @@
 import json
 from pathlib import Path
-from determine_lcz_parameters import get_ndvi_features, get_building_features, get_building_footprints
+from synthesis.determine_lcz_parameters import get_ndvi_features, get_building_features, get_building_footprints
 import numpy as np
 import re
+import geopandas as gpd
+from shapely.geometry import shape
+import logging
+import os
 
-def determine_lcz_of_area(polygon: str | Path):
+def determine_lcz_of_area(polygon: str | Path | dict):
+
+    logging.info(f"Determining urban class of area")
+
+    area_type = {'dense': "dense_built_up",
+                 'mid': 'mid_built_up',
+                 'low': 'low_built_up'}
+
     if polygon is None:
         print("No input polygon provided")
         return
+    _path = "DATA/OUT/temp_geometry.gpkg"
+
+    if type(polygon) == dict:
+        logging.info(polygon)
+        _polygon = shape(polygon["geometry"])
+        gdf = gpd.GeoDataFrame(
+            [{"geometry": _polygon}],
+            crs="EPSG:4326"
+        )
+        gdf.to_file(_path, driver="GPKG", layer="aoi")
+        polygon = _path
     
-    name = str(polygon).split("/")[-2]
+    name = str(polygon)
+
 
     train_parameters = load_lcz_parameters()
     area_parameters = determine_lcz_parameters(polygon)
@@ -20,7 +43,12 @@ def determine_lcz_of_area(polygon: str | Path):
         print(f"Class: {class_name}, Distance: {distance:.4f}")
 
     print(f"Most likely LCZ class for area '{name}': {ranking[0][0]}")
-    return ranking
+
+
+    if os.path.exists(_path):
+        os.remove(_path)
+
+    return area_type[ranking[0][0]]
 
 def compare_lcz_parameters(area_parameters, train_parameters):
     """Rank LCZ classes by standardized Euclidean distance."""
@@ -142,7 +170,8 @@ def determine_lcz_parameters(polygon: str | Path):
     return area_features
 
 def main():
-    determine_lcz_of_area("DATA/IN/delft_mid-1/delft-mid-1.gpkg")
+    poly = {'type': 'Feature', 'properties': {}, 'geometry': {'type': 'Polygon', 'coordinates': [[[4.472744, 51.926352], [4.472744, 51.929567], [4.480319, 51.929567], [4.480319, 51.926352], [4.472744, 51.926352]]]}}
+    print(determine_lcz_of_area(poly))
 
 if __name__ == "__main__":
     main()
