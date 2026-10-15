@@ -7,6 +7,8 @@ import time
 from pathlib import Path
 from typing import NamedTuple, Optional
 import geopandas as gpd
+from shapely.geometry import shape, box
+import math
 
 import numpy as np
 import logging
@@ -45,6 +47,62 @@ from .segmentation import segment_trees_chm
 from .shapes import filter_pole_wall_trees
 from .trunk import estimate_trunk_params, make_trunk_mesh
 
+def split_polygon(polygon):
+    
+    _polygon = shape(polygon["geometry"])
+    gdf = gpd.GeoDataFrame(
+        [{"geometry": _polygon}],
+        crs="EPSG:4326"
+    )
+
+    gdf = gdf.to_crs("EPSG:28992")
+
+    cell_size = 500
+
+    pieces = []
+
+    for idx, row in gdf.iterrows():
+        geom = row.geometry
+        minx, miny, maxx, maxy = geom.bounds
+
+        for x in range(
+            math.floor(minx / cell_size) * cell_size,
+            math.ceil(maxx / cell_size) * cell_size,
+            cell_size
+        ):
+            for y in range(
+                math.floor(miny / cell_size) * cell_size,
+                math.ceil(maxy / cell_size) * cell_size,
+                cell_size
+            ):
+                cell = box(x, y, x + cell_size, y + cell_size)
+
+                # Intersect the grid cell with the original polygon
+                if geom.intersects(cell):
+                    intersection = geom.intersection(cell)
+
+                    for poly in extract_polygons(intersection):
+                        if poly.area > 0:
+                            attrs = row.drop(labels="geometry").to_dict()
+                            attrs["geometry"] = poly
+                            pieces.append(attrs)
+    result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
+    
+    result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
+
+    return result
+
+def extract_polygons(geom):
+    if geom.is_empty:
+        return []
+    if geom.geom_type == "Polygon":
+        return [geom]
+    if geom.geom_type in ("MultiPolygon", "GeometryCollection"):
+        return [
+            p for part in geom.geoms
+            for p in extract_polygons(part)
+        ]
+    return []
 
 
 def _tile_name(tile: Path) -> str:
@@ -351,6 +409,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
             pts_veg, cfg.cleaning.sor_neighbors, cfg.cleaning.sor_std_ratio
         )
         logging.info(f"After SOR: {len(pts_veg):>10,} pts remaining")
+    logging.info(cfg.cleaning.voxel_size)
     if cfg.cleaning.voxel_size > 0:
         pts_veg = voxel_downsample(pts_veg, cfg.cleaning.voxel_size)
         logging.info(f"After voxel downsample: {len(pts_veg):>10,} pts remaining")
@@ -368,11 +427,15 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
+    split_polygon(polygon)
     area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
     # -------------------------------------------------------------------
+
+    
+
     labels, dtm, georef = segment_trees_chm(
         pts_veg, pts_ground,
         cell_size=cfg.segmentation.cell_size,
