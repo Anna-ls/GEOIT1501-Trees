@@ -88,7 +88,7 @@ def write_obj_grouped(path: Path, verts: np.ndarray, groups) -> None:
         for name, faces in groups:
             if len(faces) == 0:
                 continue
-            f.write(f"g {name}\n")
+            f.write(f"o {name}\n")
             for tri in faces:
                 f.write(f"f {tri[0] + 1} {tri[1] + 1} {tri[2] + 1}\n")
 

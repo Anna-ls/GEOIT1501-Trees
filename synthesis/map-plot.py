@@ -55,7 +55,7 @@ ax.set_xlim(center_x - (total_x_span / 2), center_x + (total_x_span / 2))
 ax.set_ylim(center_y - (total_y_span / 2), center_y + (total_y_span / 2))
 
 api_key = "cb1_467e_1_f2b96641a5422b292f56d1d0"
-carto_url = f"https://basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png?key={api_key}"
+carto_url = f"https://basemaps.cartocdn.com/rastertiles/positron/{{z}}/{{x}}/{{y}}.png?key={api_key}"
 
 cx.add_basemap(ax, source=carto_url, zorder=1)
 

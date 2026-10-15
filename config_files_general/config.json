@@ -4,6 +4,7 @@
     "output_dir": "DATA/OUT"
   },
   "translation": [429692.0, 4582890.0, 0.0],
+  "lod": "2.1",
   "filtering": {
     "high_veg_classes": [1],
     "ndvi_threshold": 0.2,
