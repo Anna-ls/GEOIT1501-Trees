@@ -5,7 +5,6 @@ root_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(root_dir))
 
 import geopandas as gpd
-from numpy.compat import Path
 import pystac_client
 import planetary_computer
 import rioxarray

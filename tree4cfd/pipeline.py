@@ -21,7 +21,7 @@ from .crown import kept_component_mask, segment_to_marching_cubes
 from scipy.spatial import cKDTree
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
-# from synthesis.determine_lcz_of_area import determine_lcz_of_area
+from synthesis.determine_lcz_of_area import determine_lcz_of_area
 
 from .inventory import (
     annotate_and_write,
@@ -88,7 +88,7 @@ def split_polygon(polygon):
                             pieces.append(attrs)
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
     
-    result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
+    # result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
 
     return result
 
@@ -360,31 +360,6 @@ def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs) -> gpd.
 
     return gpd.GeoDataFrame(tree_records, crs=crs)
 
-
-def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, polygon=None) -> gpd.GeoDataFrame:
-    """Converts segmented tree point labels into GeoPandas point centroids."""
-    tree_records = []
-    unique_labels = np.unique(labels)
-
-    for lbl in unique_labels:
-        if lbl == 0:
-            continue
-        cluster = pts_veg[labels == lbl]
-
-        # Take highest point (tree top) as point geometry
-        max_idx = np.argmax(cluster[:, 2])
-        top_x, top_y, top_z = cluster[max_idx]
-
-        tree_records.append({
-            "tree_id": int(lbl),
-            "geometry": gpd.points_from_xy([top_x], [top_y])[0],
-            "z_max": float(top_z),
-            "point_count": len(cluster)
-        })
-
-    return gpd.GeoDataFrame(tree_records, crs=crs)
-
-
 def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
@@ -443,9 +418,6 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
     # -------------------------------------------------------------------
-
-    
-
     labels, dtm, georef = segment_trees_chm(
         pts_veg, pts_ground,
         cell_size=cfg.segmentation.cell_size,
@@ -453,7 +425,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         min_height=cfg.segmentation.min_height,
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
-        area_type="mid_built_up"
+        area_type=area_type
     )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
@@ -570,7 +542,7 @@ def _merge_tiles(metas) -> TileMeshes:
             np.zeros((0, 3)), np.zeros((0, 3), dtype=int))
     cvv, cff = stk(cv, cf)
     tvv, tff = stk(tv, tf)
-    return TileMeshes(cvv, cff, tvv, tff, nc, nt)
+    return TileMeshes(cvv, cff, tvv, tff, cg, tg, nc, nt)
 
 
 def run_pipeline(cfg: Config, polygon=None, progress_callback=None):

@@ -7,7 +7,6 @@ import json
 
 from shapely import box, contains_xy, Point
 from pathlib import Path
-from cjio import cityjson
 
 def clip_and_merge_pointclouds(
         tiles_folder: str,

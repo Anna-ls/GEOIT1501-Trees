@@ -55,7 +55,7 @@ if input_method == "Draw on Map":
             'polyline': False,
             'rectangle': True,
             'polygon': True,
-            'circle': False,
+            'circle': True,
             'marker': False,
             'circlemarker': False
         },
@@ -102,6 +102,8 @@ if st.button("Run Reconstruction Pipeline"):
         if uploaded_file is not None:
             with open(geojson_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
+            uploaded_file.seek(0)
+            geojson_geometry = json.load(uploaded_file)
             valid_input = True
         else:
             st.warning("Please upload a GeoJSON file before running the pipeline")
@@ -181,12 +183,6 @@ if st.button("Run Reconstruction Pipeline"):
                     "enabled": True,
                     "buffer": 2
                 },
-                "inventory": {
-                    "enabled": False,
-                    "source": "ods",
-                    "csv_path": "../DATA/inventory/trees.csv",
-                    "match_dist": 3.0
-                },
                 "output": {
                     "merge_tiles": True,
                     "separate_crown_trunk": False,
@@ -206,7 +202,7 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                seg_time, clean_time, mesh_time = run_pipeline(cfg, geojson_geometry, progress_callback=update_ui)
+                seg_time, clean_time, mesh_time = run_pipeline(cfg, polygon=geojson_geometry, progress_callback=update_ui)
             execution_times['4. Tree Segmentation'] = seg_time
             execution_times['5. Filter & Clean'] = clean_time
             execution_times['6. Reconstruct 3D Meshes'] = mesh_time
