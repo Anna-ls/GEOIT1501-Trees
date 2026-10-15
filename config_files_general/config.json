@@ -1,7 +1,7 @@
 {
   "paths": {
-    "tiles_dir": "data/in",
-    "output_dir": "data/out"
+    "tiles_dir": "DATA/IN",
+    "output_dir": "DATA/OUT"
   },
   "translation": [429692.0, 4582890.0, 0.0],
   "filtering": {

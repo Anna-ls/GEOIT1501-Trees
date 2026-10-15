@@ -16,7 +16,6 @@ from datetime import datetime
 from get_data import process_geojson
 from tree4cfd.pipeline import run_pipeline
 from tree4cfd.config import load_config
-from validation import extract_detected_trees
 
 st.title("Urban Tree Reconstruction")
 st.write("Draw or upload a polygon and generate tree meshes within that area.")
@@ -38,7 +37,7 @@ include_buildings = st.checkbox("Download and include 3D BAG buildings", value=F
 bag_lod = "0"
 if include_buildings:
     bag_lod_choice = st.radio("Choose Building Level of Detail:", ("LoD1.2", "LoD1.3", "LoD2.2"))
-    lod_map = {"LoD1.2": "LoD12", "LoD1.3": "LoD13", "LoD2.2": "LoD22"}
+    lod_map = {"LoD1.2": "1.2", "LoD1.3": "1.3", "LoD2.2": "2.2"}
     bag_lod = lod_map[bag_lod_choice]
 
 st_data = None
@@ -115,12 +114,23 @@ if st.button("Run Reconstruction Pipeline"):
                 laz_output.unlink()
 
             execution_times = {}
+            import geopandas as gpd
+
+            aoi_gdf = gpd.read_file(geojson_path)
+
+            if aoi_gdf.crs is None:
+                aoi_gdf = aoi_gdf.set_crs(epsg=4326)
+            if aoi_gdf.crs.to_epsg() != 7415:
+                aoi_gdf = aoi_gdf.to_crs(epsg=7415)
+
+            minx, miny, maxx, maxy = aoi_gdf.total_bounds
+            translation = [float(minx), float(miny), 0.0]
 
             # ---------------------------------------------------
             # ------------- Run data collection -----------------
             # ---------------------------------------------------
             with st.spinner('Downloading, clipping, and merging AHN tiles...'):
-                dl_time, ahn_clip_time, bag_clip_time = process_geojson(geojson_path, buffer_distance=10.0, overwrite=False, download_buildings=include_buildings, bag_lod=bag_lod)
+                dl_time, ahn_clip_time, bag_clip_time = process_geojson(geojson_path, buffer_distance=10.0, overwrite=False, download_buildings=include_buildings, bag_lod=bag_lod, translation=translation)
 
             execution_times['1. Download LiDAR Tiles'] = dl_time
             execution_times['2. Clip & Merge Pointcloud'] = ahn_clip_time
@@ -135,7 +145,7 @@ if st.button("Run Reconstruction Pipeline"):
                     "tiles_dir": str(out_dir),
                     "output_dir": str(out_dir)
                 },
-                "translation": [0.0, 0.0, 0.0],
+                "translation": translation,
                 "lod": lod_value,
                 "filtering": {
                     "high_veg_classes": [1],
@@ -151,7 +161,7 @@ if st.button("Run Reconstruction Pipeline"):
                     "smooth_sigma": 1.5,
                     "min_height": 2.0,
                     "peak_min_dist": 3.0,
-                    "min_tree_pts": 50
+                    "min_tree_pts": 100
                 },
                 "trunk": {
                     "q_base": 0.20,
@@ -169,7 +179,7 @@ if st.button("Run Reconstruction Pipeline"):
                 },
                 "buildings": {
                     "enabled": True,
-                    "buffer": 1
+                    "buffer": 2
                 },
                 "inventory": {
                     "enabled": False,

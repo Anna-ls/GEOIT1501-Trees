@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+from synthesis.clip_and_merge import clip_and_merge_cityjson, cityjson_to_obj
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import logging
@@ -8,11 +10,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import geopandas as gpd
 import time
 import requests
-import zipfile
+import gzip
+import shutil
 
 from CFTree.config import get_config, setup_logger
 from CFTree.download_geotiles import download_tile
-from clip_and_merge import clip_and_merge_pointclouds, clip_and_merge_objs
+from clip_and_merge import clip_and_merge_pointclouds, clip_and_merge_objs, clip_and_merge_cityjson
 
 # ---------------------------------------------------------------
 # ----------------------- Tile worker ---------------------------
@@ -52,39 +55,40 @@ def download_ahn_tiles(tile_id: str, output_dir: Path, base_url: str, overwrite:
         logging.exception(f"[{tile_id}] Unexpected error: {e}")
         return {"tile_id": tile_id, "status": f"error: {e}"}
 
-def download_bag_obj(download_url: str, output_dir: Path, tile_id: str, overwrite: bool) -> dict:
-    """Download BAG 3D obj tile"""
+def download_bag_cityjson(download_url: str, output_dir: Path, tile_id: str, overwrite: bool) -> dict:
+    """Download BAG 3D CityJSON tile"""
     try:
         if not download_url:
             return {"tile_id": tile_id, "status": "no_url"}
 
         bag_dir = Path(output_dir) / "3dbag_tiles"
-        url_parts = download_url.split("/")
-        filename = url_parts[-1]
-        zip_path = bag_dir / filename
+        bag_dir.mkdir(parents=True, exist_ok=True)
 
-        nested_folder_parts = url_parts[-4:-1]
-        expected_dir = bag_dir.joinpath(*nested_folder_parts)
+        filename = download_url.split("/")[-1]
+        is_gzipped = filename.endswith(".gz")
 
-        if not overwrite and expected_dir.exists():
-            return {"tile_id": tile_id, "status": "ok (cached)", "path": str(expected_dir)}
+        final_filename = filename[:-3] if is_gzipped else filename
+        json_path = bag_dir / final_filename
+        gz_path = bag_dir / filename
 
-        zip_path.parent.mkdir(parents=True, exist_ok=True)
+        if not overwrite and json_path.exists():
+            return {"tile_id": tile_id, "status": "ok (cached)", "path": str(json_path)}
 
         response = requests.get(download_url, stream=True)
         response.raise_for_status()
 
-        with open(zip_path, "wb") as f:
+        target_path = gz_path if is_gzipped else json_path
+        with open(target_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
 
-        if zip_path.suffix == '.zip':
-            with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                zip_ref.extractall(bag_dir)
-            zip_path.unlink()
-            return {"tile_id": tile_id, "status": "ok (extracted from zip)", "path": str(expected_dir)}
-        else:
-            return {"tile_id": tile_id, "status": "ok", "path": str(zip_path)}
+        if is_gzipped:
+            with gzip.open(gz_path, 'rb') as f_in:
+                with open(json_path, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            gz_path.unlink()
+
+        return {"tile_id": tile_id, "status": "ok", "path": str(json_path)}
 
     except Exception as e:
         logging.exception(f"[3D BAG {tile_id}] Unexpected error: {e}")
@@ -99,7 +103,8 @@ def process_geojson(
         overwrite: bool = False,
         log_level: str = "INFO",
         download_buildings: bool = False,
-        bag_lod: str = "LoD22",
+        bag_lod: str = "2.2",
+        translation: list[float] = None
 ):
     """Run get_data pipeline for a specific GeoJSON area of interest."""
     geojson_path = Path(geojson_path).resolve()
@@ -167,7 +172,7 @@ def process_geojson(
         intersecting_bag = bag_tiles[bag_tiles.intersects(aoi.union_all())]
 
         if not intersecting_bag.empty:
-            bag_downloads = intersecting_bag[["tile_id", "obj_download"]].dropna().to_dict("records")
+            bag_downloads = intersecting_bag[["tile_id", "cj_download"]].dropna().to_dict("records")
 
         if not bag_downloads:
             logging.info("No intersecting 3D BAG tiles found.")
@@ -195,7 +200,7 @@ def process_geojson(
 
             if download_buildings:
                 bag_futures = {
-                    pool.submit(download_bag_obj, item["obj_download"], tiles_dir, item["tile_id"], overwrite): item["tile_id"]
+                    pool.submit(download_bag_cityjson, item["cj_download"], tiles_dir, item["tile_id"], overwrite): item["tile_id"]
                     for item in bag_downloads
                 }
                 for f in as_completed(bag_futures):
@@ -212,7 +217,7 @@ def process_geojson(
             logging.info(f"[AHN {tid}] {result['status'].upper()}")
         if download_buildings:
             for item in bag_downloads:
-                result = download_bag_obj(item["obj_download"], tiles_dir, item["tile_id"], overwrite)
+                result = download_bag_cityjson(item["cj_download"], tiles_dir, item["tile_id"], overwrite)
                 logging.info(f"[3D BAG {item['tile_id']}] {result['status'].upper()}")
     download_time = time.perf_counter() - t_start_download
 
@@ -236,15 +241,22 @@ def process_geojson(
         logging.info("Starting clip and merge of 3D BAG tiles...")
         try:
             bag_dir = Path(tiles_dir) / "3dbag_tiles"
-            target_objs = list(bag_dir.rglob(f"*-{bag_lod}-3D.obj"))
+            target_json = list(bag_dir.rglob("*.city.json"))
 
-            clipped_buildings_path = Path(output_dir) / "clipped_buildings.obj"
+            clipped_buildings_path = Path(output_dir) / "clipped_buildings.city.json"
 
-            clip_and_merge_objs(
-                obj_paths=target_objs,
+            success = clip_and_merge_cityjson(
+                cj_paths=target_json,
                 aoi_gpkg_path=str(gpkg_aoi_path),
-                output_obj_path=clipped_buildings_path,
+                output_cj_path=clipped_buildings_path,
+                lod=bag_lod
             )
+
+            if success:
+                final_obj_path = Path(output_dir) / "buildings_obj.obj"
+                cityjson_to_obj(clipped_buildings_path, final_obj_path, translation)
+            else:
+                logging.warning(f"Clip and merge process failed.")
 
         except Exception as e:
             logging.exception(f"3D BAG clip and merge process failed. Error: {e}")
