@@ -21,7 +21,7 @@ from .crown import kept_component_mask, segment_to_marching_cubes
 from scipy.spatial import cKDTree
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
-from synthesis.determine_lcz_of_area import determine_lcz_of_area
+# from synthesis.determine_lcz_of_area import determine_lcz_of_area
 
 from .inventory import (
     annotate_and_write,
@@ -150,6 +150,8 @@ class TileMeshes(NamedTuple):
     crown_f: np.ndarray
     trunk_v: np.ndarray
     trunk_f: np.ndarray
+    crown_groups: list
+    trunk_groups: list
     n_crowns: int
     n_trunks: int
 
@@ -188,20 +190,27 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
     claimed: set = set()
 
     crown_v, crown_f, trunk_v, trunk_f = [], [], [], []
+    crown_groups, trunk_groups = [], []
     cof = tof = 0  # separate vertex offsets for the crown and trunk groups
     n_crowns = n_trunks = 0
 
-    def _add_crown(v, f):
+    def _add_crown(tree_id, v, f):
         nonlocal cof
-        crown_v.append(v); crown_f.append(f + cof); cof += len(v)
+        crown_v.append(v)
+        crown_f.append(f + cof)
+        crown_groups.append((f"tree_{tree_id}_crown", f + cof))
+        cof += len(v)
 
-    def _add_trunk(v, f):
+    def _add_trunk(tree_id, v, f):
         nonlocal tof
-        trunk_v.append(v); trunk_f.append(f + tof); tof += len(v)
+        trunk_v.append(v)
+        trunk_f.append(f + tof)
+        trunk_groups.append((f"tree_{tree_id}_trunk", f + tof))
+        tof += len(v)
 
     base, with_trunk, _ = parse_lod(cfg.lod)
 
-    def emit(sub_pts, tp, shape="ellipsoid"):
+    def emit(tree_id, sub_pts, tp, shape="ellipsoid"):
         """Mesh one tree instance at the configured LoD; append if valid.
 
         The crown spans the canopy (crown base → top); the trunk (ground →
@@ -232,13 +241,13 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
                 min_component_frac=cfg.crown.min_component_frac)
         if len(v_crown) == 0:
             return
-        _add_crown(v_crown, f_crown)
+        _add_crown(tree_id, v_crown, f_crown)
         n_crowns += 1
 
         if with_trunk:
             z_trunk_top = _connected_trunk_top(
                 z_cb, float(v_crown[:, 2].min()), cfg.trunk.crown_overlap)
-            _add_trunk(*make_trunk_mesh(
+            _add_trunk(tree_id, *make_trunk_mesh(
                 tp["x"], tp["y"], tp["z_base"], z_trunk_top,
                 tp["r_base"], tp["r_top"], n_sides=cfg.trunk.n_sides))
             n_trunks += 1
@@ -270,12 +279,13 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
                                 dbh_m=(dbh_cm / 100.0 if dbh_cm else None),
                                 force_xy=seed)
                 if tp is not None:
-                    emit(sub, tp,
+                    instance_lbl = f"{lbl}_inv_{idx}"
+                    emit(instance_lbl, sub, tp,
                          crown_shape_for_species(rec.get("species"), rec.get("common_name")))
         else:  # keep the whole crown with the LiDAR-estimated trunk
             tp = _trunk_for(tree_pts, dtm, georef, cfg)
             if tp is not None:
-                emit(tree_pts, tp)  # no species → default ellipsoid crown at LoD 2
+                emit(lbl, tree_pts, tp)  # no species → default ellipsoid crown at LoD 2
 
     def _stack(vs, fs):
         return (np.vstack(vs), np.vstack(fs)) if vs else (
@@ -283,7 +293,7 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
 
     cv, cf = _stack(crown_v, crown_f)
     tv, tf = _stack(trunk_v, trunk_f)
-    return TileMeshes(cv, cf, tv, tf, n_crowns, n_trunks)
+    return TileMeshes(cv, cf, tv, tf, crown_groups, trunk_groups, n_crowns, n_trunks)
 
 def group_touching_crowns(pts, labels, threshold=0.5):
     """Merges labels of crowns if their points are within the distance threshold."""
@@ -443,7 +453,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         min_height=cfg.segmentation.min_height,
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
-        area_type=area_type
+        area_type="mid_built_up"
     )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
@@ -525,26 +535,34 @@ def _write_meshes(stem: Path, tm: TileMeshes, separate: bool) -> None:
     """Write ``tm`` to OBJ at ``stem`` — separate crown/trunk files or one grouped."""
     if separate:
         if len(tm.crown_v):
-            write_obj(stem.with_name(stem.name + "_crown.obj"), tm.crown_v, tm.crown_f)
+            write_obj_grouped(stem.with_name(stem.name + "_crown.obj"), tm.crown_v, tm.crown_groups)
         if len(tm.trunk_v):
-            write_obj(stem.with_name(stem.name + "_trunk.obj"), tm.trunk_v, tm.trunk_f)
+            write_obj_grouped(stem.with_name(stem.name + "_trunk.obj"), tm.trunk_v, tm.trunk_groups)
     else:
         verts = np.vstack([v for v in (tm.crown_v, tm.trunk_v) if len(v)])
-        write_obj_grouped(stem.with_name(stem.name + ".obj"), verts, [
-            ("crown", tm.crown_f),
-            ("trunk", tm.trunk_f + len(tm.crown_v)),
-        ])
+        offset = len(tm.crown_v)
+        shifted_trunk_groups = [(name, f + offset) for name, f in tm.trunk_groups]
+
+        all_groups = tm.crown_groups + shifted_trunk_groups
+
+        write_obj_grouped(stem.with_name(stem.name + ".obj"), verts, all_groups)
 
 
 def _merge_tiles(metas) -> TileMeshes:
     """Concatenate per-tile TileMeshes into one (separate crown/trunk offsets)."""
-    cv, cf, tv, tf, nc, nt = [], [], [], [], 0, 0
+    cv, cf, tv, tf = [], [], [], []
+    cg, tg = [], []
+    nc = nt = 0
     cof = tof = 0
     for tm in metas:
         if len(tm.crown_v):
-            cv.append(tm.crown_v); cf.append(tm.crown_f + cof); cof += len(tm.crown_v)
+            cv.append(tm.crown_v); cf.append(tm.crown_f + cof)
+            cg.extend([(name, f + cof) for name, f in tm.crown_groups])
+            cof += len(tm.crown_v)
         if len(tm.trunk_v):
-            tv.append(tm.trunk_v); tf.append(tm.trunk_f + tof); tof += len(tm.trunk_v)
+            tv.append(tm.trunk_v); tf.append(tm.trunk_f + tof)
+            tg.extend([(name, f + tof) for name, f in tm.trunk_groups])
+            tof += len(tm.trunk_v)
         nc += tm.n_crowns; nt += tm.n_trunks
 
     def stk(vs, fs):
