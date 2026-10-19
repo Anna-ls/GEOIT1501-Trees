@@ -11,7 +11,7 @@ import json
 import re
 from dataclasses import dataclass, field, is_dataclass
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, get_type_hints
+from typing import Any, Dict, List, Optional, Tuple, get_type_hints
 
 
 @dataclass
@@ -50,11 +50,14 @@ class Cleaning:
 @dataclass
 class Segmentation:
     """CHM-based individual-tree segmentation."""
-    cell_size: float = 0.5        # m — DTM/DSM/CHM grid resolution
+    cell_size: float = 0.4        # m — DTM/DSM/CHM grid resolution
     smooth_sigma: float = 2.0     # grid cells — Gaussian smooth before peaks
     min_height: float = 3.0       # m — excludes low vegetation / rooftop shrubs
     peak_min_dist: float = 5.0    # m — minimum spacing between tree tops
-    min_tree_pts: int = 150       # discard segments with fewer points
+    min_tree_pts: int = 100       # discard segments with fewer points
+
+    resolve_multi_trees: bool = True
+    multi_tree_kwargs: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass

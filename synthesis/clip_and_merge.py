@@ -107,8 +107,6 @@ def clip_and_merge_pointclouds(
 
                         matched = chunk[cand_idx[poly_mask]]
 
-                    logging.info(f"writing {len(matched)} points")
-
                     writer.write_points(matched)
                     points_written += len(matched)
 

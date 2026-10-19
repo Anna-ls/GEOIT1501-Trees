@@ -412,8 +412,8 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
-    split_polygon(polygon)
-    area_type = determine_lcz_of_area(polygon)
+    # split_polygon(polygon)
+    # area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
@@ -425,7 +425,9 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         min_height=cfg.segmentation.min_height,
         peak_min_dist_m=cfg.segmentation.peak_min_dist,
         min_tree_points=cfg.segmentation.min_tree_pts,
-        area_type=area_type
+        area_type="mid_built_up",
+        resolve_multi_trees=cfg.segmentation.resolve_multi_trees,
+        multi_tree_kwargs=cfg.segmentation.multi_tree_kwargs
     )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
