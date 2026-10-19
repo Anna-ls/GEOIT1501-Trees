@@ -1,6 +1,6 @@
 import geopandas as gpd
 import ee
-from numpy.compat import Path
+from pathlib import Path
 import pystac_client
 import planetary_computer
 import rioxarray

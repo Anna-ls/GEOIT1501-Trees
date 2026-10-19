@@ -16,3 +16,7 @@ pandas
 trimesh
 pystac_client
 planetary_computer
+rioxarray
+tqdm
+seaborn
+requests
