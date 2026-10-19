@@ -65,7 +65,7 @@ def find_secondary_peak(
         cluster_pts: np.ndarray,
         num_angles: int = 4,
         bin_size: float = 0.5,
-        smooth_sigma: float = 1.55,
+        smooth_sigma: float = 2.0,
         peak_min_dist_m: float = 3.0,
         d_euclidean_thresh: float = 2.5,
         d_margin_thresh: float = 1.5
@@ -231,7 +231,7 @@ def segment_trees_chm(
     min_height: float = 2.5,
     peak_min_dist_m: float = 3.0,
     area_type: str = "mid_built_up",
-    min_tree_points: int = 60,
+    min_tree_points: int = 100,
     resolve_multi_trees: bool = True,
     multi_tree_kwargs: dict = None
 ) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float]]:

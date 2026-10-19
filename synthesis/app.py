@@ -16,6 +16,7 @@ from datetime import datetime
 from get_data import process_geojson
 from tree4cfd.pipeline import run_pipeline
 from tree4cfd.config import load_config
+from rendering import render_3d_objs
 
 st.title("Urban Tree Reconstruction")
 st.write("Draw or upload a polygon and generate tree meshes within that area.")
@@ -55,7 +56,7 @@ if input_method == "Draw on Map":
             'polyline': False,
             'rectangle': True,
             'polygon': True,
-            'circle': False,
+            'circle': True,
             'marker': False,
             'circlemarker': False
         },
@@ -102,6 +103,8 @@ if st.button("Run Reconstruction Pipeline"):
         if uploaded_file is not None:
             with open(geojson_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
+            uploaded_file.seek(0)
+            geojson_geometry = json.load(uploaded_file)
             valid_input = True
         else:
             st.warning("Please upload a GeoJSON file before running the pipeline")
@@ -130,7 +133,14 @@ if st.button("Run Reconstruction Pipeline"):
             # ------------- Run data collection -----------------
             # ---------------------------------------------------
             with st.spinner('Downloading, clipping, and merging AHN tiles...'):
-                dl_time, ahn_clip_time, bag_clip_time = process_geojson(geojson_path, buffer_distance=10.0, overwrite=False, download_buildings=include_buildings, bag_lod=bag_lod, translation=translation)
+                dl_time, ahn_clip_time, bag_clip_time = process_geojson(
+                    geojson_path,
+                    buffer_distance=10.0,
+                    overwrite=False,
+                    download_buildings=include_buildings,
+                    bag_lod=bag_lod,
+                    translation=translation
+                )
 
             execution_times['1. Download LiDAR Tiles'] = dl_time
             execution_times['2. Clip & Merge Pointcloud'] = ahn_clip_time
@@ -157,11 +167,19 @@ if st.button("Run Reconstruction Pipeline"):
                     "voxel_size": 0
                 },
                 "segmentation": {
-                    "cell_size": 0.5,
-                    "smooth_sigma": 1.5,
+                    "cell_size": 0.4,
+                    "smooth_sigma": 2.5,
                     "min_height": 2.0,
-                    "peak_min_dist": 3.0,
-                    "min_tree_pts": 100
+                    "peak_min_dist": 1.8,
+                    "min_tree_pts": 100,
+                    "resolve_multi_trees": True,
+                    "multi_tree_kwargs": {
+                        "max_elongation": 3.0,
+                        "max_offset_ratio": 1.5,
+                        "num_angles": 4,
+                        "bin_size": 0.5,
+                        "smooth_sigma": 2.0
+                    }
                 },
                 "trunk": {
                     "q_base": 0.20,
@@ -181,15 +199,9 @@ if st.button("Run Reconstruction Pipeline"):
                     "enabled": True,
                     "buffer": 2
                 },
-                "inventory": {
-                    "enabled": False,
-                    "source": "ods",
-                    "csv_path": "../DATA/inventory/trees.csv",
-                    "match_dist": 3.0
-                },
                 "output": {
                     "merge_tiles": True,
-                    "separate_crown_trunk": False,
+                    "separate_crown_trunk": True,
                     "merge_touching_crowns": merge_touching
                 }
             }
@@ -206,7 +218,7 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                seg_time, clean_time, mesh_time = run_pipeline(cfg, geojson_geometry, progress_callback=update_ui)
+                seg_time, clean_time, mesh_time = run_pipeline(cfg, polygon=geojson_geometry, progress_callback=update_ui)
             execution_times['4. Tree Segmentation'] = seg_time
             execution_times['5. Filter & Clean'] = clean_time
             execution_times['6. Reconstruct 3D Meshes'] = mesh_time
@@ -223,20 +235,36 @@ if st.button("Run Reconstruction Pipeline"):
                 json.dump(json_data, f, indent=4)
 
             # Expose the resulting .obj file for download
-            output_obj_path = out_dir / f"merged_lod{int(lod_value)}.1.obj"
-            if output_obj_path.exists():
-                with open(output_obj_path, "rb") as file:
-                    st.download_button(
-                        label="Download Meshed Trees (.obj)",
-                        data=file,
-                        file_name="merged_trees.obj",
-                        mime="model/obj"
-                    )
+            generated_objs = list(out_dir.glob("*.obj"))
+            output_crown_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_crown.obj"
+            output_trunk_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_trunk.obj"
+            output_bag_path = out_dir / "buildings_obj.obj"
+
+            if generated_objs:
+                st.subheader("**Download meshes**")
+                for obj_path in generated_objs:
+                    if obj_path == output_crown_obj_path:
+                        label = "Download Meshed Trees (.obj)"
+                    elif obj_path == output_trunk_obj_path:
+                        label = "Download Trunk Geometries (.obj)"
+                    elif obj_path == output_bag_path:
+                        label = "Download 3DBAG Geometries (.obj)"
+                    else:
+                        label = f"Download {obj_path.name}"
+                    with open(obj_path, "rb") as file:
+                        st.download_button(
+                            label=label,
+                            data=file,
+                            mime="model/obj",
+                            key=obj_path.name
+                        )
+                st.subheader("**3D Preview**")
+                with st.spinner("Loading 3D viewer..."):
+                    render_3d_objs(generated_objs)
             else:
-                st.warning(f"Pipeline finished, but {output_obj_path.name} was not found in {out_dir}.")
+                st.warning(f"Pipeline finished, but no .obj files were found.")
 
             st.subheader("Execution Time Summary")
-
             # Format the dictionary for a clean Streamlit table
             summary_data = {
                 "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],

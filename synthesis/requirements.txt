@@ -1,4 +1,5 @@
 laspy[laszip]
+laspy[lazrs]
 numpy
 scipy
 scikit-image
@@ -14,3 +15,9 @@ scikit-learn
 laspy
 pandas
 trimesh
+pystac_client
+planetary_computer
+rioxarray
+tqdm
+seaborn
+requests

@@ -4179,3 +4179,871 @@ NameError: name 'triangle' is not defined
 2026-10-15T09:41:01Z [INFO] [MainProcess] Exported 335 tree locations to clipped_output_tree_locations.gpkg
 2026-10-15T09:41:02Z [INFO] [MainProcess] 335 trees -> 552,412 vertices 1,102,320 faces  (6.4 s total)
 2026-10-15T09:41:03Z [INFO] [MainProcess] Merged 1 tiles -> 335 trees, 1,102,320 faces -> merged_lod3.1*.obj
+2026-10-15T12:23:12Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T12:23:12.112489+00:00Z========================================
+2026-10-15T12:23:12Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T12:23:12Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T12:23:12Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_142311\target_region.geojson
+2026-10-15T12:23:12Z [INFO] [MainProcess] Created 1 records
+2026-10-15T12:23:12Z [INFO] [MainProcess] Created 1 records
+2026-10-15T12:23:12Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T12:23:12Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T12:23:12Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T12:23:12Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-15T12:23:26Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T12:23:27Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T12:23:27Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T12:23:31Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T12:23:31Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T12:23:31Z [INFO] [MainProcess] Completed data collection in 18.8 seconds.
+2026-10-15T13:51:05Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T13:51:05.296821+00:00Z========================================
+2026-10-15T13:51:05Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T13:51:05Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_155105\target_region.geojson
+2026-10-15T13:51:05Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:51:05Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:51:05Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T13:51:05Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T13:51:05Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T13:51:05Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T13:51:12Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T13:51:12Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T13:51:13Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T13:51:13Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T13:51:16Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T13:51:16Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T13:51:16Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T13:51:19Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T13:51:19Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T13:51:19Z [INFO] [MainProcess] Completed data collection in 13.8 seconds.
+2026-10-15T13:59:14Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T13:59:14.914032+00:00Z========================================
+2026-10-15T13:59:14Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T13:59:14Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T13:59:14Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_155914\target_region.geojson
+2026-10-15T13:59:14Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:59:15Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:59:15Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T13:59:15Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T13:59:15Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T13:59:15Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T13:59:15Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T13:59:15Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T13:59:21Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T13:59:21Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T13:59:21Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T13:59:21Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T13:59:21Z [INFO] [MainProcess] Opening laz file
+2026-10-15T13:59:28Z [INFO] [MainProcess] writing 57 points
+2026-10-15T13:59:28Z [INFO] [MainProcess] writing 110 points
+2026-10-15T13:59:30Z [INFO] [MainProcess] writing 3720 points
+2026-10-15T13:59:31Z [INFO] [MainProcess] writing 6211 points
+2026-10-15T13:59:32Z [INFO] [MainProcess] writing 6 points
+2026-10-15T13:59:33Z [INFO] [MainProcess] writing 4863 points
+2026-10-15T13:59:33Z [INFO] [MainProcess] writing 318 points
+2026-10-15T13:59:34Z [INFO] [MainProcess] writing 67 points
+2026-10-15T13:59:34Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T13:59:34Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T13:59:34Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T13:59:37Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T13:59:37Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T13:59:37Z [INFO] [MainProcess] Completed data collection in 21.7 seconds.
+2026-10-15T12:23:12Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T12:23:12.112489+00:00Z========================================
+2026-10-15T12:23:12Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T12:23:12Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T12:23:12Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_142311\target_region.geojson
+2026-10-15T12:23:12Z [INFO] [MainProcess] Created 1 records
+2026-10-15T12:23:12Z [INFO] [MainProcess] Created 1 records
+2026-10-15T12:23:12Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T12:23:12Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T12:23:12Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T12:23:12Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-15T12:23:26Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T12:23:27Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T12:23:27Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T12:23:31Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T12:23:31Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T12:23:31Z [INFO] [MainProcess] Completed data collection in 18.8 seconds.
+2026-10-15T13:51:05Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T13:51:05.296821+00:00Z========================================
+2026-10-15T13:51:05Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T13:51:05Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_155105\target_region.geojson
+2026-10-15T13:51:05Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:51:05Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:51:05Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T13:51:05Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T13:51:05Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T13:51:05Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T13:51:05Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T13:51:12Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T13:51:12Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T13:51:13Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T13:51:13Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T13:51:16Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T13:51:16Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T13:51:16Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T13:51:19Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T13:51:19Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T13:51:19Z [INFO] [MainProcess] Completed data collection in 13.8 seconds.
+2026-10-15T13:59:14Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T13:59:14.914032+00:00Z========================================
+2026-10-15T13:59:14Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T13:59:14Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T13:59:14Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_155914\target_region.geojson
+2026-10-15T13:59:14Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:59:15Z [INFO] [MainProcess] Created 1 records
+2026-10-15T13:59:15Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T13:59:15Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T13:59:15Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T13:59:15Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T13:59:15Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T13:59:15Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T13:59:21Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T13:59:21Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T13:59:21Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T13:59:21Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T13:59:21Z [INFO] [MainProcess] Opening laz file
+2026-10-15T13:59:28Z [INFO] [MainProcess] writing 57 points
+2026-10-15T13:59:28Z [INFO] [MainProcess] writing 110 points
+2026-10-15T13:59:30Z [INFO] [MainProcess] writing 3720 points
+2026-10-15T13:59:31Z [INFO] [MainProcess] writing 6211 points
+2026-10-15T13:59:32Z [INFO] [MainProcess] writing 6 points
+2026-10-15T13:59:33Z [INFO] [MainProcess] writing 4863 points
+2026-10-15T13:59:33Z [INFO] [MainProcess] writing 318 points
+2026-10-15T13:59:34Z [INFO] [MainProcess] writing 67 points
+2026-10-15T13:59:34Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T13:59:34Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T13:59:34Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T13:59:37Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T13:59:37Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T13:59:37Z [INFO] [MainProcess] Completed data collection in 21.7 seconds.
+2026-10-15T14:06:03Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T14:06:03.422628+00:00Z========================================
+2026-10-15T14:06:03Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T14:06:03Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T14:06:03Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_160603\target_region.geojson
+2026-10-15T14:06:03Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:06:03Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:06:03Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T14:06:03Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T14:06:03Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T14:06:03Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T14:06:03Z [INFO] [MainProcess] Found 2 intersecting 3D BAG tiles
+2026-10-15T14:06:03Z [INFO] [MainProcess] Processing 1 AHN tiles and 2 3D BAG tiles in parallel using 2 cores.
+2026-10-15T14:06:12Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T14:06:12Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-15T14:06:12Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T14:06:24Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T14:06:24Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T14:06:24Z [INFO] [MainProcess] Opening laz file
+2026-10-15T14:06:36Z [INFO] [MainProcess] writing 134 points
+2026-10-15T14:06:37Z [INFO] [MainProcess] writing 13643 points
+2026-10-15T14:06:38Z [INFO] [MainProcess] writing 1691 points
+2026-10-15T14:06:43Z [INFO] [MainProcess] writing 439 points
+2026-10-15T14:06:43Z [INFO] [MainProcess] writing 98 points
+2026-10-15T14:06:43Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T14:06:43Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T14:06:43Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T14:06:46Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T14:06:46Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T14:06:46Z [INFO] [MainProcess] Completed data collection in 43.0 seconds.
+2026-10-15T14:06:46Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_160603/
+2026-10-15T14:06:47Z [INFO] [MainProcess] Found      7,809 vegetation pts and      5,376 ground pts (for DTM)
+2026-10-15T14:06:47Z [INFO] [MainProcess] After SOR:      7,572 pts remaining
+2026-10-15T14:06:47Z [INFO] [MainProcess] 0
+2026-10-15T14:08:04Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T14:08:04.189555+00:00Z========================================
+2026-10-15T14:08:04Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T14:08:04Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T14:08:04Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_160804\target_region.geojson
+2026-10-15T14:08:04Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:08:04Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:08:04Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T14:08:04Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T14:08:04Z [INFO] [MainProcess] Found 2 intersecting tiles: ['092000_439000', '092000_438000']
+2026-10-15T14:08:04Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T14:08:04Z [INFO] [MainProcess] Found 4 intersecting 3D BAG tiles
+2026-10-15T14:08:04Z [INFO] [MainProcess] Processing 2 AHN tiles and 4 3D BAG tiles in parallel using 2 cores.
+2026-10-15T14:08:12Z [INFO] [MainProcess] [092000_439000] OK (CACHED)
+2026-10-15T14:08:12Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T14:08:12Z [INFO] [MainProcess] [3D BAG 9/316/524] OK (CACHED)
+2026-10-15T14:08:12Z [INFO] [MainProcess] [3D BAG 9/316/528] OK (CACHED)
+2026-10-15T14:08:12Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T14:08:12Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-15T14:08:13Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T14:08:13Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-15T14:08:13Z [INFO] [MainProcess] Opening laz file
+2026-10-15T14:08:19Z [INFO] [MainProcess] writing 3726 points
+2026-10-15T14:08:20Z [INFO] [MainProcess] writing 17635 points
+2026-10-15T14:08:20Z [INFO] [MainProcess] writing 25747 points
+2026-10-15T14:08:22Z [INFO] [MainProcess] writing 524 points
+2026-10-15T14:08:22Z [INFO] [MainProcess] writing 25622 points
+2026-10-15T14:08:23Z [INFO] [MainProcess] writing 44349 points
+2026-10-15T14:08:25Z [INFO] [MainProcess] writing 80424 points
+2026-10-15T14:08:26Z [INFO] [MainProcess] writing 60826 points
+2026-10-15T14:08:26Z [INFO] [MainProcess] writing 26128 points
+2026-10-15T14:08:27Z [INFO] [MainProcess] writing 19826 points
+2026-10-15T14:08:27Z [INFO] [MainProcess] writing 341360 points
+2026-10-15T14:08:28Z [INFO] [MainProcess] writing 239021 points
+2026-10-15T14:08:34Z [INFO] [MainProcess] writing 118781 points
+2026-10-15T14:08:35Z [INFO] [MainProcess] writing 378581 points
+2026-10-15T14:08:36Z [INFO] [MainProcess] writing 392044 points
+2026-10-15T14:08:36Z [INFO] [MainProcess] writing 1071 points
+2026-10-15T14:08:37Z [INFO] [MainProcess] writing 488572 points
+2026-10-15T14:08:38Z [INFO] [MainProcess] writing 693091 points
+2026-10-15T14:08:39Z [INFO] [MainProcess] writing 917191 points
+2026-10-15T14:08:39Z [INFO] [MainProcess] writing 615308 points
+2026-10-15T14:08:40Z [INFO] [MainProcess] writing 309371 points
+2026-10-15T14:08:41Z [INFO] [MainProcess] writing 533815 points
+2026-10-15T14:08:42Z [INFO] [MainProcess] writing 964782 points
+2026-10-15T14:08:42Z [INFO] [MainProcess] writing 181273 points
+2026-10-15T14:08:43Z [INFO] [MainProcess] writing 96983 points
+2026-10-15T14:08:43Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T14:08:43Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T14:08:43Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T14:08:47Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T14:08:47Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T14:08:47Z [INFO] [MainProcess] Completed data collection in 43.4 seconds.
+2026-10-15T14:08:47Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_160804/
+2026-10-15T14:08:48Z [INFO] [MainProcess] Found  1,368,801 vegetation pts and  2,303,840 ground pts (for DTM)
+2026-10-15T14:08:50Z [INFO] [MainProcess] After SOR:  1,277,355 pts remaining
+2026-10-15T14:08:50Z [INFO] [MainProcess] 0
+2026-10-15T14:13:33Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T14:13:33.075302+00:00Z========================================
+2026-10-15T14:13:33Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T14:13:33Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T14:13:33Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_161333\target_region.geojson
+2026-10-15T14:13:33Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:13:33Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:13:33Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T14:13:33Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T14:13:33Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T14:13:33Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T14:13:33Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T14:13:33Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T14:13:45Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T14:13:45Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T14:13:46Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T14:13:47Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T14:13:47Z [INFO] [MainProcess] Opening laz file
+2026-10-15T14:13:47Z [INFO] [MainProcess] writing 250063 points
+2026-10-15T14:13:48Z [INFO] [MainProcess] writing 233782 points
+2026-10-15T14:13:59Z [INFO] [MainProcess] writing 67170 points
+2026-10-15T14:14:01Z [INFO] [MainProcess] writing 262130 points
+2026-10-15T14:14:02Z [INFO] [MainProcess] writing 208318 points
+2026-10-15T14:14:06Z [INFO] [MainProcess] writing 186205 points
+2026-10-15T14:14:08Z [INFO] [MainProcess] writing 206692 points
+2026-10-15T14:14:10Z [INFO] [MainProcess] writing 163543 points
+2026-10-15T14:14:11Z [INFO] [MainProcess] writing 149995 points
+2026-10-15T14:14:12Z [INFO] [MainProcess] writing 250003 points
+2026-10-15T14:14:14Z [INFO] [MainProcess] writing 738386 points
+2026-10-15T14:14:15Z [INFO] [MainProcess] writing 65456 points
+2026-10-15T14:14:17Z [INFO] [MainProcess] writing 25189 points
+2026-10-15T14:14:17Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T14:14:17Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T14:14:17Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T14:14:23Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T14:14:23Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T14:14:23Z [INFO] [MainProcess] Completed data collection in 50.0 seconds.
+2026-10-15T14:14:23Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_161333/
+2026-10-15T14:14:24Z [INFO] [MainProcess] Found    593,888 vegetation pts and  1,034,342 ground pts (for DTM)
+2026-10-15T14:14:25Z [INFO] [MainProcess] After SOR:    554,844 pts remaining
+2026-10-15T14:14:25Z [INFO] [MainProcess] 0
+2026-10-15T14:15:14Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-15T14:15:14.078156+00:00Z========================================
+2026-10-15T14:15:14Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-15T14:15:14Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-15T14:15:14Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_161513\target_region.geojson
+2026-10-15T14:15:14Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:15:14Z [INFO] [MainProcess] Created 1 records
+2026-10-15T14:15:14Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-15T14:15:14Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-15T14:15:14Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-15T14:15:14Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-15T14:15:14Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-15T14:15:14Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-15T14:15:24Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-15T14:15:24Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-15T14:15:25Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-15T14:15:25Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-15T14:15:25Z [INFO] [MainProcess] Opening laz file
+2026-10-15T14:15:25Z [INFO] [MainProcess] writing 228397 points
+2026-10-15T14:15:26Z [INFO] [MainProcess] writing 198068 points
+2026-10-15T14:15:32Z [INFO] [MainProcess] writing 68456 points
+2026-10-15T14:15:33Z [INFO] [MainProcess] writing 283845 points
+2026-10-15T14:15:33Z [INFO] [MainProcess] writing 218578 points
+2026-10-15T14:15:35Z [INFO] [MainProcess] writing 245478 points
+2026-10-15T14:15:36Z [INFO] [MainProcess] writing 294864 points
+2026-10-15T14:15:36Z [INFO] [MainProcess] writing 221952 points
+2026-10-15T14:15:37Z [INFO] [MainProcess] writing 200211 points
+2026-10-15T14:15:37Z [INFO] [MainProcess] writing 261975 points
+2026-10-15T14:15:38Z [INFO] [MainProcess] writing 871266 points
+2026-10-15T14:15:39Z [INFO] [MainProcess] writing 76298 points
+2026-10-15T14:15:39Z [INFO] [MainProcess] writing 31321 points
+2026-10-15T14:15:39Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-15T14:15:39Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-15T14:15:39Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-15T14:15:43Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-15T14:15:43Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-15T14:15:43Z [INFO] [MainProcess] Completed data collection in 28.8 seconds.
+2026-10-15T14:15:43Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261015_161513/
+2026-10-15T14:15:43Z [INFO] [MainProcess] Found    659,772 vegetation pts and  1,167,054 ground pts (for DTM)
+2026-10-15T14:15:44Z [INFO] [MainProcess] After SOR:    615,257 pts remaining
+2026-10-15T14:15:44Z [INFO] [MainProcess] 0
+2026-10-15T14:15:44Z [INFO] [MainProcess] Determining urban class of area
+2026-10-15T14:15:44Z [INFO] [MainProcess] {'type': 'Feature', 'properties': {}, 'geometry': {'type': 'Polygon', 'coordinates': [[[4.47401, 51.932332], [4.47401, 51.93474], [4.479032, 51.93474], [4.479032, 51.932332], [4.47401, 51.932332]]]}}
+2026-10-16T16:33:12Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-16T16:33:12.092106+00:00Z========================================
+2026-10-16T16:33:12Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-16T16:33:12Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-16T16:33:12Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261016_183310\target_region.geojson
+2026-10-16T16:33:12Z [INFO] [MainProcess] Created 1 records
+2026-10-16T16:33:12Z [INFO] [MainProcess] Created 1 records
+2026-10-16T16:33:12Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-16T16:33:12Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-16T16:33:12Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-16T16:33:12Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-16T16:33:29Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-16T16:33:30Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-16T16:33:30Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-16T16:33:30Z [INFO] [MainProcess] Opening laz file
+2026-10-16T16:33:30Z [INFO] [MainProcess] writing 164234 points
+2026-10-16T16:33:37Z [INFO] [MainProcess] writing 68860 points
+2026-10-16T16:33:37Z [INFO] [MainProcess] writing 196432 points
+2026-10-16T16:33:38Z [INFO] [MainProcess] writing 278689 points
+2026-10-16T16:33:39Z [INFO] [MainProcess] writing 46348 points
+2026-10-16T16:33:40Z [INFO] [MainProcess] writing 569181 points
+2026-10-16T16:33:40Z [INFO] [MainProcess] writing 834989 points
+2026-10-16T16:33:41Z [INFO] [MainProcess] writing 186318 points
+2026-10-16T16:33:41Z [INFO] [MainProcess] writing 27942 points
+2026-10-16T16:33:42Z [INFO] [MainProcess] writing 37458 points
+2026-10-16T16:33:43Z [INFO] [MainProcess] writing 435474 points
+2026-10-16T16:33:43Z [INFO] [MainProcess] writing 60364 points
+2026-10-16T16:33:44Z [INFO] [MainProcess] writing 16399 points
+2026-10-16T16:33:44Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-16T16:33:44Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-16T16:33:44Z [INFO] [MainProcess] Completed data collection in 31.7 seconds.
+2026-10-16T16:33:44Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261016_183310/
+2026-10-16T16:33:44Z [INFO] [MainProcess] Found    706,207 vegetation pts and  1,006,768 ground pts (for DTM)
+2026-10-16T16:33:45Z [INFO] [MainProcess] After SOR:    662,270 pts remaining
+2026-10-16T16:33:45Z [INFO] [MainProcess] 0
+2026-10-16T16:33:45Z [INFO] [MainProcess] Determining urban class of area
+2026-10-16T16:33:45Z [INFO] [MainProcess] {'type': 'Feature', 'properties': {}, 'geometry': {'type': 'Polygon', 'coordinates': [[[4.471865, 51.932769], [4.471865, 51.934912], [4.476521, 51.934912], [4.476521, 51.932769], [4.471865, 51.932769]]]}}
+2026-10-16T17:44:52Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-16T17:44:52.849097+00:00Z========================================
+2026-10-16T17:44:52Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-16T17:44:52Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-16T17:44:52Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261016_194452\target_region.geojson
+2026-10-16T17:44:52Z [INFO] [MainProcess] Created 1 records
+2026-10-16T17:44:53Z [INFO] [MainProcess] Created 1 records
+2026-10-16T17:44:53Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-16T17:44:53Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-16T17:44:53Z [INFO] [MainProcess] Found 4 intersecting tiles: ['091000_439000', '091000_438000', '092000_439000', '092000_438000']
+2026-10-16T17:44:53Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-16T17:44:53Z [INFO] [MainProcess] Found 2 intersecting 3D BAG tiles
+2026-10-16T17:44:53Z [INFO] [MainProcess] Processing 4 AHN tiles and 2 3D BAG tiles in parallel using 2 cores.
+2026-10-16T17:45:02Z [INFO] [MainProcess] [091000_439000] OK (CACHED)
+2026-10-16T17:45:02Z [INFO] [MainProcess] [091000_438000] OK (CACHED)
+2026-10-16T17:45:02Z [INFO] [MainProcess] [092000_439000] OK (CACHED)
+2026-10-16T17:45:02Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-16T17:45:02Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-16T17:45:02Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-16T17:45:03Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-16T17:45:03Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-16T17:45:03Z [INFO] [MainProcess] Opening laz file
+2026-10-16T17:45:14Z [INFO] [MainProcess] writing 31828 points
+2026-10-16T17:45:15Z [INFO] [MainProcess] writing 1434 points
+2026-10-16T17:45:17Z [INFO] [MainProcess] writing 350 points
+2026-10-16T17:45:24Z [INFO] [MainProcess] writing 23216 points
+2026-10-16T17:45:30Z [INFO] [MainProcess] writing 14808 points
+2026-10-16T17:45:31Z [INFO] [MainProcess] writing 42701 points
+2026-10-16T17:45:32Z [INFO] [MainProcess] writing 104192 points
+2026-10-16T17:45:32Z [INFO] [MainProcess] writing 6229 points
+2026-10-16T17:45:38Z [INFO] [MainProcess] writing 5060 points
+2026-10-16T17:45:39Z [INFO] [MainProcess] writing 57992 points
+2026-10-16T17:45:40Z [INFO] [MainProcess] writing 166102 points
+2026-10-16T17:45:43Z [INFO] [MainProcess] writing 387 points
+2026-10-16T17:45:45Z [INFO] [MainProcess] writing 161058 points
+2026-10-16T17:45:46Z [INFO] [MainProcess] writing 188705 points
+2026-10-16T17:45:46Z [INFO] [MainProcess] writing 81841 points
+2026-10-16T17:45:46Z [INFO] [MainProcess] writing 54841 points
+2026-10-16T17:45:54Z [INFO] [MainProcess] writing 55783 points
+2026-10-16T17:45:54Z [INFO] [MainProcess] writing 75552 points
+2026-10-16T17:45:55Z [INFO] [MainProcess] writing 128907 points
+2026-10-16T17:45:55Z [INFO] [MainProcess] writing 1071 points
+2026-10-16T17:45:56Z [INFO] [MainProcess] writing 504751 points
+2026-10-16T17:45:57Z [INFO] [MainProcess] writing 826560 points
+2026-10-16T17:45:58Z [INFO] [MainProcess] writing 1000000 points
+2026-10-16T17:45:58Z [INFO] [MainProcess] writing 338905 points
+2026-10-16T17:45:59Z [INFO] [MainProcess] writing 36701 points
+2026-10-16T17:46:00Z [INFO] [MainProcess] writing 10831 points
+2026-10-16T17:46:00Z [INFO] [MainProcess] writing 590305 points
+2026-10-16T17:46:01Z [INFO] [MainProcess] writing 93883 points
+2026-10-16T17:46:02Z [INFO] [MainProcess] writing 21476 points
+2026-10-16T17:46:02Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-16T17:46:02Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-16T17:46:02Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-16T17:46:11Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-16T17:46:12Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-16T17:46:12Z [INFO] [MainProcess] Completed data collection in 78.5 seconds.
+2026-10-16T17:46:12Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261016_194452/
+2026-10-16T17:46:12Z [INFO] [MainProcess] Found  1,164,823 vegetation pts and  1,537,358 ground pts (for DTM)
+2026-10-16T17:46:13Z [INFO] [MainProcess] After SOR:  1,095,528 pts remaining
+2026-10-16T17:46:13Z [INFO] [MainProcess] 0
+2026-10-16T17:46:14Z [INFO] [MainProcess] Generated window bins
+2026-10-16T17:46:23Z [INFO] [MainProcess] CHM: 1289 initial peaks found.
+2026-10-16T17:46:23Z [INFO] [MainProcess] Filter: 471 tiny segments (< 100 pts) and 9 pole or wall like segments dropped.
+2026-10-16T17:46:23Z [INFO] [MainProcess] PCA: 112 multi-tree clusters detected, adding 3 new trees.
+2026-10-16T17:46:23Z [INFO] [MainProcess] -> Segmentation done in: 9.4 s
+2026-10-16T17:46:23Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-16T17:46:24Z [INFO] [MainProcess] Retrieved 714 features (total: 714)
+2026-10-16T17:46:24Z [INFO] [MainProcess] Found 714 BAG building footprints.
+2026-10-16T17:46:24Z [INFO] [MainProcess] Buildings (BAG): removed 147 trees inside footprints
+2026-10-16T17:46:26Z [INFO] [MainProcess] Created 665 records
+2026-10-16T17:46:26Z [INFO] [MainProcess] Exported 665 tree locations to clipped_output_tree_locations.gpkg
+2026-10-16T17:46:30Z [INFO] [MainProcess] 665 trees -> 984,285 vertices 1,963,506 faces  (16.8 s total)
+2026-10-16T17:46:34Z [INFO] [MainProcess] Merged 1 tiles -> 665 trees, 1,963,506 faces -> merged_lod3.1*.obj
+2026-10-19T12:41:16Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T12:41:16.432028+00:00Z========================================
+2026-10-19T12:41:16Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T12:41:16Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T12:41:16Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144115\target_region.geojson
+2026-10-19T12:41:16Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:41:16Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:41:16Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T12:41:16Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T12:41:16Z [INFO] [MainProcess] Found 2 intersecting tiles: ['091000_438000', '092000_438000']
+2026-10-19T12:41:16Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-19T12:41:22Z [INFO] [MainProcess] [091000_438000] OK (CACHED)
+2026-10-19T12:41:22Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T12:41:23Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T12:41:23Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-19T12:41:23Z [INFO] [MainProcess] Opening laz file
+2026-10-19T12:41:28Z [INFO] [MainProcess] writing 47851 points
+2026-10-19T12:41:32Z [INFO] [MainProcess] writing 30322 points
+2026-10-19T12:41:32Z [INFO] [MainProcess] writing 104011 points
+2026-10-19T12:41:33Z [INFO] [MainProcess] writing 241468 points
+2026-10-19T12:41:33Z [INFO] [MainProcess] writing 14148 points
+2026-10-19T12:41:39Z [INFO] [MainProcess] writing 45712 points
+2026-10-19T12:41:40Z [INFO] [MainProcess] writing 47855 points
+2026-10-19T12:41:40Z [INFO] [MainProcess] writing 154156 points
+2026-10-19T12:41:41Z [INFO] [MainProcess] writing 778 points
+2026-10-19T12:41:41Z [INFO] [MainProcess] writing 429134 points
+2026-10-19T12:41:42Z [INFO] [MainProcess] writing 750596 points
+2026-10-19T12:41:42Z [INFO] [MainProcess] writing 980619 points
+2026-10-19T12:41:43Z [INFO] [MainProcess] writing 275138 points
+2026-10-19T12:41:43Z [INFO] [MainProcess] writing 8234 points
+2026-10-19T12:41:44Z [INFO] [MainProcess] writing 5997 points
+2026-10-19T12:41:44Z [INFO] [MainProcess] writing 210089 points
+2026-10-19T12:41:45Z [INFO] [MainProcess] writing 74977 points
+2026-10-19T12:41:45Z [INFO] [MainProcess] writing 17595 points
+2026-10-19T12:41:45Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T12:41:45Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T12:41:45Z [INFO] [MainProcess] Completed data collection in 28.8 seconds.
+2026-10-19T12:41:45Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144115/
+2026-10-19T12:41:46Z [INFO] [MainProcess] Found    908,206 vegetation pts and  1,163,661 ground pts (for DTM)
+2026-10-19T12:41:46Z [INFO] [MainProcess] After SOR:    855,203 pts remaining
+2026-10-19T12:41:46Z [INFO] [MainProcess] 0
+2026-10-19T12:41:46Z [INFO] [MainProcess] Generated window bins
+2026-10-19T12:41:49Z [INFO] [MainProcess] CHM: 550 initial peaks found.
+2026-10-19T12:41:49Z [INFO] [MainProcess] Filter: 140 tiny segments (< 100 pts) and 8 pole or wall like segments dropped.
+2026-10-19T12:41:49Z [INFO] [MainProcess] PCA: 58 multi-tree clusters detected, adding 6 new trees.
+2026-10-19T12:41:49Z [INFO] [MainProcess] -> Segmentation done in: 2.8 s
+2026-10-19T12:41:49Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T12:41:51Z [INFO] [MainProcess] Retrieved 493 features (total: 493)
+2026-10-19T12:41:51Z [INFO] [MainProcess] Found 493 BAG building footprints.
+2026-10-19T12:41:51Z [INFO] [MainProcess] Buildings (BAG): removed 75 trees inside footprints
+2026-10-19T12:41:52Z [INFO] [MainProcess] Created 332 records
+2026-10-19T12:41:52Z [INFO] [MainProcess] Exported 332 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T12:41:53Z [INFO] [MainProcess] 332 trees -> 41,832 vertices 81,008 faces  (6.9 s total)
+2026-10-19T12:41:53Z [INFO] [MainProcess] Merged 1 tiles -> 332 trees, 81,008 faces -> merged_lod2.1*.obj
+2026-10-19T12:44:25Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T12:44:25.966843+00:00Z========================================
+2026-10-19T12:44:25Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T12:44:25Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T12:44:25Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144425\target_region.geojson
+2026-10-19T12:44:26Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:44:26Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:44:26Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T12:44:26Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T12:44:26Z [INFO] [MainProcess] Found 2 intersecting tiles: ['091000_438000', '092000_438000']
+2026-10-19T12:44:26Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-19T12:44:33Z [INFO] [MainProcess] [091000_438000] OK (CACHED)
+2026-10-19T12:44:33Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T12:44:34Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T12:44:34Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-19T12:44:34Z [INFO] [MainProcess] Opening laz file
+2026-10-19T12:44:42Z [INFO] [MainProcess] writing 47851 points
+2026-10-19T12:44:49Z [INFO] [MainProcess] writing 30322 points
+2026-10-19T12:44:50Z [INFO] [MainProcess] writing 104011 points
+2026-10-19T12:44:51Z [INFO] [MainProcess] writing 241468 points
+2026-10-19T12:44:52Z [INFO] [MainProcess] writing 14148 points
+2026-10-19T12:44:59Z [INFO] [MainProcess] writing 45712 points
+2026-10-19T12:44:59Z [INFO] [MainProcess] writing 47855 points
+2026-10-19T12:44:59Z [INFO] [MainProcess] writing 154156 points
+2026-10-19T12:45:00Z [INFO] [MainProcess] writing 778 points
+2026-10-19T12:45:00Z [INFO] [MainProcess] writing 429134 points
+2026-10-19T12:45:01Z [INFO] [MainProcess] writing 750596 points
+2026-10-19T12:45:01Z [INFO] [MainProcess] writing 980619 points
+2026-10-19T12:45:02Z [INFO] [MainProcess] writing 275138 points
+2026-10-19T12:45:02Z [INFO] [MainProcess] writing 8234 points
+2026-10-19T12:45:03Z [INFO] [MainProcess] writing 5997 points
+2026-10-19T12:45:03Z [INFO] [MainProcess] writing 210089 points
+2026-10-19T12:45:03Z [INFO] [MainProcess] writing 74977 points
+2026-10-19T12:45:04Z [INFO] [MainProcess] writing 17595 points
+2026-10-19T12:45:04Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T12:45:04Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T12:45:04Z [INFO] [MainProcess] Completed data collection in 38.1 seconds.
+2026-10-19T12:45:04Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144425/
+2026-10-19T12:45:04Z [INFO] [MainProcess] Found    908,206 vegetation pts and  1,163,661 ground pts (for DTM)
+2026-10-19T12:45:05Z [INFO] [MainProcess] After SOR:    855,203 pts remaining
+2026-10-19T12:45:05Z [INFO] [MainProcess] 0
+2026-10-19T12:45:05Z [INFO] [MainProcess] Generated window bins
+2026-10-19T12:45:06Z [INFO] [MainProcess] CHM: 550 initial peaks found.
+2026-10-19T12:45:06Z [INFO] [MainProcess] Filter: 140 tiny segments (< 100 pts) and 8 pole or wall like segments dropped.
+2026-10-19T12:45:06Z [INFO] [MainProcess] PCA: 58 multi-tree clusters detected, adding 6 new trees.
+2026-10-19T12:45:06Z [INFO] [MainProcess] -> Segmentation done in: 1.2 s
+2026-10-19T12:45:06Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T12:45:08Z [INFO] [MainProcess] Retrieved 493 features (total: 493)
+2026-10-19T12:45:08Z [INFO] [MainProcess] Found 493 BAG building footprints.
+2026-10-19T12:45:08Z [INFO] [MainProcess] Buildings (BAG): removed 75 trees inside footprints
+2026-10-19T12:45:09Z [INFO] [MainProcess] Created 332 records
+2026-10-19T12:45:09Z [INFO] [MainProcess] Exported 332 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T12:45:10Z [INFO] [MainProcess] 332 trees -> 41,832 vertices 81,008 faces  (4.8 s total)
+2026-10-19T12:45:10Z [INFO] [MainProcess] Merged 1 tiles -> 332 trees, 81,008 faces -> merged_lod2.1*.obj
+2026-10-19T12:47:54Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T12:47:54.434362+00:00Z========================================
+2026-10-19T12:47:54Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T12:47:54Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T12:47:54Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144754\target_region.geojson
+2026-10-19T12:47:54Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:47:54Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:47:54Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T12:47:54Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T12:47:54Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T12:47:54Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T12:47:54Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T12:47:54Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T12:48:02Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T12:48:02Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T12:48:03Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T12:48:03Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T12:48:03Z [INFO] [MainProcess] Opening laz file
+2026-10-19T12:48:04Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T12:48:04Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T12:48:12Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T12:48:12Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T12:48:13Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T12:48:15Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T12:48:16Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T12:48:17Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T12:48:17Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T12:48:18Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T12:48:19Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T12:48:19Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T12:48:20Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T12:48:20Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T12:48:20Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T12:48:20Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T12:48:20Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T12:48:23Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T12:48:23Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T12:48:23Z [INFO] [MainProcess] Completed data collection in 28.4 seconds.
+2026-10-19T12:48:23Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_144754/
+2026-10-19T12:48:23Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T12:48:24Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T12:48:24Z [INFO] [MainProcess] 0
+2026-10-19T12:48:24Z [INFO] [MainProcess] Generated window bins
+2026-10-19T12:48:24Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T12:48:24Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T12:48:24Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T12:48:24Z [INFO] [MainProcess] -> Segmentation done in: 0.9 s
+2026-10-19T12:48:24Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T12:48:25Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T12:48:26Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T12:48:26Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T12:48:26Z [INFO] [MainProcess] Created 227 records
+2026-10-19T12:48:26Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T12:48:27Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (3.2 s total)
+2026-10-19T12:48:28Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj
+2026-10-19T12:52:42Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T12:52:42.132151+00:00Z========================================
+2026-10-19T12:52:42Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T12:52:42Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T12:52:42Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_145242\target_region.geojson
+2026-10-19T12:52:42Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:52:42Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:52:42Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T12:52:42Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T12:52:42Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T12:52:42Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T12:52:42Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T12:52:42Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T12:52:48Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T12:52:48Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T12:52:49Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T12:52:49Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T12:52:49Z [INFO] [MainProcess] Opening laz file
+2026-10-19T12:52:49Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T12:52:49Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T12:52:54Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T12:52:54Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T12:52:55Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T12:52:56Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T12:52:56Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T12:52:56Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T12:52:57Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T12:52:57Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T12:52:58Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T12:52:58Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T12:52:59Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T12:52:59Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T12:52:59Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T12:52:59Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T12:52:59Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T12:53:01Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T12:53:01Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T12:53:01Z [INFO] [MainProcess] Completed data collection in 19.3 seconds.
+2026-10-19T12:53:01Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_145242/
+2026-10-19T12:53:02Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T12:53:02Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T12:53:02Z [INFO] [MainProcess] 0
+2026-10-19T12:53:02Z [INFO] [MainProcess] Generated window bins
+2026-10-19T12:53:03Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T12:53:03Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T12:53:03Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T12:53:03Z [INFO] [MainProcess] -> Segmentation done in: 0.8 s
+2026-10-19T12:53:03Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T12:53:15Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T12:53:15Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T12:53:15Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T12:53:15Z [INFO] [MainProcess] Created 227 records
+2026-10-19T12:53:15Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T12:53:16Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (14.0 s total)
+2026-10-19T12:53:17Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj
+2026-10-19T12:56:43Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T12:56:43.211106+00:00Z========================================
+2026-10-19T12:56:43Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T12:56:43Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T12:56:43Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_145643\target_region.geojson
+2026-10-19T12:56:43Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:56:43Z [INFO] [MainProcess] Created 1 records
+2026-10-19T12:56:43Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T12:56:43Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T12:56:43Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T12:56:43Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T12:56:43Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T12:56:43Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T12:56:49Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T12:56:49Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T12:56:50Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T12:56:50Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T12:56:50Z [INFO] [MainProcess] Opening laz file
+2026-10-19T12:56:50Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T12:56:51Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T12:56:55Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T12:56:55Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T12:56:56Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T12:56:57Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T12:56:57Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T12:56:57Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T12:56:58Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T12:56:58Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T12:56:59Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T12:56:59Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T12:57:00Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T12:57:00Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T12:57:00Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T12:57:00Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T12:57:00Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T12:57:03Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T12:57:03Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T12:57:03Z [INFO] [MainProcess] Completed data collection in 19.6 seconds.
+2026-10-19T12:57:03Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_145643/
+2026-10-19T12:57:03Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T12:57:04Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T12:57:04Z [INFO] [MainProcess] 0
+2026-10-19T12:57:05Z [INFO] [MainProcess] Generated window bins
+2026-10-19T12:57:05Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T12:57:05Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T12:57:05Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T12:57:05Z [INFO] [MainProcess] -> Segmentation done in: 1.0 s
+2026-10-19T12:57:05Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T12:57:07Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T12:57:07Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T12:57:07Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T12:57:07Z [INFO] [MainProcess] Created 227 records
+2026-10-19T12:57:07Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T12:57:08Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (3.8 s total)
+2026-10-19T12:57:10Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj
+2026-10-19T13:09:57Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T13:09:57.729649+00:00Z========================================
+2026-10-19T13:09:57Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T13:09:57Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T13:09:57Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_150957\target_region.geojson
+2026-10-19T13:09:57Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:09:57Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:09:57Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T13:09:57Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T13:09:58Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T13:09:58Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T13:09:58Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T13:09:58Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T13:10:04Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T13:10:04Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T13:10:04Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T13:10:04Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T13:10:04Z [INFO] [MainProcess] Opening laz file
+2026-10-19T13:10:05Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T13:10:05Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T13:10:10Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T13:10:10Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T13:10:10Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T13:10:11Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T13:10:12Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T13:10:12Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T13:10:12Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T13:10:13Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T13:10:13Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T13:10:14Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T13:10:14Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T13:10:14Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T13:10:15Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T13:10:15Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T13:10:15Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T13:10:17Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T13:10:17Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T13:10:17Z [INFO] [MainProcess] Completed data collection in 19.2 seconds.
+2026-10-19T13:10:17Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_150957/
+2026-10-19T13:10:17Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T13:10:18Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T13:10:18Z [INFO] [MainProcess] 0
+2026-10-19T13:10:18Z [INFO] [MainProcess] Generated window bins
+2026-10-19T13:10:19Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T13:10:19Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T13:10:19Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T13:10:19Z [INFO] [MainProcess] -> Segmentation done in: 0.8 s
+2026-10-19T13:10:19Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T13:10:19Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T13:10:19Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T13:10:19Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T13:10:20Z [INFO] [MainProcess] Created 227 records
+2026-10-19T13:10:20Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T13:10:21Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (2.9 s total)
+2026-10-19T13:10:22Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj
+2026-10-19T13:11:37Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T13:11:37.719928+00:00Z========================================
+2026-10-19T13:11:37Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T13:11:37Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T13:11:37Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_151137\target_region.geojson
+2026-10-19T13:11:37Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:11:37Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:11:37Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T13:11:37Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T13:11:37Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T13:11:37Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T13:11:38Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T13:11:38Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T13:11:44Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T13:11:44Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T13:11:44Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T13:11:44Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T13:11:44Z [INFO] [MainProcess] Opening laz file
+2026-10-19T13:11:45Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T13:11:45Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T13:11:50Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T13:11:50Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T13:11:50Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T13:11:51Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T13:11:52Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T13:11:52Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T13:11:52Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T13:11:53Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T13:11:53Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T13:11:54Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T13:11:54Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T13:11:55Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T13:11:55Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T13:11:55Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T13:11:55Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T13:11:57Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T13:11:57Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T13:11:57Z [INFO] [MainProcess] Completed data collection in 19.4 seconds.
+2026-10-19T13:11:57Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_151137/
+2026-10-19T13:11:57Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T13:11:58Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T13:11:58Z [INFO] [MainProcess] 0
+2026-10-19T13:11:58Z [INFO] [MainProcess] Generated window bins
+2026-10-19T13:11:58Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T13:11:58Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T13:11:58Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T13:11:58Z [INFO] [MainProcess] -> Segmentation done in: 0.8 s
+2026-10-19T13:11:59Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T13:12:00Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T13:12:00Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T13:12:00Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T13:12:00Z [INFO] [MainProcess] Created 227 records
+2026-10-19T13:12:00Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T13:12:01Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (3.1 s total)
+2026-10-19T13:12:02Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj
+2026-10-19T13:12:26Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-19T13:12:26.488257+00:00Z========================================
+2026-10-19T13:12:26Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-19T13:12:26Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-19T13:12:26Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_151226\target_region.geojson
+2026-10-19T13:12:26Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:12:26Z [INFO] [MainProcess] Created 1 records
+2026-10-19T13:12:26Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-19T13:12:26Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-19T13:12:26Z [INFO] [MainProcess] Found 1 intersecting tiles: ['092000_438000']
+2026-10-19T13:12:26Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-19T13:12:26Z [INFO] [MainProcess] Found 1 intersecting 3D BAG tiles
+2026-10-19T13:12:26Z [INFO] [MainProcess] Processing 1 AHN tiles and 1 3D BAG tiles in parallel using 2 cores.
+2026-10-19T13:12:32Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-19T13:12:32Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-19T13:12:33Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-19T13:12:33Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-19T13:12:33Z [INFO] [MainProcess] Opening laz file
+2026-10-19T13:12:33Z [INFO] [MainProcess] writing 370175 points
+2026-10-19T13:12:34Z [INFO] [MainProcess] writing 135320 points
+2026-10-19T13:12:38Z [INFO] [MainProcess] writing 111310 points
+2026-10-19T13:12:38Z [INFO] [MainProcess] writing 206119 points
+2026-10-19T13:12:39Z [INFO] [MainProcess] writing 232443 points
+2026-10-19T13:12:40Z [INFO] [MainProcess] writing 1613 points
+2026-10-19T13:12:40Z [INFO] [MainProcess] writing 351901 points
+2026-10-19T13:12:41Z [INFO] [MainProcess] writing 630517 points
+2026-10-19T13:12:41Z [INFO] [MainProcess] writing 176661 points
+2026-10-19T13:12:41Z [INFO] [MainProcess] writing 48314 points
+2026-10-19T13:12:42Z [INFO] [MainProcess] writing 137639 points
+2026-10-19T13:12:42Z [INFO] [MainProcess] writing 732249 points
+2026-10-19T13:12:43Z [INFO] [MainProcess] writing 68035 points
+2026-10-19T13:12:43Z [INFO] [MainProcess] writing 18828 points
+2026-10-19T13:12:43Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-19T13:12:43Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-19T13:12:43Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-19T13:12:45Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-19T13:12:45Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-19T13:12:45Z [INFO] [MainProcess] Completed data collection in 19.3 seconds.
+2026-10-19T13:12:45Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261019_151226/
+2026-10-19T13:12:46Z [INFO] [MainProcess] Found    788,136 vegetation pts and  1,112,426 ground pts (for DTM)
+2026-10-19T13:12:46Z [INFO] [MainProcess] After SOR:    739,567 pts remaining
+2026-10-19T13:12:46Z [INFO] [MainProcess] 0
+2026-10-19T13:12:46Z [INFO] [MainProcess] Generated window bins
+2026-10-19T13:12:47Z [INFO] [MainProcess] CHM: 428 initial peaks found.
+2026-10-19T13:12:47Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 13 pole or wall like segments dropped.
+2026-10-19T13:12:47Z [INFO] [MainProcess] PCA: 36 multi-tree clusters detected, adding 4 new trees.
+2026-10-19T13:12:47Z [INFO] [MainProcess] -> Segmentation done in: 0.7 s
+2026-10-19T13:12:47Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-19T13:12:51Z [INFO] [MainProcess] Retrieved 436 features (total: 436)
+2026-10-19T13:12:51Z [INFO] [MainProcess] Found 436 BAG building footprints.
+2026-10-19T13:12:51Z [INFO] [MainProcess] Buildings (BAG): removed 64 trees inside footprints
+2026-10-19T13:12:51Z [INFO] [MainProcess] Created 227 records
+2026-10-19T13:12:51Z [INFO] [MainProcess] Exported 227 tree locations to clipped_output_tree_locations.gpkg
+2026-10-19T13:12:52Z [INFO] [MainProcess] 227 trees -> 468,627 vertices 935,682 faces  (5.9 s total)
+2026-10-19T13:12:53Z [INFO] [MainProcess] Merged 1 tiles -> 227 trees, 935,682 faces -> merged_lod3.1*.obj

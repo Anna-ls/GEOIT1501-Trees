@@ -7,7 +7,6 @@ import json
 
 from shapely import box, contains_xy, Point
 from pathlib import Path
-from cjio import cityjson
 
 def clip_and_merge_pointclouds(
         tiles_folder: str,
@@ -107,8 +106,6 @@ def clip_and_merge_pointclouds(
                             continue
 
                         matched = chunk[cand_idx[poly_mask]]
-
-                    logging.info(f"writing {len(matched)} points")
 
                     writer.write_points(matched)
                     points_written += len(matched)

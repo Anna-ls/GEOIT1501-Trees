@@ -91,7 +91,7 @@ def split_polygon(polygon):
             x += width/x_boxes
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
     
-    result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
+    # result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
 
     return result
 
@@ -456,31 +456,6 @@ def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs) -> gpd.
 
     return gpd.GeoDataFrame(tree_records, crs=crs)
 
-
-def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, polygon=None) -> gpd.GeoDataFrame:
-    """Converts segmented tree point labels into GeoPandas point centroids."""
-    tree_records = []
-    unique_labels = np.unique(labels)
-
-    for lbl in unique_labels:
-        if lbl == 0:
-            continue
-        cluster = pts_veg[labels == lbl]
-
-        # Take highest point (tree top) as point geometry
-        max_idx = np.argmax(cluster[:, 2])
-        top_x, top_y, top_z = cluster[max_idx]
-
-        tree_records.append({
-            "tree_id": int(lbl),
-            "geometry": gpd.points_from_xy([top_x], [top_y])[0],
-            "z_max": float(top_z),
-            "point_count": len(cluster)
-        })
-
-    return gpd.GeoDataFrame(tree_records, crs=crs)
-
-
 def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     """Process one tile end to end and return its crown/trunk meshes.
 
@@ -687,7 +662,7 @@ def _merge_tiles(metas) -> TileMeshes:
             np.zeros((0, 3)), np.zeros((0, 3), dtype=int))
     cvv, cff = stk(cv, cf)
     tvv, tff = stk(tv, tf)
-    return TileMeshes(cvv, cff, tvv, tff, nc, nt)
+    return TileMeshes(cvv, cff, tvv, tff, cg, tg, nc, nt)
 
 
 def run_pipeline(cfg: Config, polygon=None, progress_callback=None):

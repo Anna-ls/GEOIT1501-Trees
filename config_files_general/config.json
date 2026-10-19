@@ -33,5 +33,14 @@
     "voxel_size": 0.75,
     "sigma": 1.5,
     "iso_level": 0.15
+  },
+  "buildings": {
+    "enabled": true,
+    "buffer": 2
+  },
+"output": {
+    "merge_tiles": true,
+    "separate_crown_trunk": true,
+    "merge_touching_crowns": false
   }
 }
