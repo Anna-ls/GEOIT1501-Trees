@@ -14,4 +14,3 @@ scikit-learn
 laspy
 pandas
 trimesh
-base64
