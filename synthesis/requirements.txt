@@ -1,4 +1,5 @@
 laspy[laszip]
+laspy[lazrs]
 numpy
 scipy
 scikit-image
