@@ -14,3 +14,4 @@ scikit-learn
 laspy
 pandas
 trimesh
+pystac_client
