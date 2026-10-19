@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 import geopandas as gpd
 from shapely.geometry import shape, box
+import shapely
 import math
 
 import numpy as np
@@ -21,7 +22,8 @@ from .crown import kept_component_mask, segment_to_marching_cubes
 from scipy.spatial import cKDTree
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
-# from synthesis.determine_lcz_of_area import determine_lcz_of_area
+from synthesis.determine_lcz_of_area import determine_lcz_of_area
+from scipy.ndimage import distance_transform_edt
 
 from .inventory import (
     annotate_and_write,
@@ -65,17 +67,16 @@ def split_polygon(polygon):
         geom = row.geometry
         minx, miny, maxx, maxy = geom.bounds
 
-        for x in range(
-            math.floor(minx / cell_size) * cell_size,
-            math.ceil(maxx / cell_size) * cell_size,
-            cell_size
-        ):
-            for y in range(
-                math.floor(miny / cell_size) * cell_size,
-                math.ceil(maxy / cell_size) * cell_size,
-                cell_size
-            ):
-                cell = box(x, y, x + cell_size, y + cell_size)
+        width = abs(maxx - minx)
+        height = abs(maxy - miny)
+
+        x_boxes = math.floor(width/cell_size)
+        y_boxes = math.floor(height/cell_size)
+        x = minx
+        y = miny
+        while x < maxx:
+            while y < maxy:
+                cell = box(x,y, x + width/x_boxes, y + height/y_boxes)
 
                 # Intersect the grid cell with the original polygon
                 if geom.intersects(cell):
@@ -86,11 +87,106 @@ def split_polygon(polygon):
                             attrs = row.drop(labels="geometry").to_dict()
                             attrs["geometry"] = poly
                             pieces.append(attrs)
+                y += height/y_boxes
+            x += width/x_boxes
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
     
     result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
 
     return result
+
+def combine_tile_results(tile_results):
+    """
+    Combine segmentation results from multiple tiles.
+
+    Each tile result is a dictionary containing:
+        labels : (N,) tree labels; 0 = unassigned
+        dtm    : (ny, nx) terrain raster
+        georef : (x_min, y_min, cell_size)
+
+    Returns
+    -------
+    labels_all : (N_total,) int32
+    dtm_all    : (ny_global, nx_global) float64
+    georef_all : (x_min, y_min, cell_size)
+    """
+    if not tile_results:
+        raise ValueError("tile_results is empty")
+
+    cell_size = tile_results[0]["georef"][2]
+
+    for result in tile_results:
+        if not np.isclose(result["georef"][2], cell_size):
+            raise ValueError("All DTM tiles must use the same cell size")
+
+    # Global DTM extent
+    x_min = min(r["georef"][0] for r in tile_results)
+    y_min = min(r["georef"][1] for r in tile_results)
+
+    x_max = max(
+        r["georef"][0] + (r["dtm"].shape[1] - 1) * cell_size
+        for r in tile_results
+    )
+    y_max = max(
+        r["georef"][1] + (r["dtm"].shape[0] - 1) * cell_size
+        for r in tile_results
+    )
+
+    nx = int(round((x_max - x_min) / cell_size)) + 1
+    ny = int(round((y_max - y_min) / cell_size)) + 1
+
+    # Prepare DTM mosaic
+    dtm_sum = np.zeros((ny, nx), dtype=np.float64)
+    dtm_count = np.zeros((ny, nx), dtype=np.uint32)
+
+    all_labels = []
+    next_label = 1
+
+    for result in tile_results:
+        labels = np.asarray(result["labels"], dtype=np.int32).copy()
+        dtm = np.asarray(result["dtm"], dtype=np.float64)
+        tx, ty, _ = result["georef"]
+
+        # Assign globally unique positive tree IDs
+        positive = labels > 0
+        if positive.any():
+            labels[positive] += next_label - 1
+            next_label = int(labels.max()) + 1
+
+        all_labels.append(labels)
+
+        # Position this tile's DTM in the global grid
+        col = int(round((tx - x_min) / cell_size))
+        row = int(round((ty - y_min) / cell_size))
+
+        h, w = dtm.shape
+        target = (slice(row, row + h), slice(col, col + w))
+
+        valid = np.isfinite(dtm)
+        dtm_sum[target] += np.where(valid, dtm, 0.0)
+        dtm_count[target] += valid.astype(np.uint32)
+
+    # Average overlapping valid cells
+    dtm_all = np.full((ny, nx), np.nan, dtype=np.float64)
+    valid = dtm_count > 0
+    dtm_all[valid] = dtm_sum[valid] / dtm_count[valid]
+
+    # Fill remaining gaps, if any valid cells exist
+    if valid.any() and (~valid).any():
+        nearest = distance_transform_edt(
+            ~valid, return_distances=False, return_indices=True
+        )
+        nearest_dtm = dtm_all[tuple(nearest)]
+        dtm_all[~valid] = nearest_dtm[~valid]
+
+    labels_all = np.concatenate(all_labels).astype(np.int32)
+
+    return labels_all, dtm_all, (x_min, y_min, cell_size)
+
+def filter_points_by_polygon(pts, polygon):
+    point_geometries = shapely.points(pts[:, 0], pts[:, 1])
+    mask = shapely.contains(polygon, point_geometries)
+    return pts[mask]
 
 def extract_polygons(geom):
     if geom.is_empty:
@@ -437,24 +533,45 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
-    split_polygon(polygon)
+    splitted_polygon = split_polygon(polygon)
     area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
     # -------------------------------------------------------------------
+    temp_results = []
+    for idx, poly in enumerate(splitted_polygon.geometry):
+        single_polygon = gpd.GeoDataFrame(
+        {"geometry": [poly]},
+        crs=splitted_polygon.crs
+        )
+        area_type = determine_lcz_of_area(single_polygon)
 
-    
+        temp_pts_veg = filter_points_by_polygon(pts_veg, single_polygon)
+        temp_pts_ground = filter_points_by_polygon(pts_ground, single_polygon)
 
-    labels, dtm, georef = segment_trees_chm(
-        pts_veg, pts_ground,
-        cell_size=cfg.segmentation.cell_size,
-        smooth_sigma=cfg.segmentation.smooth_sigma,
-        min_height=cfg.segmentation.min_height,
-        peak_min_dist_m=cfg.segmentation.peak_min_dist,
-        min_tree_points=cfg.segmentation.min_tree_pts,
-        area_type="mid_built_up"
-    )
+        labels, dtm, georef = segment_trees_chm(
+            temp_pts_veg, temp_pts_ground,
+            cell_size=cfg.segmentation.cell_size,
+            smooth_sigma=cfg.segmentation.smooth_sigma,
+            min_height=cfg.segmentation.min_height,
+            peak_min_dist_m=cfg.segmentation.peak_min_dist,
+            min_tree_points=cfg.segmentation.min_tree_pts,
+            area_type=area_type
+        )
+        temp_results.append((labels, dtm, georef))
+
+    labels, dtm, georef = combine_tile_labels(temp_results)
+
+    # labels, dtm, georef = segment_trees_chm(
+    #     pts_veg, pts_ground,
+    #     cell_size=cfg.segmentation.cell_size,
+    #     smooth_sigma=cfg.segmentation.smooth_sigma,
+    #     min_height=cfg.segmentation.min_height,
+    #     peak_min_dist_m=cfg.segmentation.peak_min_dist,
+    #     min_tree_points=cfg.segmentation.min_tree_pts,
+    #     area_type="mid_built_up"
+    # )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 

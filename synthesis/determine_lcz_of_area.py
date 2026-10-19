@@ -8,7 +8,7 @@ from shapely.geometry import shape
 import logging
 import os
 
-def determine_lcz_of_area(polygon: str | Path | dict):
+def determine_lcz_of_area(polygon: str | Path | dict | gpd.GeoDataFrame):
 
     logging.info(f"Determining urban class of area")
 
@@ -29,6 +29,11 @@ def determine_lcz_of_area(polygon: str | Path | dict):
             crs="EPSG:4326"
         )
         gdf.to_file(_path, driver="GPKG", layer="aoi")
+        polygon = _path
+
+    if type(polygon) == gpd.GeoDataFrame:
+        gdf = polygon
+        gdf.to_file(_path, driver = "GPKG", layer = "aoi")
         polygon = _path
     
     name = str(polygon)
