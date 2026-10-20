@@ -8,6 +8,8 @@ from shapely.geometry import shape
 import logging
 import os
 
+root_dir = Path(__file__).resolve().parent.parent
+
 def determine_lcz_of_area(polygon: str | Path | dict | gpd.GeoDataFrame):
 
     logging.info(f"Determining urban class of area")
@@ -19,7 +21,7 @@ def determine_lcz_of_area(polygon: str | Path | dict | gpd.GeoDataFrame):
     if polygon is None:
         print("No input polygon provided")
         return
-    _path = "DATA/OUT/temp_geometry.gpkg"
+    _path = Path(root_dir) / "DATA"/ "OUT" / "temp_geometry.gpkg"
 
     if type(polygon) == dict:
         logging.info(polygon)
@@ -158,7 +160,7 @@ def group_training_parameters(train_parameters):
     return class_profiles
 
 def load_lcz_parameters():
-    lcz_features_path = Path("synthesis/tuning-files/ndvi_building_features.json")
+    lcz_features_path = Path(f"{root_dir}/synthesis/tuning-files/ndvi_building_features.json")
 
     with open(lcz_features_path, "r") as f:
             lcz_features = json.load(f)

@@ -627,20 +627,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         trees_gdf.to_file(out_file, driver="GPKG")
         logging.info(f"Exported {len(trees_gdf)} tree locations to {out_file.name}")
 
-    # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None
-    # if cfg.inventory.enabled and inventory is not None:
-    #     inv_csv = cfg.paths.output_dir / f"{tile_name}_trees.csv"
-    #     n_matched, n_alive, n_dbh = annotate_and_write(
-    #         inv_csv, labels, pts_veg[:, :2], cfg.translation, epsg,
-    #         inventory, cfg.inventory.match_dist
-    #     )
-    #     print(
-    #         f"    inventory: matched {n_matched}/{n_alive} trees, "
-    #         f"{len(n_dbh)} with DBH -> {inv_csv.name}"
-    #     )
-    #     inv_lonlat, inv_recs = inventory
-    #     inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
 
     if progress_callback:
         progress_callback(f"Reconstructing 3D meshes...")

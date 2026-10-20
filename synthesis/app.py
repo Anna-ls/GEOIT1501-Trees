@@ -192,7 +192,7 @@ if st.button("Run Reconstruction Pipeline"):
                 "crown": {
                     "voxel_size": 0.5,
                     "sigma": 1.5,
-                    "iso_level": 0.15,
+                    "iso_level": 0.10,
                     "min_component_frac": 0.3
                 },
                 "buildings": {
