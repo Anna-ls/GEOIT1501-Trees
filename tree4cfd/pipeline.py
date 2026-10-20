@@ -24,6 +24,7 @@ from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
 from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
+from shapely.affinity import translate as translate_geometry
 
 from .inventory import (
     annotate_and_write,
@@ -91,25 +92,14 @@ def split_polygon(polygon):
             x += width/x_boxes
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
     
-    # result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
+    result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
 
     return result
 
-def combine_tile_results(tile_results):
-    """
-    Combine segmentation results from multiple tiles.
 
-    Each tile result is a dictionary containing:
-        labels : (N,) tree labels; 0 = unassigned
-        dtm    : (ny, nx) terrain raster
-        georef : (x_min, y_min, cell_size)
+def combine_tile_results(tile_results, n_points):
+    """Combine polygon segmentation results while preserving point order."""
 
-    Returns
-    -------
-    labels_all : (N_total,) int32
-    dtm_all    : (ny_global, nx_global) float64
-    georef_all : (x_min, y_min, cell_size)
-    """
     if not tile_results:
         raise ValueError("tile_results is empty")
 
@@ -119,7 +109,7 @@ def combine_tile_results(tile_results):
         if not np.isclose(result["georef"][2], cell_size):
             raise ValueError("All DTM tiles must use the same cell size")
 
-    # Global DTM extent
+    # Global DTM extent.
     x_min = min(r["georef"][0] for r in tile_results)
     y_min = min(r["georef"][1] for r in tile_results)
 
@@ -135,27 +125,46 @@ def combine_tile_results(tile_results):
     nx = int(round((x_max - x_min) / cell_size)) + 1
     ny = int(round((y_max - y_min) / cell_size)) + 1
 
-    # Prepare DTM mosaic
     dtm_sum = np.zeros((ny, nx), dtype=np.float64)
     dtm_count = np.zeros((ny, nx), dtype=np.uint32)
 
-    all_labels = []
+    # Crucial: labels are indexed by the original point-cloud order.
+    labels_all = np.zeros(n_points, dtype=np.int32)
     next_label = 1
 
     for result in tile_results:
-        labels = np.asarray(result["labels"], dtype=np.int32).copy()
+        local_labels = np.asarray(
+            result["labels"], dtype=np.int32
+        ).ravel()
+
+        point_indices = np.asarray(
+            result["point_indices"], dtype=np.int64
+        ).ravel()
+
+        if len(local_labels) != len(point_indices):
+            raise ValueError(
+                "Label/index mismatch: "
+                f"{len(local_labels)} labels vs "
+                f"{len(point_indices)} point indices"
+            )
+
+        if np.any(point_indices < 0) or np.any(point_indices >= n_points):
+            raise ValueError("Point index out of bounds")
+
+        # Assign globally unique IDs to positive labels.
+        positive = local_labels > 0
+        if positive.any():
+            local_labels = local_labels.copy()
+            local_labels[positive] += next_label - 1
+            next_label = int(local_labels.max()) + 1
+
+        # Restore labels to their original vegetation point positions.
+        labels_all[point_indices] = local_labels
+
+        # Mosaic this polygon's DTM.
         dtm = np.asarray(result["dtm"], dtype=np.float64)
         tx, ty, _ = result["georef"]
 
-        # Assign globally unique positive tree IDs
-        positive = labels > 0
-        if positive.any():
-            labels[positive] += next_label - 1
-            next_label = int(labels.max()) + 1
-
-        all_labels.append(labels)
-
-        # Position this tile's DTM in the global grid
         col = int(round((tx - x_min) / cell_size))
         row = int(round((ty - y_min) / cell_size))
 
@@ -166,12 +175,12 @@ def combine_tile_results(tile_results):
         dtm_sum[target] += np.where(valid, dtm, 0.0)
         dtm_count[target] += valid.astype(np.uint32)
 
-    # Average overlapping valid cells
+    # Average overlapping valid DTM cells.
     dtm_all = np.full((ny, nx), np.nan, dtype=np.float64)
     valid = dtm_count > 0
     dtm_all[valid] = dtm_sum[valid] / dtm_count[valid]
 
-    # Fill remaining gaps, if any valid cells exist
+    # Fill gaps with nearest valid terrain values.
     if valid.any() and (~valid).any():
         nearest = distance_transform_edt(
             ~valid, return_distances=False, return_indices=True
@@ -179,9 +188,8 @@ def combine_tile_results(tile_results):
         nearest_dtm = dtm_all[tuple(nearest)]
         dtm_all[~valid] = nearest_dtm[~valid]
 
-    labels_all = np.concatenate(all_labels).astype(np.int32)
-
     return labels_all, dtm_all, (x_min, y_min, cell_size)
+
 
 def filter_points_by_polygon(pts, polygon):
     point_geometries = shapely.points(pts[:, 0], pts[:, 1])
@@ -514,29 +522,60 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
     # -------------------------------------------------------------------
-    temp_results = []
-    for idx, poly in enumerate(splitted_polygon.geometry):
-        single_polygon = gpd.GeoDataFrame(
-        {"geometry": [poly]},
-        crs=splitted_polygon.crs
-        )
-        area_type = determine_lcz_of_area(single_polygon)
 
-        temp_pts_veg = filter_points_by_polygon(pts_veg, single_polygon)
-        temp_pts_ground = filter_points_by_polygon(pts_ground, single_polygon)
+    temp_results = []
+    for poly in splitted_polygon.geometry:
+        poly_local = translate_geometry(
+                poly,
+                xoff=-translation[0],
+                yoff=-translation[1],
+            )
+
+        # Keep the polygon as a Shapely geometry.
+        point_geometries = shapely.points(
+            pts_veg[:, 0], pts_veg[:, 1]
+        )
+        veg_mask = shapely.contains(poly_local, point_geometries)
+
+        veg_indices = np.flatnonzero(veg_mask)
+        temp_pts_veg = pts_veg[veg_mask]
+
+        # Filter ground points using the same polygon.
+        ground_geometries = shapely.points(
+            pts_ground[:, 0], pts_ground[:, 1]
+        )
+        ground_mask = shapely.contains(poly_local, ground_geometries)
+        temp_pts_ground = pts_ground[ground_mask]
 
         labels, dtm, georef = segment_trees_chm(
-            temp_pts_veg, temp_pts_ground,
+            temp_pts_veg,
+            temp_pts_ground,
             cell_size=cfg.segmentation.cell_size,
             smooth_sigma=cfg.segmentation.smooth_sigma,
             min_height=cfg.segmentation.min_height,
             peak_min_dist_m=cfg.segmentation.peak_min_dist,
             min_tree_points=cfg.segmentation.min_tree_pts,
-            area_type=area_type
+            area_type=determine_lcz_of_area(
+                gpd.GeoDataFrame(
+                    geometry=[poly],
+                    crs=splitted_polygon.crs,
+                )
+            ),
         )
-        temp_results.append((labels, dtm, georef))
 
-    labels, dtm, georef = combine_tile_labels(temp_results)
+        temp_results.append({
+            "labels": labels,
+            "point_indices": veg_indices,
+            "dtm": dtm,
+            "georef": georef,
+        })
+
+    labels, dtm, georef = combine_tile_results(
+        temp_results,
+        n_points=len(pts_veg),
+    )
+
+    logging.info("Merged segmentation results")
 
     # labels, dtm, georef = segment_trees_chm(
     #     pts_veg, pts_ground,
