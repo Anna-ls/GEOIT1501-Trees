@@ -1,12 +1,23 @@
 import base64
 import streamlit as st
 
-def render_3d_objs(file_paths):
+def render_3d_objs(file_paths, size_limit_mb = 200):
     objects_data = []
+    total_size_bytes = 0
+    size_limit_bytes = size_limit_mb * 1024 * 1024
 
     for path in file_paths:
         with open(path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode("utf-8")
+            file_data = f.read()
+
+        total_size_bytes += len(file_data)
+
+        if total_size_bytes > size_limit_bytes:
+            st.warning(
+                f"Total file size exceeds the {size_limit_mb}MB limit. 3D view will not be rendered to prevent performance issues.")
+            return
+
+        b64 = base64.b64encode(f.read()).decode("utf-8")
 
         name = path.name.lower()
         if "crown" in name:

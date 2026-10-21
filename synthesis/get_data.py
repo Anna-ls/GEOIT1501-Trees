@@ -1,8 +1,6 @@
 import sys
 from pathlib import Path
 
-from synthesis.clip_and_merge import clip_and_merge_cityjson, cityjson_to_obj
-
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import logging
@@ -14,13 +12,13 @@ import gzip
 import shutil
 
 from CFTree.config import get_config, setup_logger
-from CFTree.download_geotiles import download_tile
-from clip_and_merge import clip_and_merge_pointclouds, clip_and_merge_objs, clip_and_merge_cityjson
+from CFTree.download_tiles import download_tile
+from clip_and_merge import clip_and_merge_pointclouds, clip_and_merge_cityjson, cityjson_to_obj
 
 # ---------------------------------------------------------------
 # ----------------------- Tile worker ---------------------------
 # ---------------------------------------------------------------
-def download_ahn_tiles(tile_id: str, output_dir: Path, base_url: str, overwrite: bool) -> dict:
+def download_ahn_tiles(tile_id: str, output_dir: Path, base_urls: list[str], overwrite: bool) -> dict:
     """Download raw AHN tile"""
     try:
         # Check if tile is already downloaded
@@ -36,19 +34,17 @@ def download_ahn_tiles(tile_id: str, output_dir: Path, base_url: str, overwrite:
                     },
                 }
         # If not, download raw tile
-        result_dl = download_tile(tile_id, output_dir, base_url, overwrite=overwrite)
-        laz_path = result_dl.get("paths", {}).get("laz")
+        for base_url in base_urls:
+            result_dl = download_tile(tile_id, output_dir, base_url, overwrite=overwrite)
+            laz_path = result_dl.get("paths", {}).get("laz")
 
-        if result_dl["status"] != "ok" or not laz_path or not Path(laz_path).exists():
-            return {"tile_id": tile_id, "status": "download_failed"}
+            if result_dl["status"] == "ok" and laz_path and Path(laz_path).exists():
+                return {"tile_id": tile_id, "status": "ok", "paths": {"raw": str(laz_path),}, "source_url": base_url}
 
         # Return tile summary
         return {
             "tile_id": tile_id,
-            "status": "ok",
-            "paths": {
-                "raw": str(laz_path),
-            },
+            "status": "download_failed",
         }
 
     except Exception as e:
@@ -158,7 +154,10 @@ def process_geojson(
         return 0.0, 0.0
     logging.info(f"Found {len(tile_ids)} intersecting tiles: {tile_ids if len(tile_ids) <= 10 else '...'}")
 
-    base_url = "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
+    ahn_base_urls = [
+        "https://fsn1.your-objectstorage.com/hwh-ahn/AHN6/01_LAZ",
+        "https://fsn1.your-objectstorage.com/hwh-ahn/AHN5_KM/01_LAZ"
+    ]
 
     # ---------------------------------------------------
     # ---------------- Find BAG tile IDs ----------------
@@ -187,7 +186,7 @@ def process_geojson(
         logging.info(f"Processing {len(tile_ids)} AHN tiles and {len(bag_downloads)} 3D BAG tiles in parallel using {n_cores} cores.")
         with ProcessPoolExecutor(max_workers=n_cores) as pool:
             ahn_futures = {
-                pool.submit(download_ahn_tiles, tid, tiles_dir, base_url, overwrite): tid
+                pool.submit(download_ahn_tiles, tid, tiles_dir, ahn_base_urls, overwrite): tid
                 for tid in tile_ids
             }
             for f in as_completed(ahn_futures):
@@ -213,7 +212,7 @@ def process_geojson(
     else:
         logging.info("Running serial mode.")
         for tid in tile_ids:
-            result = download_ahn_tiles(tid, tiles_dir, base_url, overwrite)
+            result = download_ahn_tiles(tid, tiles_dir, ahn_base_urls, overwrite)
             logging.info(f"[AHN {tid}] {result['status'].upper()}")
         if download_buildings:
             for item in bag_downloads:

@@ -8,6 +8,7 @@ sys.path.append(str(root_dir))
 import streamlit as st
 import folium
 import json
+import geopandas as gpd
 
 from folium.plugins import Draw
 from streamlit_folium import st_folium
@@ -20,6 +21,9 @@ from rendering import render_3d_objs
 
 st.title("Urban Tree Reconstruction")
 st.write("Draw or upload a polygon and generate tree meshes within that area.")
+
+if "out_dir" not in st.session_state:
+    st.session_state.out_dir = None
 
 # Adds option to either draw a polygon or upload one
 input_method = st.radio("Choose input method:", ("Draw on Map", "Upload GeoJSON"))
@@ -66,6 +70,9 @@ if input_method == "Draw on Map":
     st_data = st_folium(m, width=700, height=500)
 else:
     uploaded_file = st.file_uploader("Upload a GeoJSON file defining your AOI", type=["geojson", "json"])
+
+execution_times = {}
+total_time = 0
 
 # ---------------------------------------------------------------
 # ---------------------- Pipeline execution ---------------------
@@ -115,9 +122,6 @@ if st.button("Run Reconstruction Pipeline"):
             laz_output = out_dir / "clipped_output.laz"
             if laz_output.exists():
                 laz_output.unlink()
-
-            execution_times = {}
-            import geopandas as gpd
 
             aoi_gdf = gpd.read_file(geojson_path)
 
@@ -234,43 +238,49 @@ if st.button("Run Reconstruction Pipeline"):
             with open(out_dir / "time-summary.json", "w") as f:
                 json.dump(json_data, f, indent=4)
 
-            # Expose the resulting .obj file for download
-            generated_objs = list(out_dir.glob("*.obj"))
-            output_crown_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_crown.obj"
-            output_trunk_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_trunk.obj"
-            output_bag_path = out_dir / "buildings_obj.obj"
-
-            if generated_objs:
-                st.subheader("**Download meshes**")
-                for obj_path in generated_objs:
-                    if obj_path == output_crown_obj_path:
-                        label = "Download Meshed Trees (.obj)"
-                    elif obj_path == output_trunk_obj_path:
-                        label = "Download Trunk Geometries (.obj)"
-                    elif obj_path == output_bag_path:
-                        label = "Download 3DBAG Geometries (.obj)"
-                    else:
-                        label = f"Download {obj_path.name}"
-                    with open(obj_path, "rb") as file:
-                        st.download_button(
-                            label=label,
-                            data=file,
-                            mime="model/obj",
-                            key=obj_path.name
-                        )
-                st.subheader("**3D Preview**")
-                with st.spinner("Loading 3D viewer..."):
-                    render_3d_objs(generated_objs)
-            else:
-                st.warning(f"Pipeline finished, but no .obj files were found.")
-
-            st.subheader("Execution Time Summary")
-            # Format the dictionary for a clean Streamlit table
-            summary_data = {
-                "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
-                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
-            }
-            st.table(pd.DataFrame(summary_data))
+            st.session_state.out_dir = out_dir
 
         except Exception as e:
             st.error(f"An error occurred while running the pipeline: {e}")
+
+
+if st.session_state.out_dir:
+    out_dir = st.session_state.out_dir
+    # Expose the resulting .obj file for download
+    generated_objs = list(out_dir.glob("*.obj"))
+    output_crown_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_crown.obj"
+    output_trunk_obj_path = out_dir / f"merged_lod{int(lod_value)}.1_trunk.obj"
+    output_bag_path = out_dir / "buildings_obj.obj"
+
+    if generated_objs:
+        st.subheader("**Download meshes**")
+        for obj_path in generated_objs:
+            if obj_path == output_crown_obj_path:
+                label = "Download Meshed Trees (.obj)"
+            elif obj_path == output_trunk_obj_path:
+                label = "Download Trunk Geometries (.obj)"
+            elif obj_path == output_bag_path:
+                label = "Download 3DBAG Geometries (.obj)"
+            else:
+                label = f"Download {obj_path.name}"
+            with open(obj_path, "rb") as file:
+                st.download_button(
+                    label=label,
+                    data=file,
+                    mime="model/obj",
+                    key=obj_path.name
+                )
+        st.subheader("**3D Preview**")
+        with st.spinner("Loading 3D viewer..."):
+            render_3d_objs(generated_objs)
+
+        st.subheader("Execution Time Summary")
+        # Format the dictionary for a clean Streamlit table
+        summary_data = {
+            "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
+            "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
+        }
+        st.table(pd.DataFrame(summary_data))
+
+    else:
+        st.warning(f"Pipeline finished, but no .obj files were found.")

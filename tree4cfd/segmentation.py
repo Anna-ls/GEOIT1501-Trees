@@ -343,7 +343,7 @@ def segment_trees_chm(
         mask = labels == lbl
         cluster_pts = pts_veg[mask]
 
-        if np.min(cluster_pts[:, 2]) > 10.0:
+        if np.min(cluster_pts[:, 2]) > 7.0:
             labels[mask] = 0
             continue
 
