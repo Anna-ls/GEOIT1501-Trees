@@ -24,6 +24,7 @@ from scipy.sparse.csgraph import connected_components
 from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
 from shapely.affinity import translate as translate_geometry
+import shapely
 
 from .inventory import (
     annotate_and_write,
@@ -547,7 +548,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
-    split_polygon(polygon)
+    splitted_polygon = split_polygon(polygon)
     area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
