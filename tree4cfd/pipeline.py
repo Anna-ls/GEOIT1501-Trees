@@ -24,6 +24,7 @@ from scipy.sparse.csgraph import connected_components
 from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
 from shapely.affinity import translate as translate_geometry
+from synthesis.simplify_obj import simplify_geometry
 import shapely
 
 from .inventory import (
@@ -376,17 +377,19 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
             cx, cy = float(cpts[:, 0].mean()), float(cpts[:, 1].mean())
             dx, dy = float(np.ptp(cpts[:, 0])), float(np.ptp(cpts[:, 1]))
             z_top = max(float(cpts[:, 2].max()), z_cb + 0.5)
-            if base <= 1:           # block of just the crown volume
+            if base <= 1:           # block of just the crown volume = LoD1
                 v_crown, f_crown = block_mesh(cx, cy, z_cb, z_top, dx, dy,
                                               n_sides=cfg.trunk.n_sides)
-            else:                   # species-driven crown primitive
+            else:                   # species-driven crown primitive = LoD2
                 v_crown, f_crown = crown_primitive(shape, cx, cy, z_cb, z_top, dx, dy,
                                                    n_sides=cfg.trunk.n_sides)
-        else:                       # marching-cubes canopy hull
+        else:                       # marching-cubes canopy hull = LoD3
             v_crown, f_crown = segment_to_marching_cubes(
                 sub_pts, voxel_size=cfg.crown.voxel_size, sigma=cfg.crown.sigma,
                 iso_level=cfg.crown.iso_level,
                 min_component_frac=cfg.crown.min_component_frac)
+            # if getattr(cfg.crown, 'simplify_ratio', None):
+            #     v_crown, f_crown = simplify_geometry(v_crown, f_crown, target_ratio=cfg.crown.simplify_ratio)
         if len(v_crown) == 0:
             return
         _add_crown(tree_id, v_crown, f_crown)

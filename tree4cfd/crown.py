@@ -7,6 +7,11 @@ from typing import Tuple
 import numpy as np
 from scipy.ndimage import gaussian_filter, label as cc_label
 from skimage.measure import marching_cubes
+import trimesh
+import easy3d
+from easy3d import SurfaceMeshIO, SurfaceMeshSimplification
+
+easy3d.initialize(False)
 
 # 26-connectivity so diagonally touching voxels count as one crown.
 _CONNECTIVITY = np.ones((3, 3, 3), dtype=int)
@@ -119,5 +124,10 @@ def segment_to_marching_cubes(
     except ValueError:
         return np.zeros((0, 3)), np.zeros((0, 3), dtype=int)
 
+    faces = faces[:, ::-1]
+
     verts = verts * voxel_size + min_b
-    return verts, faces
+
+    mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
+
+    return mesh.vertices, mesh.faces

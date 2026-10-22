@@ -172,7 +172,7 @@ if st.button("Run Reconstruction Pipeline"):
                 },
                 "segmentation": {
                     "cell_size": 0.4,
-                    "smooth_sigma": 2.5,
+                    "smooth_sigma": 2.8,
                     "min_height": 2.0,
                     "peak_min_dist": 1.8,
                     "min_tree_pts": 100,
@@ -182,7 +182,7 @@ if st.button("Run Reconstruction Pipeline"):
                         "max_offset_ratio": 1.5,
                         "num_angles": 4,
                         "bin_size": 0.5,
-                        "smooth_sigma": 2.0
+                        "smooth_sigma": 2.8
                     }
                 },
                 "trunk": {
@@ -197,7 +197,8 @@ if st.button("Run Reconstruction Pipeline"):
                     "voxel_size": 0.5,
                     "sigma": 1.5,
                     "iso_level": 0.10,
-                    "min_component_frac": 0.3
+                    "min_component_frac": 0.3,
+                    "simplify_ratio": 0.5
                 },
                 "buildings": {
                     "enabled": True,
