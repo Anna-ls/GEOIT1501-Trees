@@ -85,46 +85,58 @@ def get_outlines(tiles):
     return {"geometry": bounding_box_4326}
 
 
-def split_polygon(polygon):
+def split_polygon(polygon, cell_size=500):
+    geom = shape(polygon["geometry"])
 
-    _polygon = shape(polygon["geometry"])
     gdf = gpd.GeoDataFrame(
-        [{"geometry": _polygon}],
+        [{"geometry": geom}],
         crs="EPSG:4326"
-    )
+    ).to_crs("EPSG:28992")
 
-    gdf = gdf.to_crs("EPSG:28992")
-    cell_size = 500
+    geom = gdf.geometry.iloc[0]
+    minx, miny, maxx, maxy = geom.bounds
+
+    width = maxx - minx
+    height = maxy - miny
+
+    # Number of cells needed in each direction
+    x_boxes = max(1, math.ceil(width / cell_size))
+    y_boxes = max(1, math.ceil(height / cell_size))
+
+    # Stretch cells evenly to fit the bounding box
+    cell_width = width / x_boxes
+    cell_height = height / y_boxes
+
     pieces = []
 
-    for idx, row in gdf.iterrows():
-        geom = row.geometry
-        minx, miny, maxx, maxy = geom.bounds
+    for i in range(x_boxes):
+        for j in range(y_boxes):
+            x1 = minx + i * cell_width
+            y1 = miny + j * cell_height
 
-        for x in range(
-            math.floor(minx / cell_size) * cell_size,
-            math.ceil(maxx / cell_size) * cell_size,
-            cell_size
-        ):
-            for y in range(
-                math.floor(miny / cell_size) * cell_size,
-                math.ceil(maxy / cell_size) * cell_size,
-                cell_size
-            ):
-                cell = box(x, y, x + cell_size, y + cell_size)
+            cell = box(
+                x1,
+                y1,
+                minx + (i + 1) * cell_width,
+                miny + (j + 1) * cell_height
+            )
 
-                # Intersect the grid cell with the original polygon
-                if geom.intersects(cell):
-                    intersection = geom.intersection(cell)
+            intersection = geom.intersection(cell)
 
-                    for poly in extract_polygons(intersection):
-                        if poly.area > 0:
-                            attrs = row.drop(labels="geometry").to_dict()
-                            attrs["geometry"] = poly
-                            pieces.append(attrs)
-    result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
-    
-    result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
+            for poly in extract_polygons(intersection):
+                if poly.area > 0:
+                    pieces.append({"geometry": poly})
+
+    result = gpd.GeoDataFrame(
+        pieces,
+        geometry="geometry",
+        crs=gdf.crs
+    )
+
+    result.to_file(
+        "data/out/splitted_polygon.gpkg",
+        driver="GPKG"
+    )
 
     return result
 
@@ -549,7 +561,6 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
 
     t_start_segment = time.perf_counter()
     splitted_polygon = split_polygon(polygon)
-    area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
     # --- CHM segmentation (returns the DTM for trunk ground lookup) ----
@@ -564,21 +575,27 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
             )
 
         # Keep the polygon as a Shapely geometry.
-        point_geometries = shapely.points(
-            pts_veg[:, 0], pts_veg[:, 1]
+        logging.info("Filtering points for polygon...")
+        shapely.prepare(poly_local)
+
+        veg_mask = shapely.contains_xy(
+            poly_local,
+            pts_veg[:, 0],
+            pts_veg[:, 1]
         )
-        veg_mask = shapely.contains(poly_local, point_geometries)
 
         veg_indices = np.flatnonzero(veg_mask)
         temp_pts_veg = pts_veg[veg_mask]
 
-        # Filter ground points using the same polygon.
-        ground_geometries = shapely.points(
-            pts_ground[:, 0], pts_ground[:, 1]
+        ground_mask = shapely.contains_xy(
+            poly_local,
+            pts_ground[:, 0],
+            pts_ground[:, 1]
         )
-        ground_mask = shapely.contains(poly_local, ground_geometries)
+
         temp_pts_ground = pts_ground[ground_mask]
 
+        logging.info("Starting segmentation for sub-polygon...")
         labels, dtm, georef = segment_trees_chm(
             temp_pts_veg,
             temp_pts_ground,
