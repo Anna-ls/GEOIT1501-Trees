@@ -17,7 +17,7 @@ def render_3d_objs(file_paths, size_limit_mb = 200):
                 f"Total file size exceeds the {size_limit_mb}MB limit. 3D view will not be rendered to prevent performance issues.")
             return
 
-        b64 = base64.b64encode(f.read()).decode("utf-8")
+        b64 = base64.b64encode(file_data).decode("utf-8")
 
         name = path.name.lower()
         if "crown" in name:

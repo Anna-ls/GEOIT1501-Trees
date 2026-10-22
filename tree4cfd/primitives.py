@@ -53,7 +53,8 @@ def cone_mesh(cx, cy, z0, z1, r, n_sides: int = 12) -> Tuple[np.ndarray, np.ndar
         j = (k + 1) % n_sides
         faces.append([k, j, apex])        # side (outward)
         faces.append([base_c, j, k])      # base (downward)
-    return verts, np.array(faces, dtype=np.int32)
+    faces_array = np.array(faces, dtype=np.int32)[:, ::-1]
+    return verts, faces_array
 
 
 def ellipsoid_mesh(cx, cy, cz, a, b, c, n_lat: int = 8,
@@ -84,7 +85,8 @@ def ellipsoid_mesh(cx, cy, cz, a, b, c, n_lat: int = 8,
         j2 = (j + 1) % n_lon
         faces.append([top, rings[0][j2], rings[0][j]])
         faces.append([bot, rings[-1][j], rings[-1][j2]])
-    return np.asarray(verts, dtype=float), np.array(faces, dtype=np.int32)
+    faces_array = np.array(faces, dtype=np.int32)[:, ::-1]
+    return np.asarray(verts, dtype=float), faces_array
 
 
 def crown_primitive(shape: str, cx, cy, z0, z1, dx, dy,
