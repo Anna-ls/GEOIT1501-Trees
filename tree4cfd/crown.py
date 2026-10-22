@@ -103,6 +103,7 @@ def segment_to_marching_cubes(
     sigma: float = 1.5,
     iso_level: float = 0.15,
     min_component_frac: float = 0.1,
+    ratio: float = 0.5,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Build a watertight crown mesh for one tree's points.
 
@@ -130,4 +131,8 @@ def segment_to_marching_cubes(
 
     mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
 
-    return mesh.vertices, mesh.faces
+    trimesh.smoothing.filter_taubin(mesh, iterations=10)
+
+    simplified_mesh = mesh.simplify_quadric_decimation(percent=ratio)
+
+    return simplified_mesh.vertices, simplified_mesh.faces

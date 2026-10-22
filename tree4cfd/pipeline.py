@@ -24,7 +24,6 @@ from scipy.sparse.csgraph import connected_components
 from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
 from shapely.affinity import translate as translate_geometry
-from synthesis.simplify_obj import simplify_geometry
 import shapely
 
 from .inventory import (
@@ -387,9 +386,8 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
             v_crown, f_crown = segment_to_marching_cubes(
                 sub_pts, voxel_size=cfg.crown.voxel_size, sigma=cfg.crown.sigma,
                 iso_level=cfg.crown.iso_level,
-                min_component_frac=cfg.crown.min_component_frac)
-            # if getattr(cfg.crown, 'simplify_ratio', None):
-            #     v_crown, f_crown = simplify_geometry(v_crown, f_crown, target_ratio=cfg.crown.simplify_ratio)
+                min_component_frac=cfg.crown.min_component_frac,
+                ratio=cfg.crown.simplify_ratio)
         if len(v_crown) == 0:
             return
         _add_crown(tree_id, v_crown, f_crown)
