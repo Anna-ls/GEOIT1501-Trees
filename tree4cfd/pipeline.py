@@ -47,6 +47,41 @@ from .segmentation import segment_trees_chm
 from .shapes import filter_pole_wall_trees
 from .trunk import estimate_trunk_params, make_trunk_mesh
 
+def get_outlines(tiles):
+    if not tiles:
+        logging.warning("No tiles provided to calculate outlines")
+
+    global_min_x, global_min_y = float('inf'), float('inf')
+    global_max_x, global_max_y = float('-inf'), float('-inf')
+    tile_epsg = None
+
+    for tile in tiles:
+        bounds, epsg = read_header_bounds(tile)
+        minx, miny, maxx, maxy = bounds
+
+        if epsg and tile_epsg is None:
+            tile_epsg = epsg
+
+        if minx < global_min_x:
+            global_min_x = minx
+        if miny < global_min_y:
+            global_min_y = miny
+        if maxx > global_max_x:
+            global_max_x = maxx
+        if maxy > global_max_y:
+            global_max_y = maxy
+
+    bounding_box = box(global_min_x, global_min_y, global_max_x, global_max_y)
+
+    if not tile_epsg:
+        tile_epsg = 28992
+
+    gdf = gpd.GeoDataFrame([{"geometry": bounding_box}], crs=f"EPSG:{tile_epsg}")
+    bounding_box_4326 = gdf.to_crs("EPSG:4326").geometry.iloc[0]
+
+    return {"geometry": bounding_box_4326}
+
+
 def split_polygon(polygon):
 
     _polygon = shape(polygon["geometry"])
@@ -56,9 +91,7 @@ def split_polygon(polygon):
     )
 
     gdf = gdf.to_crs("EPSG:28992")
-
     cell_size = 500
-
     pieces = []
 
     for idx, row in gdf.iterrows():
@@ -87,9 +120,6 @@ def split_polygon(polygon):
                             attrs["geometry"] = poly
                             pieces.append(attrs)
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
-
-    # result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
-
     return result
 
 def extract_polygons(geom):
@@ -594,7 +624,11 @@ def run_pipeline(cfg: Config, polygon=None, progress_callback=None):
             if primary.exists():
                 logging.info(f"{tile.name}  ->  already done, skipping")
                 continue
-        result = build_tile(tile, cfg, progress_callback, polygon)
+        if polygon is None:
+            polygon = get_outlines(tiles)
+            result = build_tile(tile, cfg, progress_callback, polygon)
+        else:
+            result = build_tile(tile, cfg, progress_callback, polygon)
         if result is None:
             continue
 
