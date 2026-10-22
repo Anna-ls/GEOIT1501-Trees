@@ -38,7 +38,7 @@
     "enabled": true,
     "buffer": 2
   },
-"output": {
+  "output": {
     "merge_tiles": true,
     "separate_crown_trunk": true,
     "merge_touching_crowns": false

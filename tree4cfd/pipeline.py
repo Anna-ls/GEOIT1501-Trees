@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 import geopandas as gpd
 from shapely.geometry import shape, box
-import shapely
 import math
 
 import numpy as np
@@ -50,8 +49,43 @@ from .segmentation import segment_trees_chm
 from .shapes import filter_pole_wall_trees
 from .trunk import estimate_trunk_params, make_trunk_mesh
 
+def get_outlines(tiles):
+    if not tiles:
+        logging.warning("No tiles provided to calculate outlines")
+
+    global_min_x, global_min_y = float('inf'), float('inf')
+    global_max_x, global_max_y = float('-inf'), float('-inf')
+    tile_epsg = None
+
+    for tile in tiles:
+        bounds, epsg = read_header_bounds(tile)
+        minx, miny, maxx, maxy = bounds
+
+        if epsg and tile_epsg is None:
+            tile_epsg = epsg
+
+        if minx < global_min_x:
+            global_min_x = minx
+        if miny < global_min_y:
+            global_min_y = miny
+        if maxx > global_max_x:
+            global_max_x = maxx
+        if maxy > global_max_y:
+            global_max_y = maxy
+
+    bounding_box = box(global_min_x, global_min_y, global_max_x, global_max_y)
+
+    if not tile_epsg:
+        tile_epsg = 28992
+
+    gdf = gpd.GeoDataFrame([{"geometry": bounding_box}], crs=f"EPSG:{tile_epsg}")
+    bounding_box_4326 = gdf.to_crs("EPSG:4326").geometry.iloc[0]
+
+    return {"geometry": bounding_box_4326}
+
+
 def split_polygon(polygon):
-    
+
     _polygon = shape(polygon["geometry"])
     gdf = gpd.GeoDataFrame(
         [{"geometry": _polygon}],
@@ -59,25 +93,24 @@ def split_polygon(polygon):
     )
 
     gdf = gdf.to_crs("EPSG:28992")
-
     cell_size = 500
-
     pieces = []
 
     for idx, row in gdf.iterrows():
         geom = row.geometry
         minx, miny, maxx, maxy = geom.bounds
 
-        width = abs(maxx - minx)
-        height = abs(maxy - miny)
-
-        x_boxes = math.floor(width/cell_size)
-        y_boxes = math.floor(height/cell_size)
-        x = minx
-        y = miny
-        while x < maxx:
-            while y < maxy:
-                cell = box(x,y, x + width/x_boxes, y + height/y_boxes)
+        for x in range(
+            math.floor(minx / cell_size) * cell_size,
+            math.ceil(maxx / cell_size) * cell_size,
+            cell_size
+        ):
+            for y in range(
+                math.floor(miny / cell_size) * cell_size,
+                math.ceil(maxy / cell_size) * cell_size,
+                cell_size
+            ):
+                cell = box(x, y, x + cell_size, y + cell_size)
 
                 # Intersect the grid cell with the original polygon
                 if geom.intersects(cell):
@@ -88,8 +121,6 @@ def split_polygon(polygon):
                             attrs = row.drop(labels="geometry").to_dict()
                             attrs["geometry"] = poly
                             pieces.append(attrs)
-                y += height/y_boxes
-            x += width/x_boxes
     result = gpd.GeoDataFrame(pieces, crs=gdf.crs)
     
     result.to_file("data/out/splitted_polygon.gpkg", driver="GPKG")
@@ -516,7 +547,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         progress_callback("Running CHM segmentation...")
 
     t_start_segment = time.perf_counter()
-    splitted_polygon = split_polygon(polygon)
+    split_polygon(polygon)
     area_type = determine_lcz_of_area(polygon)
 
     # -------------------------------------------------------------------
@@ -627,7 +658,20 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         trees_gdf.to_file(out_file, driver="GPKG")
         logging.info(f"Exported {len(trees_gdf)} tree locations to {out_file.name}")
 
+    # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
     inv_local = inv_recs = None
+    # if cfg.inventory.enabled and inventory is not None:
+    #     inv_csv = cfg.paths.output_dir / f"{tile_name}_trees.csv"
+    #     n_matched, n_alive, n_dbh = annotate_and_write(
+    #         inv_csv, labels, pts_veg[:, :2], cfg.translation, epsg,
+    #         inventory, cfg.inventory.match_dist
+    #     )
+    #     print(
+    #         f"    inventory: matched {n_matched}/{n_alive} trees, "
+    #         f"{len(n_dbh)} with DBH -> {inv_csv.name}"
+    #     )
+    #     inv_lonlat, inv_recs = inventory
+    #     inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
 
     if progress_callback:
         progress_callback(f"Reconstructing 3D meshes...")
@@ -738,7 +782,11 @@ def run_pipeline(cfg: Config, polygon=None, progress_callback=None):
             if primary.exists():
                 logging.info(f"{tile.name}  ->  already done, skipping")
                 continue
-        result = build_tile(tile, cfg, progress_callback, polygon)
+        if polygon is None:
+            polygon = get_outlines(tiles)
+            result = build_tile(tile, cfg, progress_callback, polygon)
+        else:
+            result = build_tile(tile, cfg, progress_callback, polygon)
         if result is None:
             continue
 
