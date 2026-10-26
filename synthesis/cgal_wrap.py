@@ -3,8 +3,10 @@ from pathlib import Path
 from CGAL import CGAL_Alpha_wrap_3
 from CGAL.CGAL_Polyhedron_3 import Polyhedron_3
 
+root_dir = Path(__file__).resolve().parent.parent
 
-def wrap_and_simplify(vertices, faces, alpha_ratio=5, offset_ratio=50):
+
+def wrap_and_simplify(vertices, faces, alpha_ratio=5, offset_ratio=500):
     """
     Temporary-file bridge to CGAL Alpha Wrap.
     alpha_ratio and offset_ratio are relative to the crown's bounding-box diagonal.
@@ -27,7 +29,6 @@ def wrap_and_simplify(vertices, faces, alpha_ratio=5, offset_ratio=50):
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         input_path = Path(tmp) / "input.off"
-        output_path = Path(tmp) / "wrapped.off"
 
         with open(input_path, "w") as f:
             f.write("OFF\n")
@@ -50,7 +51,7 @@ def wrap_and_simplify(vertices, faces, alpha_ratio=5, offset_ratio=50):
         CGAL_Alpha_wrap_3.alpha_wrap_3(
             source, alpha, offset, wrapped
         )
-        output_path = Path("cgal_raw_output.off")
+        output_path = Path(f"{root_dir}/DATA/OUT/cgal_raw_output.off")
         wrapped.write_to_file(str(output_path))
 
         # Read the OFF result back into arrays.

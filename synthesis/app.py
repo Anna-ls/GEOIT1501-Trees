@@ -34,8 +34,15 @@ lod_value = 2.1 if lod_choice == "LoD2" else 3.1
 
 if lod_choice == "LoD3":
     merge_touching = st.checkbox("Merge touching crowns into a single mesh", value=False)
+    alpha_wrap = st.checkbox("Alpha Wrap the resulting geometries in order to simplify them", value=False)
 else:
     merge_touching = False
+    alpha_wrap = False
+
+if alpha_wrap:
+    offset_ratio = st.slider("Select feature complexity (lower = less triangles = smaller file size):", 25, 600, 100)
+else:
+    offset_ratio = 50
 
 st.subheader("Building Settings")
 include_buildings = st.checkbox("Download and include 3D BAG buildings", value=False)
@@ -60,7 +67,7 @@ if input_method == "Draw on Map":
             'polyline': False,
             'rectangle': True,
             'polygon': True,
-            'circle': True,
+            'circle': False,
             'marker': False,
             'circlemarker': False
         },
@@ -198,7 +205,8 @@ if st.button("Run Reconstruction Pipeline"):
                     "sigma": 1.5,
                     "iso_level": 0.10,
                     "min_component_frac": 0.3,
-                    "simplify_ratio": 0.5
+                    "wrap": alpha_wrap,
+                    "offset_ratio": offset_ratio
                 },
                 "buildings": {
                     "enabled": True,
@@ -223,7 +231,7 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                seg_time, clean_time, mesh_time = run_pipeline(cfg, polygon=geojson_path, progress_callback=update_ui)
+                seg_time, clean_time, mesh_time = run_pipeline(cfg, polygon=Path(geojson_path), progress_callback=update_ui)
             execution_times['4. Tree Segmentation'] = seg_time
             execution_times['5. Filter & Clean'] = clean_time
             execution_times['6. Reconstruct 3D Meshes'] = mesh_time
@@ -240,6 +248,14 @@ if st.button("Run Reconstruction Pipeline"):
                 json.dump(json_data, f, indent=4)
 
             st.session_state.out_dir = out_dir
+
+            st.subheader("Execution Time Summary")
+            # Format the dictionary for a clean Streamlit table
+            summary_data = {
+                "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
+                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
+            }
+            st.table(pd.DataFrame(summary_data))
 
         except Exception as e:
             st.error(f"An error occurred while running the pipeline: {e}")
@@ -274,14 +290,6 @@ if st.session_state.out_dir:
         st.subheader("**3D Preview**")
         with st.spinner("Loading 3D viewer..."):
             render_3d_objs(generated_objs)
-
-        st.subheader("Execution Time Summary")
-        # Format the dictionary for a clean Streamlit table
-        summary_data = {
-            "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
-            "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
-        }
-        st.table(pd.DataFrame(summary_data))
 
     else:
         st.warning(f"Pipeline finished, but no .obj files were found.")

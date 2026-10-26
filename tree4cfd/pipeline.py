@@ -9,8 +9,6 @@ from typing import NamedTuple
 import geopandas as gpd
 from shapely.geometry import shape, box
 import math
-import geopandas as gdp
-
 root_dir = Path(__file__).resolve().parent.parent
 
 import numpy as np
