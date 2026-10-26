@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Tuple
 
 import numpy as np
+
 from scipy.ndimage import gaussian_filter, label as cc_label
 from skimage.measure import marching_cubes
-import trimesh
 
 # 26-connectivity so diagonally touching voxels count as one crown.
 _CONNECTIVITY = np.ones((3, 3, 3), dtype=int)
@@ -99,7 +99,6 @@ def segment_to_marching_cubes(
     sigma: float = 1.5,
     iso_level: float = 0.15,
     min_component_frac: float = 0.1,
-    ratio: float = 0.5,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Build a watertight crown mesh for one tree's points.
 
@@ -120,11 +119,7 @@ def segment_to_marching_cubes(
         verts, faces, _, _ = marching_cubes(field, level=min(iso_level, 0.99))
     except ValueError:
         return np.zeros((0, 3)), np.zeros((0, 3), dtype=int)
-
-    faces = faces[:, ::-1]
+    faces = faces[:,::-1]
 
     verts = verts * voxel_size + min_b
-
-    mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
-
-    return mesh.vertices, mesh.faces
+    return verts, faces
