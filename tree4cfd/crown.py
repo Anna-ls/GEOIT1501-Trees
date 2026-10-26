@@ -99,7 +99,6 @@ def segment_to_marching_cubes(
     sigma: float = 1.5,
     iso_level: float = 0.15,
     min_component_frac: float = 0.1,
-    ratio: float = 0.5,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Build a watertight crown mesh for one tree's points.
 

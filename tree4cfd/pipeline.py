@@ -5,10 +5,13 @@ from __future__ import annotations
 import re
 import time
 from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 import geopandas as gpd
 from shapely.geometry import shape, box
 import math
+import geopandas as gdp
+
+root_dir = Path(__file__).resolve().parent.parent
 
 import numpy as np
 import logging
@@ -25,14 +28,12 @@ from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
 from shapely.affinity import translate as translate_geometry
 import shapely
+from synthesis.cgal_wrap import wrap_and_simplify
 
 from .inventory import (
-    annotate_and_write,
     build_inventory_index,
     crown_footprint,
     crown_inventory_indices,
-    inventory_local_xy,
-    load_inventory_csv,
     snap_under_crown,
 )
 from .io import (
@@ -47,7 +48,6 @@ from .io import (
 )
 from .primitives import block_mesh, crown_primitive, crown_shape_for_species
 from .segmentation import segment_trees_chm
-from .shapes import filter_pole_wall_trees
 from .trunk import estimate_trunk_params, make_trunk_mesh
 
 def get_outlines(tiles):
@@ -84,9 +84,16 @@ def get_outlines(tiles):
 
     return {"geometry": bounding_box_4326}
 
-
 def split_polygon(polygon, cell_size=500):
-    geom = shape(polygon["geometry"])
+    if isinstance(polygon, (str, Path)):
+        gdf = gpd.read_file(polygon)
+        geom = gdf.geometry.iloc[0]
+        out_dir = Path(polygon).parent
+    else:
+        geom = polygon["geometry"]
+        if not isinstance(geom, shapely.geometry.base.BaseGeometry):
+            geom = shape(geom)
+        out_dir = Path(f"{root_dir}/DATA/OUT")
 
     gdf = gpd.GeoDataFrame(
         [{"geometry": geom}],
@@ -134,7 +141,7 @@ def split_polygon(polygon, cell_size=500):
     )
 
     result.to_file(
-        "data/out/splitted_polygon.gpkg",
+        Path(f"{out_dir}/splitted_polygon.gpkg"),
         driver="GPKG"
     )
 
@@ -386,8 +393,19 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
             v_crown, f_crown = segment_to_marching_cubes(
                 sub_pts, voxel_size=cfg.crown.voxel_size, sigma=cfg.crown.sigma,
                 iso_level=cfg.crown.iso_level,
-                min_component_frac=cfg.crown.min_component_frac,
-                ratio=cfg.crown.simplify_ratio)
+                min_component_frac=cfg.crown.min_component_frac)
+            if cfg.crown.wrap:
+                v_crown, f_crown = wrap_and_simplify(v_crown, f_crown, offset_ratio=cfg.crown.offset_ratio)
+
+        if len(v_crown) == 0 or len(f_crown) == 0:
+            print(f"[CGAL ERROR] Empty mesh for tree={tree_id}")
+            return
+
+        if not np.isfinite(v_crown).all():
+            raise ValueError(f"Non-finite CGAL vertices for tree={tree_id}")
+
+        if f_crown.min() < 0 or f_crown.max() >= len(v_crown):
+            raise ValueError(f"Invalid CGAL face indices for tree={tree_id}")
         if len(v_crown) == 0:
             return
         _add_crown(tree_id, v_crown, f_crown)
@@ -754,7 +772,7 @@ def _merge_tiles(metas) -> TileMeshes:
     return TileMeshes(cvv, cff, tvv, tff, cg, tg, nc, nt)
 
 
-def run_pipeline(cfg: Config, polygon=None, progress_callback=None):
+def run_pipeline(cfg: Config, polygon: Path = None, progress_callback=None):
     """Process every tile in the configured tiles directory."""
     cfg.paths.output_dir.mkdir(parents=True, exist_ok=True)
 

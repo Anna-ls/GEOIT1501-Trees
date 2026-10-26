@@ -231,7 +231,7 @@ def validation_pipeline(case_name, parameters: dict):
     # 5. Extract tree centroids and count trees inside unbuffered park boundary
     # ---------------------------------------------------
     detected_gdf = extract_detected_trees(pts_veg, labels, CRS)
-    #detected_gdf.to_file(f"../DATA/OUT/{case_name}_detected_trees.gpkg", driver="GPKG")
+    # detected_gdf.to_file(f"../DATA/OUT/{case_name}_detected_trees.gpkg", driver="GPKG")
     detected_inside = detected_gdf[detected_gdf.geometry.within(unbuffered)]
 
     # ---------------------------------------------------
@@ -241,8 +241,6 @@ def validation_pipeline(case_name, parameters: dict):
     compare_counts(registry_inside, detected_inside, PARK_NAME)
 
     precision, recall, f1_score = evaluate_spatial_accuracy(detected_gdf, registry_inside, dist_thresh = 2.5)
-    # with open(f"../DATA/OUT/f1_scores.txt", "a") as f:
-    #     f.write(f"{PARK_NAME}: Precision={precision:.3f}, Recall={recall:.3f}, F1={f1_score:.3f}\n")
 
     return registry_inside, detected_inside, precision, recall, f1_score, total_clipped_points
 
