@@ -93,7 +93,6 @@ class Crown:
     # Drop crown mesh components smaller than this fraction of the largest one,
     # removing floating blobs from stray points. 0 disables.
     min_component_frac: float = 0.1
-    simplify_ratio: float = 0.5
 
 
 @dataclass

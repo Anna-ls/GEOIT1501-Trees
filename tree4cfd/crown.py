@@ -127,8 +127,4 @@ def segment_to_marching_cubes(
 
     mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
 
-    trimesh.smoothing.filter_taubin(mesh, iterations=10)
-
-    simplified_mesh = mesh.simplify_quadric_decimation(percent=ratio)
-
-    return simplified_mesh.vertices, simplified_mesh.faces
+    return mesh.vertices, mesh.faces
