@@ -40,7 +40,7 @@ else:
     alpha_wrap = False
 
 if alpha_wrap:
-    offset_ratio = st.slider("Select feature complexity (lower = less triangles = smaller file size):", 25, 600, 100)
+    offset_ratio = st.slider("Select feature complexity (lower = less triangles = smaller file size):", 20, 600, 100, 10)
 else:
     offset_ratio = 50
 

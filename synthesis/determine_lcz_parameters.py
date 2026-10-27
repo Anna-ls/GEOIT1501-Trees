@@ -561,12 +561,29 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
 def get_building_features(buildings: gpd.GeoDataFrame, area: str | Path, crs="EPSG:28992") -> dict:
     area_gdf = gpd.read_file(area)
     area_gdf = area_gdf.set_crs(crs, allow_override=True) if area_gdf.crs is None else area_gdf
+    study_area = area_gdf.geometry.union_all()
+
+    if buildings is None or buildings.empty:
+        metric_crs = area_gdf.estimate_utm_crs()
+        study_area_m = gpd.GeoSeries([study_area], crs=area_gdf.crs).to_crs(metric_crs).iloc[0]
+
+        return {
+            "study_area_m2": study_area_m.area,
+            "building_covered_area_m2": 0.0,
+            "building_coverage_ratio": 0.0,
+            "building_coverage_percent": 0.0,
+            "building_count": 0,
+            "buildings_per_hectare": 0.0,
+            "mean_building_area_m2": 0.0,
+            "median_building_area_m2": 0.0,
+            "std_building_area_m2": 0.0,
+            "p90_building_area_m2": 0.0,
+            "mean_building_compactness": 0.0,
+        }
 
     # Reproject to a suitable projected CRS in metres
     metric_crs = buildings.estimate_utm_crs()
-
     buildings_m = buildings.to_crs(metric_crs)
-    study_area = area_gdf.geometry.union_all()
 
     # Reproject to the metric CRS
     study_area = (

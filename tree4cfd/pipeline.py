@@ -230,7 +230,9 @@ def combine_tile_results(tile_results, n_points):
     dtm_all[valid] = dtm_sum[valid] / dtm_count[valid]
 
     # Fill gaps with nearest valid terrain values.
-    if valid.any() and (~valid).any():
+    if not valid.any():
+        dtm_all[:] = 0.0
+    elif (~valid).any():
         nearest = distance_transform_edt(
             ~valid, return_distances=False, return_indices=True
         )
@@ -388,12 +390,14 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
                 v_crown, f_crown = crown_primitive(shape, cx, cy, z_cb, z_top, dx, dy,
                                                    n_sides=cfg.trunk.n_sides)
         else:                       # marching-cubes canopy hull = LoD3
-            v_crown, f_crown = segment_to_marching_cubes(
-                sub_pts, voxel_size=cfg.crown.voxel_size, sigma=cfg.crown.sigma,
-                iso_level=cfg.crown.iso_level,
-                min_component_frac=cfg.crown.min_component_frac)
             if cfg.crown.wrap:
-                v_crown, f_crown = wrap_and_simplify(v_crown, f_crown, offset_ratio=cfg.crown.offset_ratio)
+                v_crown, f_crown = wrap_and_simplify(sub_pts, offset_ratio=cfg.crown.offset_ratio)
+            else:
+                v_crown, f_crown = segment_to_marching_cubes(
+                    sub_pts, voxel_size=cfg.crown.voxel_size, sigma=cfg.crown.sigma,
+                    iso_level=cfg.crown.iso_level,
+                    min_component_frac=cfg.crown.min_component_frac)
+
 
         if len(v_crown) == 0 or len(f_crown) == 0:
             print(f"[CGAL ERROR] Empty mesh for tree={tree_id}")
@@ -416,6 +420,8 @@ def _build_tile_meshes(pts_veg, labels, dtm, georef, cfg: Config,
                 tp["x"], tp["y"], tp["z_base"], z_trunk_top,
                 tp["r_base"], tp["r_top"], n_sides=cfg.trunk.n_sides))
             n_trunks += 1
+
+        return
 
     for lbl in unique_lbls:
         tree_pts = pts_veg[labels == lbl]
@@ -502,10 +508,15 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
-def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs) -> gpd.GeoDataFrame:
+def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, translation: np.ndarray = None) -> gpd.GeoDataFrame:
     """Converts segmented tree point labels into GeoPandas point centroids."""
     tree_records = []
     unique_labels = np.unique(labels)
+
+    if translation is None:
+        translation = np.array([0.0, 0.0, 0.0])
+    off_x, off_y = translation[0], translation[1]
+    off_z = translation[2] if len(translation) > 2 else 0.0
 
     for lbl in unique_labels:
         if lbl == 0:
@@ -516,10 +527,14 @@ def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs) -> gpd.
         max_idx = np.argmax(cluster[:, 2])
         top_x, top_y, top_z = cluster[max_idx]
 
+        rw_x = top_x + off_x
+        rw_y = top_y + off_y
+        rw_z = top_z + off_z
+
         tree_records.append({
             "tree_id": int(lbl),
-            "geometry": gpd.points_from_xy([top_x], [top_y])[0],
-            "z_max": float(top_z),
+            "geometry": gpd.points_from_xy([rw_x], [rw_y])[0],
+            "z_max": float(rw_z),
             "point_count": len(cluster)
         })
 
@@ -604,6 +619,10 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         veg_indices = np.flatnonzero(veg_mask)
         temp_pts_veg = pts_veg[veg_mask]
 
+        if len(temp_pts_veg) == 0:
+            logging.info("Skipping sub-polygon: No vegetation points found.")
+            continue
+
         ground_mask = shapely.contains_xy(
             poly_local,
             pts_ground[:, 0],
@@ -687,7 +706,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     if progress_callback:
         progress_callback("Exporting tree locations...")
 
-    trees_gdf = extract_detected_trees(pts_veg, labels, crs)
+    trees_gdf = extract_detected_trees(pts_veg, labels, crs, translation=translation)
     if not trees_gdf.empty:
         out_file = cfg.paths.output_dir / f"{tile_name}_tree_locations.gpkg"
         trees_gdf.to_file(out_file, driver="GPKG")

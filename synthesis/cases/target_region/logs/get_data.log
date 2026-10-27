@@ -5542,3 +5542,1125 @@ NameError: name 'triangle' is not defined
 2026-10-26T15:48:42Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
 2026-10-26T15:48:43Z [INFO] [MainProcess] Found 15 .laz file(s) to process.
 2026-10-26T15:48:43Z [INFO] [MainProcess] Opening laz file
+2026-10-27T10:50:52Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T10:50:52.052369+00:00Z========================================
+2026-10-27T10:50:52Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T10:50:52Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T10:50:52Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_115051\target_region.geojson
+2026-10-27T10:50:52Z [INFO] [MainProcess] Created 1 records
+2026-10-27T10:50:52Z [INFO] [MainProcess] Created 1 records
+2026-10-27T10:50:52Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T10:50:52Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T10:50:52Z [INFO] [MainProcess] Found 4 intersecting tiles: ['090000_437000', '090000_436000', '091000_437000', '091000_436000']
+2026-10-27T10:50:52Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T10:50:52Z [INFO] [MainProcess] Found 2 intersecting 3D BAG tiles
+2026-10-27T10:50:52Z [INFO] [MainProcess] Processing 4 AHN tiles and 2 3D BAG tiles in parallel using 2 cores.
+2026-10-27T10:51:00Z [INFO] [MainProcess] [090000_437000] OK (CACHED)
+2026-10-27T10:51:00Z [INFO] [MainProcess] [090000_436000] OK (CACHED)
+2026-10-27T10:51:00Z [INFO] [MainProcess] [091000_437000] OK (CACHED)
+2026-10-27T10:51:00Z [INFO] [MainProcess] [091000_436000] OK (CACHED)
+2026-10-27T10:51:00Z [INFO] [MainProcess] [3D BAG 9/308/520] OK (CACHED)
+2026-10-27T10:51:02Z [INFO] [MainProcess] [3D BAG 9/308/516] ERROR: NOT A GZIPPED FILE (B'{"')
+2026-10-27T10:51:03Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T10:51:03Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T10:51:03Z [INFO] [MainProcess] Opening laz file
+2026-10-27T10:51:56Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T10:51:57Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T10:51:57Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T10:51:59Z [ERROR] [MainProcess] 3D BAG clip and merge process failed. Error: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 247, in process_geojson
+    success = clip_and_merge_cityjson(
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 208, in clip_and_merge_cityjson
+    cj_data = json.load(f)
+              ^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2026-10-27T10:51:59Z [INFO] [MainProcess] Completed data collection in 67.4 seconds.
+2026-10-27T10:51:59Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_115051/
+2026-10-27T10:52:00Z [INFO] [MainProcess] Found  1,409,956 vegetation pts and  1,785,849 ground pts (for DTM)
+2026-10-27T10:52:01Z [INFO] [MainProcess] After SOR:  1,321,157 pts remaining
+2026-10-27T10:52:01Z [INFO] [MainProcess] 0
+2026-10-27T10:52:01Z [INFO] [MainProcess] Created 2 records
+2026-10-27T10:52:01Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T10:52:01Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T10:52:01Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T10:52:01Z [INFO] [MainProcess] Created 1 records
+2026-10-27T10:52:02Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T10:52:02Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T10:52:02Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T10:52:02Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T10:52:03Z [INFO] [MainProcess] Generated window bins
+2026-10-27T10:52:07Z [INFO] [MainProcess] CHM: 481 initial peaks found.
+2026-10-27T10:52:07Z [INFO] [MainProcess] Filter: 88 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T10:52:07Z [INFO] [MainProcess] PCA: 37 multi-tree clusters detected, adding 4 new trees.
+2026-10-27T10:52:07Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T10:52:07Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T10:52:07Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T10:52:07Z [INFO] [MainProcess] Created 1 records
+2026-10-27T10:52:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T10:52:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T10:52:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T10:52:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T10:52:10Z [INFO] [MainProcess] Generated window bins
+2026-10-27T10:52:10Z [INFO] [MainProcess] CHM: 419 initial peaks found.
+2026-10-27T10:52:10Z [INFO] [MainProcess] Filter: 87 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T10:52:10Z [INFO] [MainProcess] PCA: 31 multi-tree clusters detected, adding 0 new trees.
+2026-10-27T10:52:10Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T10:52:10Z [INFO] [MainProcess] -> Segmentation done in: 9.4 s
+2026-10-27T10:52:10Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T10:52:11Z [INFO] [MainProcess] Retrieved 786 features (total: 786)
+2026-10-27T10:52:11Z [INFO] [MainProcess] Found 786 BAG building footprints.
+2026-10-27T10:52:11Z [INFO] [MainProcess] Buildings (BAG): removed 79 trees inside footprints
+2026-10-27T10:52:13Z [INFO] [MainProcess] Created 646 records
+2026-10-27T10:52:13Z [INFO] [MainProcess] Exported 646 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T11:02:04Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T11:02:04.585625+00:00Z========================================
+2026-10-27T11:02:04Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T11:02:04Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T11:02:04Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120204\target_region.geojson
+2026-10-27T11:02:04Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:02:04Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:02:04Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T11:02:04Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T11:02:04Z [INFO] [MainProcess] Found 4 intersecting tiles: ['090000_437000', '090000_436000', '091000_437000', '091000_436000']
+2026-10-27T11:02:04Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T11:02:05Z [INFO] [MainProcess] Found 2 intersecting 3D BAG tiles
+2026-10-27T11:02:05Z [INFO] [MainProcess] Processing 4 AHN tiles and 2 3D BAG tiles in parallel using 2 cores.
+2026-10-27T11:02:11Z [INFO] [MainProcess] [090000_437000] OK (CACHED)
+2026-10-27T11:02:11Z [INFO] [MainProcess] [090000_436000] OK (CACHED)
+2026-10-27T11:02:11Z [INFO] [MainProcess] [091000_437000] OK (CACHED)
+2026-10-27T11:02:11Z [INFO] [MainProcess] [091000_436000] OK (CACHED)
+2026-10-27T11:02:11Z [INFO] [MainProcess] [3D BAG 9/308/516] OK (CACHED)
+2026-10-27T11:02:11Z [INFO] [MainProcess] [3D BAG 9/308/520] OK (CACHED)
+2026-10-27T11:02:12Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T11:02:12Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T11:02:12Z [INFO] [MainProcess] Opening laz file
+2026-10-27T11:02:52Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T11:02:52Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T11:02:52Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T11:02:55Z [ERROR] [MainProcess] 3D BAG clip and merge process failed. Error: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 247, in process_geojson
+    success = clip_and_merge_cityjson(
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 208, in clip_and_merge_cityjson
+    cj_data = json.load(f)
+              ^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\AppData\Local\Programs\Python\Python311\Lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2026-10-27T11:02:55Z [INFO] [MainProcess] Completed data collection in 50.7 seconds.
+2026-10-27T11:02:55Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120204/
+2026-10-27T11:02:56Z [INFO] [MainProcess] Found  1,447,547 vegetation pts and  1,483,462 ground pts (for DTM)
+2026-10-27T11:02:57Z [INFO] [MainProcess] After SOR:  1,365,656 pts remaining
+2026-10-27T11:02:57Z [INFO] [MainProcess] 0
+2026-10-27T11:02:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:02:57Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T11:02:57Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T11:02:57Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T11:02:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:03:00Z [INFO] [MainProcess] Generated window bins
+2026-10-27T11:03:03Z [INFO] [MainProcess] CHM: 771 initial peaks found.
+2026-10-27T11:03:03Z [INFO] [MainProcess] Filter: 121 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T11:03:03Z [INFO] [MainProcess] PCA: 63 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T11:03:03Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T11:03:03Z [INFO] [MainProcess] -> Segmentation done in: 6.6 s
+2026-10-27T11:03:03Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T11:03:05Z [INFO] [MainProcess] Retrieved 703 features (total: 703)
+2026-10-27T11:03:05Z [INFO] [MainProcess] Found 703 BAG building footprints.
+2026-10-27T11:03:05Z [INFO] [MainProcess] Buildings (BAG): removed 56 trees inside footprints
+2026-10-27T11:03:07Z [INFO] [MainProcess] Created 588 records
+2026-10-27T11:03:07Z [INFO] [MainProcess] Exported 588 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T11:03:55Z [INFO] [MainProcess] 588 trees -> 57,819 vertices 110,934 faces  (58.2 s total)
+2026-10-27T11:03:55Z [INFO] [MainProcess] Merged 1 tiles -> 588 trees, 110,934 faces -> merged_lod3.1*.obj
+2026-10-27T11:07:06Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T11:07:06.095483+00:00Z========================================
+2026-10-27T11:07:06Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T11:07:06Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T11:07:06Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120706\target_region.geojson
+2026-10-27T11:07:06Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:07:06Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:07:06Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T11:07:06Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T11:07:06Z [INFO] [MainProcess] Found 4 intersecting tiles: ['090000_437000', '090000_436000', '091000_437000', '091000_436000']
+2026-10-27T11:07:06Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T11:07:06Z [INFO] [MainProcess] Found 2 intersecting 3D BAG tiles
+2026-10-27T11:07:06Z [INFO] [MainProcess] Processing 4 AHN tiles and 2 3D BAG tiles in parallel using 2 cores.
+2026-10-27T11:07:12Z [INFO] [MainProcess] [090000_437000] OK (CACHED)
+2026-10-27T11:07:12Z [INFO] [MainProcess] [090000_436000] OK (CACHED)
+2026-10-27T11:07:12Z [INFO] [MainProcess] [091000_437000] OK (CACHED)
+2026-10-27T11:07:12Z [INFO] [MainProcess] [091000_436000] OK (CACHED)
+2026-10-27T11:07:12Z [INFO] [MainProcess] [3D BAG 9/308/516] OK (CACHED)
+2026-10-27T11:07:12Z [INFO] [MainProcess] [3D BAG 9/308/520] OK (CACHED)
+2026-10-27T11:07:13Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T11:07:13Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T11:07:13Z [INFO] [MainProcess] Opening laz file
+2026-10-27T11:07:47Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T11:07:47.117468+00:00Z========================================
+2026-10-27T11:07:47Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T11:07:47Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T11:07:47Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120747\target_region.geojson
+2026-10-27T11:07:47Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:07:47Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:07:47Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T11:07:47Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T11:07:47Z [INFO] [MainProcess] Found 2 intersecting tiles: ['092000_439000', '092000_438000']
+2026-10-27T11:07:47Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T11:07:47Z [INFO] [MainProcess] Found 4 intersecting 3D BAG tiles
+2026-10-27T11:07:47Z [INFO] [MainProcess] Processing 2 AHN tiles and 4 3D BAG tiles in parallel using 2 cores.
+2026-10-27T11:07:54Z [INFO] [MainProcess] [092000_439000] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] [3D BAG 9/316/524] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] [3D BAG 9/316/528] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-27T11:07:54Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T11:07:55Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T11:07:55Z [INFO] [MainProcess] Opening laz file
+2026-10-27T11:08:04Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T11:08:04Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T11:08:04Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T11:08:07Z [ERROR] [MainProcess] 3D BAG clip and merge process failed. Error: [Errno 13] Permission denied: 'C:\\Users\\annas\\Documents\\GEOIT1501-Trees\\DATA\\OUT\\3dbag_tiles\\9-308-516.city.json'
+Traceback (most recent call last):
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\get_data.py", line 247, in process_geojson
+    success = clip_and_merge_cityjson(
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\annas\Documents\GEOIT1501-Trees\synthesis\clip_and_merge.py", line 207, in clip_and_merge_cityjson
+    with open(cj_path, "r") as f:
+         ^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\annas\\Documents\\GEOIT1501-Trees\\DATA\\OUT\\3dbag_tiles\\9-308-516.city.json'
+2026-10-27T11:08:07Z [INFO] [MainProcess] Completed data collection in 61.3 seconds.
+2026-10-27T11:08:27Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T11:08:27Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T11:08:27Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T11:08:27Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T11:08:27.917218+00:00Z========================================
+2026-10-27T11:08:27Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T11:08:27Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T11:08:27Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120827\target_region.geojson
+2026-10-27T11:08:28Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:08:28Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:08:28Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T11:08:28Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T11:08:28Z [INFO] [MainProcess] Found 2 intersecting tiles: ['092000_439000', '092000_438000']
+2026-10-27T11:08:28Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T11:08:29Z [INFO] [MainProcess] Found 4 intersecting 3D BAG tiles
+2026-10-27T11:08:29Z [INFO] [MainProcess] Processing 2 AHN tiles and 4 3D BAG tiles in parallel using 2 cores.
+2026-10-27T11:08:35Z [INFO] [MainProcess] [092000_439000] OK (CACHED)
+2026-10-27T11:08:35Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-27T11:08:35Z [INFO] [MainProcess] [3D BAG 9/316/524] OK (CACHED)
+2026-10-27T11:08:35Z [INFO] [MainProcess] [3D BAG 9/316/528] OK (CACHED)
+2026-10-27T11:08:35Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-27T11:08:35Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-27T11:08:36Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T11:08:36Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T11:08:36Z [INFO] [MainProcess] Opening laz file
+2026-10-27T11:08:41Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-27T11:08:41Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-27T11:08:41Z [INFO] [MainProcess] Completed data collection in 54.1 seconds.
+2026-10-27T11:09:01Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T11:09:01Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T11:09:01Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T11:09:13Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-27T11:09:14Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-27T11:09:14Z [INFO] [MainProcess] Completed data collection in 44.7 seconds.
+2026-10-27T11:09:14Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_120827/
+2026-10-27T11:09:14Z [INFO] [MainProcess] Found  1,427,925 vegetation pts and  2,317,066 ground pts (for DTM)
+2026-10-27T11:09:15Z [INFO] [MainProcess] After SOR:  1,335,977 pts remaining
+2026-10-27T11:09:15Z [INFO] [MainProcess] 0
+2026-10-27T11:09:16Z [INFO] [MainProcess] Created 2 records
+2026-10-27T11:09:16Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T11:09:16Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T11:09:16Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T11:09:16Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:09:25Z [INFO] [MainProcess] Generated window bins
+2026-10-27T11:09:26Z [INFO] [MainProcess] CHM: 489 initial peaks found.
+2026-10-27T11:09:26Z [INFO] [MainProcess] Filter: 133 tiny segments (< 100 pts) and 3 pole or wall like segments dropped.
+2026-10-27T11:09:26Z [INFO] [MainProcess] PCA: 55 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T11:09:26Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T11:09:26Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T11:09:26Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T11:09:26Z [INFO] [MainProcess] Created 1 records
+2026-10-27T11:09:27Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:09:27Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:09:27Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T11:09:27Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T11:09:28Z [INFO] [MainProcess] Generated window bins
+2026-10-27T11:09:29Z [INFO] [MainProcess] CHM: 364 initial peaks found.
+2026-10-27T11:09:29Z [INFO] [MainProcess] Filter: 85 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T11:09:29Z [INFO] [MainProcess] PCA: 49 multi-tree clusters detected, adding 0 new trees.
+2026-10-27T11:09:29Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T11:09:29Z [INFO] [MainProcess] -> Segmentation done in: 13.5 s
+2026-10-27T11:09:29Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T11:09:30Z [INFO] [MainProcess] Retrieved 1,000 features (total: 1,000)
+2026-10-27T11:09:31Z [INFO] [MainProcess] Retrieved 187 features (total: 1,187)
+2026-10-27T11:09:31Z [INFO] [MainProcess] Found 1,187 BAG building footprints.
+2026-10-27T11:09:31Z [INFO] [MainProcess] Buildings (BAG): removed 135 trees inside footprints
+2026-10-27T11:09:33Z [INFO] [MainProcess] Created 496 records
+2026-10-27T11:09:33Z [INFO] [MainProcess] Exported 496 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T11:10:12Z [INFO] [MainProcess] 496 trees -> 49,185 vertices 94,402 faces  (56.1 s total)
+2026-10-27T11:10:12Z [INFO] [MainProcess] Merged 1 tiles -> 496 trees, 94,402 faces -> merged_lod3.1*.obj
+2026-10-27T13:05:30Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T13:05:30.768759+00:00Z========================================
+2026-10-27T13:05:30Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T13:05:30Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T13:05:30Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_140530\target_region.geojson
+2026-10-27T13:05:30Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:05:30Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:05:30Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T13:05:30Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T13:05:31Z [INFO] [MainProcess] Found 4 intersecting tiles: ['092000_439000', '092000_438000', '093000_439000', '093000_438000']
+2026-10-27T13:05:31Z [INFO] [MainProcess] Loading 3D BAG index to find intersections...
+2026-10-27T13:05:31Z [INFO] [MainProcess] Found 6 intersecting 3D BAG tiles
+2026-10-27T13:05:31Z [INFO] [MainProcess] Processing 4 AHN tiles and 6 3D BAG tiles in parallel using 2 cores.
+2026-10-27T13:05:41Z [INFO] [MainProcess] [092000_439000] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [092000_438000] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [093000_439000] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [093000_438000] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 9/316/524] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 9/316/528] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 9/312/524] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 9/312/528] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 8/320/528] OK (CACHED)
+2026-10-27T13:05:41Z [INFO] [MainProcess] [3D BAG 9/320/524] OK (CACHED)
+2026-10-27T13:05:42Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T13:05:42Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T13:05:42Z [INFO] [MainProcess] Opening laz file
+2026-10-27T13:07:13Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T13:07:13Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T13:07:13Z [INFO] [MainProcess] Starting clip and merge of 3D BAG tiles...
+2026-10-27T13:07:38Z [INFO] [MainProcess] 3D BAG CityJSON clip and merge process completed.
+2026-10-27T13:07:40Z [INFO] [MainProcess] Successfully converted CityJSON to OBJ natively.
+2026-10-27T13:07:40Z [INFO] [MainProcess] Completed data collection in 129.2 seconds.
+2026-10-27T13:07:40Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_140530/
+2026-10-27T13:07:48Z [INFO] [MainProcess] Found 12,863,672 vegetation pts and 18,783,569 ground pts (for DTM)
+2026-10-27T13:08:04Z [INFO] [MainProcess] After SOR: 12,125,960 pts remaining
+2026-10-27T13:08:04Z [INFO] [MainProcess] 0
+2026-10-27T13:08:05Z [INFO] [MainProcess] Created 12 records
+2026-10-27T13:08:05Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:06Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:06Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:06Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:10Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:11Z [INFO] [MainProcess] CHM: 619 initial peaks found.
+2026-10-27T13:08:11Z [INFO] [MainProcess] Filter: 191 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:08:11Z [INFO] [MainProcess] PCA: 54 multi-tree clusters detected, adding 5 new trees.
+2026-10-27T13:08:11Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:12Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:12Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:12Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:13Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:13Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:13Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:13Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:16Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:17Z [INFO] [MainProcess] CHM: 500 initial peaks found.
+2026-10-27T13:08:17Z [INFO] [MainProcess] Filter: 139 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:08:17Z [INFO] [MainProcess] PCA: 45 multi-tree clusters detected, adding 0 new trees.
+2026-10-27T13:08:17Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:17Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:17Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:17Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:18Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:18Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:18Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:18Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:28Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:29Z [INFO] [MainProcess] CHM: 566 initial peaks found.
+2026-10-27T13:08:29Z [INFO] [MainProcess] Filter: 111 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T13:08:29Z [INFO] [MainProcess] PCA: 53 multi-tree clusters detected, adding 4 new trees.
+2026-10-27T13:08:29Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:30Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:30Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:30Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:31Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:31Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:31Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:31Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:34Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:36Z [INFO] [MainProcess] CHM: 782 initial peaks found.
+2026-10-27T13:08:36Z [INFO] [MainProcess] Filter: 199 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T13:08:36Z [INFO] [MainProcess] PCA: 58 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T13:08:36Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:37Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:37Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:37Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:38Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:38Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:38Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:38Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:40Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:41Z [INFO] [MainProcess] CHM: 472 initial peaks found.
+2026-10-27T13:08:41Z [INFO] [MainProcess] Filter: 119 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:08:41Z [INFO] [MainProcess] PCA: 56 multi-tree clusters detected, adding 2 new trees.
+2026-10-27T13:08:41Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:42Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:42Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:42Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:42Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:42Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:42Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:42Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:48Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:49Z [INFO] [MainProcess] CHM: 455 initial peaks found.
+2026-10-27T13:08:49Z [INFO] [MainProcess] Filter: 132 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T13:08:49Z [INFO] [MainProcess] PCA: 45 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T13:08:49Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:50Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:50Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:50Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:51Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:51Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:51Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:51Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:53Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:08:57Z [INFO] [MainProcess] CHM: 699 initial peaks found.
+2026-10-27T13:08:57Z [INFO] [MainProcess] Filter: 156 tiny segments (< 100 pts) and 4 pole or wall like segments dropped.
+2026-10-27T13:08:57Z [INFO] [MainProcess] PCA: 75 multi-tree clusters detected, adding 0 new trees.
+2026-10-27T13:08:57Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:08:57Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:08:57Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:08:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:08:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:08:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:08:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:00Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:09:01Z [INFO] [MainProcess] CHM: 470 initial peaks found.
+2026-10-27T13:09:01Z [INFO] [MainProcess] Filter: 110 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T13:09:01Z [INFO] [MainProcess] PCA: 33 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T13:09:01Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:09:02Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:09:02Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:09:02Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:09:02Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:02Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:02Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:02Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:07Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:09:09Z [INFO] [MainProcess] CHM: 707 initial peaks found.
+2026-10-27T13:09:09Z [INFO] [MainProcess] Filter: 128 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:09:09Z [INFO] [MainProcess] PCA: 73 multi-tree clusters detected, adding 5 new trees.
+2026-10-27T13:09:09Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:09:10Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:09:10Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:09:10Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:09:10Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:10Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:10Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:10Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:12Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:09:14Z [INFO] [MainProcess] CHM: 745 initial peaks found.
+2026-10-27T13:09:14Z [INFO] [MainProcess] Filter: 176 tiny segments (< 100 pts) and 9 pole or wall like segments dropped.
+2026-10-27T13:09:14Z [INFO] [MainProcess] PCA: 62 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T13:09:14Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:09:15Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:09:15Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:09:15Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:16Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:18Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:09:20Z [INFO] [MainProcess] CHM: 708 initial peaks found.
+2026-10-27T13:09:20Z [INFO] [MainProcess] Filter: 142 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:09:20Z [INFO] [MainProcess] PCA: 48 multi-tree clusters detected, adding 2 new trees.
+2026-10-27T13:09:20Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:09:21Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:09:21Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:09:21Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:09:22Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:22Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:22Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:09:22Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:09:26Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:09:28Z [INFO] [MainProcess] CHM: 720 initial peaks found.
+2026-10-27T13:09:28Z [INFO] [MainProcess] Filter: 117 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T13:09:28Z [INFO] [MainProcess] PCA: 73 multi-tree clusters detected, adding 5 new trees.
+2026-10-27T13:09:30Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T13:09:30Z [INFO] [MainProcess] -> Segmentation done in: 85.1 s
+2026-10-27T13:09:30Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T13:09:33Z [INFO] [MainProcess] Retrieved 1,000 features (total: 1,000)
+2026-10-27T13:09:36Z [INFO] [MainProcess] Retrieved 1,000 features (total: 2,000)
+2026-10-27T13:09:38Z [INFO] [MainProcess] Retrieved 1,000 features (total: 3,000)
+2026-10-27T13:09:39Z [INFO] [MainProcess] Retrieved 1,000 features (total: 4,000)
+2026-10-27T13:09:40Z [INFO] [MainProcess] Retrieved 1,000 features (total: 5,000)
+2026-10-27T13:09:42Z [INFO] [MainProcess] Retrieved 1,000 features (total: 6,000)
+2026-10-27T13:09:44Z [INFO] [MainProcess] Retrieved 114 features (total: 6,114)
+2026-10-27T13:09:44Z [INFO] [MainProcess] Found 6,114 BAG building footprints.
+2026-10-27T13:09:45Z [INFO] [MainProcess] Buildings (BAG): removed 706 trees inside footprints
+2026-10-27T13:11:29Z [INFO] [MainProcess] Created 4,928 records
+2026-10-27T13:11:29Z [INFO] [MainProcess] Exported 4928 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T13:21:14Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T13:21:14.729639+00:00Z========================================
+2026-10-27T13:21:14Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T13:21:14Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T13:21:14Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_142114\target_region.geojson
+2026-10-27T13:21:14Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:21:14Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:21:14Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T13:21:14Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T13:21:14Z [INFO] [MainProcess] Found 4 intersecting tiles: ['094000_440000', '094000_439000', '095000_440000', '095000_439000']
+2026-10-27T13:21:14Z [INFO] [MainProcess] Processing 4 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T13:21:22Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T13:21:31Z [INFO] [MainProcess] [094000_440000] OK
+2026-10-27T13:21:33Z [INFO] [MainProcess] [095000_440000] OK
+2026-10-27T13:21:41Z [INFO] [MainProcess] [095000_439000] OK
+2026-10-27T13:21:41Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T13:21:41Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T13:21:41Z [INFO] [MainProcess] Opening laz file
+2026-10-27T13:22:38Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T13:22:38Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T13:22:38Z [INFO] [MainProcess] Completed data collection in 83.9 seconds.
+2026-10-27T13:22:38Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_142114/
+2026-10-27T13:22:43Z [INFO] [MainProcess] Found 21,881,308 vegetation pts and 15,233,907 ground pts (for DTM)
+2026-10-27T13:23:01Z [INFO] [MainProcess] After SOR: 20,508,236 pts remaining
+2026-10-27T13:23:01Z [INFO] [MainProcess] 0
+2026-10-27T13:23:01Z [INFO] [MainProcess] Created 6 records
+2026-10-27T13:23:01Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:23:02Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:23:02Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:23:02Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:23:03Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:03Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:23:03Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:03Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:23:04Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:23:13Z [INFO] [MainProcess] CHM: 1030 initial peaks found.
+2026-10-27T13:23:13Z [INFO] [MainProcess] Filter: 26 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T13:23:13Z [INFO] [MainProcess] PCA: 127 multi-tree clusters detected, adding 11 new trees.
+2026-10-27T13:23:13Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:23:14Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:23:14Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:23:14Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:23:15Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:15Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:23:15Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:15Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:23:16Z [INFO] [MainProcess] Generated window bins
+2026-10-27T13:23:32Z [INFO] [MainProcess] CHM: 1692 initial peaks found.
+2026-10-27T13:23:32Z [INFO] [MainProcess] Filter: 54 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T13:23:32Z [INFO] [MainProcess] PCA: 173 multi-tree clusters detected, adding 10 new trees.
+2026-10-27T13:23:32Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:23:33Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:23:33Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:23:33Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:23:33Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:33Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:23:33Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:23:33Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:31:32Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T13:31:32.740189+00:00Z========================================
+2026-10-27T13:31:32Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T13:31:32Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T13:31:32Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_143132\target_region.geojson
+2026-10-27T13:31:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:31:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:31:32Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T13:31:32Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T13:31:32Z [INFO] [MainProcess] Found 4 intersecting tiles: ['094000_440000', '094000_439000', '095000_440000', '095000_439000']
+2026-10-27T13:31:32Z [INFO] [MainProcess] Processing 4 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T13:31:38Z [INFO] [MainProcess] [094000_440000] OK (CACHED)
+2026-10-27T13:31:38Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T13:31:38Z [INFO] [MainProcess] [095000_440000] OK (CACHED)
+2026-10-27T13:31:38Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T13:31:39Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T13:31:39Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T13:31:39Z [INFO] [MainProcess] Opening laz file
+2026-10-27T13:32:33Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T13:32:33Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T13:32:33Z [INFO] [MainProcess] Completed data collection in 61.0 seconds.
+2026-10-27T13:32:33Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_143132/
+2026-10-27T13:32:37Z [INFO] [MainProcess] Found 20,617,504 vegetation pts and 13,231,459 ground pts (for DTM)
+2026-10-27T13:32:52Z [INFO] [MainProcess] After SOR: 19,228,216 pts remaining
+2026-10-27T13:32:52Z [INFO] [MainProcess] 0
+2026-10-27T13:32:52Z [INFO] [MainProcess] Created 6 records
+2026-10-27T13:32:52Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T13:32:53Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T13:32:53Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T13:32:53Z [INFO] [MainProcess] Created 1 records
+2026-10-27T13:32:53Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:32:53Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T13:32:54Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T13:32:54Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:01:20Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:01:20.769308+00:00Z========================================
+2026-10-27T14:01:20Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:01:20Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:01:20Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_150120\target_region.geojson
+2026-10-27T14:01:20Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:01:20Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:01:20Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:01:20Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:01:20Z [INFO] [MainProcess] Found 4 intersecting tiles: ['094000_440000', '094000_439000', '095000_440000', '095000_439000']
+2026-10-27T14:01:20Z [INFO] [MainProcess] Processing 4 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:01:26Z [INFO] [MainProcess] [094000_440000] OK (CACHED)
+2026-10-27T14:01:26Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:01:26Z [INFO] [MainProcess] [095000_440000] OK (CACHED)
+2026-10-27T14:01:26Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:01:27Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:01:27Z [INFO] [MainProcess] Found 4 .laz file(s) to process.
+2026-10-27T14:01:27Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:02:16Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:02:16Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:02:16Z [INFO] [MainProcess] Completed data collection in 55.4 seconds.
+2026-10-27T14:02:16Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_150120/
+2026-10-27T14:02:19Z [INFO] [MainProcess] Found 15,319,262 vegetation pts and 10,014,355 ground pts (for DTM)
+2026-10-27T14:02:31Z [INFO] [MainProcess] After SOR: 14,290,923 pts remaining
+2026-10-27T14:02:31Z [INFO] [MainProcess] 0
+2026-10-27T14:02:31Z [INFO] [MainProcess] Created 6 records
+2026-10-27T14:02:31Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:02:31Z [INFO] [MainProcess] Skipping sub-polygon: No vegetation points found.
+2026-10-27T14:02:31Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:02:32Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:02:32Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:02:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:02:32Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:32Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:32Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:32Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:33Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:02:38Z [INFO] [MainProcess] CHM: 897 initial peaks found.
+2026-10-27T14:02:38Z [INFO] [MainProcess] Filter: 37 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T14:02:38Z [INFO] [MainProcess] PCA: 132 multi-tree clusters detected, adding 17 new trees.
+2026-10-27T14:02:38Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:02:39Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:02:39Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:02:39Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:02:40Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:40Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:40Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:40Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:40Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:02:55Z [INFO] [MainProcess] CHM: 1809 initial peaks found.
+2026-10-27T14:02:55Z [INFO] [MainProcess] Filter: 54 tiny segments (< 100 pts) and 2 pole or wall like segments dropped.
+2026-10-27T14:02:55Z [INFO] [MainProcess] PCA: 226 multi-tree clusters detected, adding 22 new trees.
+2026-10-27T14:02:55Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:02:56Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:02:56Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:02:56Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:02:56Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:56Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:56Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:56Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:57Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:02:58Z [INFO] [MainProcess] CHM: 181 initial peaks found.
+2026-10-27T14:02:58Z [INFO] [MainProcess] Filter: 2 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:02:58Z [INFO] [MainProcess] PCA: 22 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T14:02:58Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:02:58Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:02:58Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:02:58Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:02:59Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:59Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:59Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:02:59Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:02:59Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:03:08Z [INFO] [MainProcess] CHM: 1668 initial peaks found.
+2026-10-27T14:03:08Z [INFO] [MainProcess] Filter: 52 tiny segments (< 100 pts) and 4 pole or wall like segments dropped.
+2026-10-27T14:03:08Z [INFO] [MainProcess] PCA: 183 multi-tree clusters detected, adding 12 new trees.
+2026-10-27T14:03:08Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:03:08Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:03:08Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:03:08Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:03:09Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:03:09Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:03:09Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:03:09Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:03:10Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:03:22Z [INFO] [MainProcess] CHM: 1487 initial peaks found.
+2026-10-27T14:03:22Z [INFO] [MainProcess] Filter: 34 tiny segments (< 100 pts) and 3 pole or wall like segments dropped.
+2026-10-27T14:03:22Z [INFO] [MainProcess] PCA: 164 multi-tree clusters detected, adding 12 new trees.
+2026-10-27T14:03:22Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:03:22Z [INFO] [MainProcess] -> Segmentation done in: 51.3 s
+2026-10-27T14:03:22Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:03:23Z [INFO] [MainProcess] Retrieved 10 features (total: 10)
+2026-10-27T14:03:23Z [INFO] [MainProcess] Found 10 BAG building footprints.
+2026-10-27T14:03:23Z [INFO] [MainProcess] Buildings (BAG): removed 2 trees inside footprints
+2026-10-27T14:06:16Z [INFO] [MainProcess] Created 5,701 records
+2026-10-27T14:06:16Z [INFO] [MainProcess] Exported 5701 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T14:11:08Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:11:08.066519+00:00Z========================================
+2026-10-27T14:11:08Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:11:08Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:11:08Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_151108\target_region.geojson
+2026-10-27T14:11:08Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:11:08Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:11:08Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:11:08Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:11:08Z [INFO] [MainProcess] Found 2 intersecting tiles: ['094000_439000', '095000_439000']
+2026-10-27T14:11:08Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:11:14Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:11:14Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:11:14Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:11:14Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T14:11:14Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:11:43Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:11:43Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:11:43Z [INFO] [MainProcess] Completed data collection in 35.1 seconds.
+2026-10-27T14:11:43Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_151108/
+2026-10-27T14:11:45Z [INFO] [MainProcess] Found  9,263,933 vegetation pts and  6,364,019 ground pts (for DTM)
+2026-10-27T14:11:51Z [INFO] [MainProcess] After SOR:  8,633,477 pts remaining
+2026-10-27T14:11:51Z [INFO] [MainProcess] 0
+2026-10-27T14:11:52Z [INFO] [MainProcess] Created 4 records
+2026-10-27T14:11:52Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:11:52Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:11:52Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:11:52Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:11:53Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:11:53Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:11:54Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:11:54Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:11:56Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:11:59Z [INFO] [MainProcess] CHM: 443 initial peaks found.
+2026-10-27T14:11:59Z [INFO] [MainProcess] Filter: 20 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:11:59Z [INFO] [MainProcess] PCA: 52 multi-tree clusters detected, adding 3 new trees.
+2026-10-27T14:11:59Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:11:59Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:11:59Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:11:59Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:12:01Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:01Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:01Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:01Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:01Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:12:11Z [INFO] [MainProcess] CHM: 1215 initial peaks found.
+2026-10-27T14:12:11Z [INFO] [MainProcess] Filter: 23 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:12:11Z [INFO] [MainProcess] PCA: 172 multi-tree clusters detected, adding 15 new trees.
+2026-10-27T14:12:11Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:12:11Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:12:11Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:12:11Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:12:13Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:13Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:13Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:13Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:15Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:12:19Z [INFO] [MainProcess] CHM: 954 initial peaks found.
+2026-10-27T14:12:19Z [INFO] [MainProcess] Filter: 32 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T14:12:19Z [INFO] [MainProcess] PCA: 125 multi-tree clusters detected, adding 9 new trees.
+2026-10-27T14:12:19Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:12:19Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:12:19Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:12:19Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:12:21Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:21Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:21Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:12:21Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:12:22Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:12:29Z [INFO] [MainProcess] CHM: 1150 initial peaks found.
+2026-10-27T14:12:29Z [INFO] [MainProcess] Filter: 37 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T14:12:29Z [INFO] [MainProcess] PCA: 138 multi-tree clusters detected, adding 14 new trees.
+2026-10-27T14:12:29Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:12:29Z [INFO] [MainProcess] -> Segmentation done in: 37.6 s
+2026-10-27T14:12:29Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:12:30Z [INFO] [MainProcess] Retrieved 2 features (total: 2)
+2026-10-27T14:12:30Z [INFO] [MainProcess] Found 2 BAG building footprints.
+2026-10-27T14:12:30Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T14:13:33Z [INFO] [MainProcess] Created 3,533 records
+2026-10-27T14:13:33Z [INFO] [MainProcess] Exported 3533 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T14:20:04Z [INFO] [MainProcess] 3531 trees -> 456,611 vertices 884,794 faces  (492.4 s total)
+2026-10-27T14:20:05Z [INFO] [MainProcess] Merged 1 tiles -> 3531 trees, 884,794 faces -> merged_lod3.1*.obj
+2026-10-27T14:21:22Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:21:22.016594+00:00Z========================================
+2026-10-27T14:21:22Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:21:22Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:21:22Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_152121\target_region.geojson
+2026-10-27T14:21:22Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:21:22Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:21:22Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:21:22Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:21:22Z [INFO] [MainProcess] Found 2 intersecting tiles: ['094000_439000', '095000_439000']
+2026-10-27T14:21:22Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:21:28Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:21:28Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:21:28Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:21:28Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T14:21:29Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:21:54Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:21:54Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:21:54Z [INFO] [MainProcess] Completed data collection in 31.8 seconds.
+2026-10-27T14:21:54Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_152121/
+2026-10-27T14:21:54Z [INFO] [MainProcess] Found  3,341,737 vegetation pts and  2,057,056 ground pts (for DTM)
+2026-10-27T14:21:56Z [INFO] [MainProcess] After SOR:  3,121,467 pts remaining
+2026-10-27T14:21:56Z [INFO] [MainProcess] 0
+2026-10-27T14:21:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:21:57Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:21:57Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:21:57Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:21:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:21:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:21:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:21:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:21:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:21:59Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:22:10Z [INFO] [MainProcess] CHM: 1426 initial peaks found.
+2026-10-27T14:22:10Z [INFO] [MainProcess] Filter: 43 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T14:22:10Z [INFO] [MainProcess] PCA: 202 multi-tree clusters detected, adding 24 new trees.
+2026-10-27T14:22:10Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:22:10Z [INFO] [MainProcess] -> Segmentation done in: 13.2 s
+2026-10-27T14:22:10Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:22:10Z [INFO] [MainProcess] Retrieved 2 features (total: 2)
+2026-10-27T14:22:10Z [INFO] [MainProcess] Found 2 BAG building footprints.
+2026-10-27T14:22:10Z [INFO] [MainProcess] Buildings (BAG): removed 1 trees inside footprints
+2026-10-27T14:23:26Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:23:26.233445+00:00Z========================================
+2026-10-27T14:23:26Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:23:26Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:23:26Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_152326\target_region.geojson
+2026-10-27T14:23:26Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:23:26Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:23:26Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:23:26Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:23:26Z [INFO] [MainProcess] Found 2 intersecting tiles: ['094000_439000', '095000_439000']
+2026-10-27T14:23:26Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:23:32Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:23:32Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:23:32Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:23:32Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T14:23:32Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:23:59Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:23:59Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:23:59Z [INFO] [MainProcess] Completed data collection in 33.2 seconds.
+2026-10-27T14:23:59Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_152326/
+2026-10-27T14:24:00Z [INFO] [MainProcess] Found  6,877,725 vegetation pts and  4,715,708 ground pts (for DTM)
+2026-10-27T14:24:06Z [INFO] [MainProcess] After SOR:  6,404,851 pts remaining
+2026-10-27T14:24:06Z [INFO] [MainProcess] 0
+2026-10-27T14:24:06Z [INFO] [MainProcess] Created 2 records
+2026-10-27T14:24:06Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:24:06Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:24:06Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:24:06Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:24:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:24:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:24:07Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:24:07Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:24:08Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:24:17Z [INFO] [MainProcess] CHM: 1184 initial peaks found.
+2026-10-27T14:24:17Z [INFO] [MainProcess] Filter: 33 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:24:17Z [INFO] [MainProcess] PCA: 140 multi-tree clusters detected, adding 9 new trees.
+2026-10-27T14:24:17Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:24:17Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:24:17Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:24:17Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:24:18Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:24:18Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:24:18Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:24:18Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:24:19Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:24:27Z [INFO] [MainProcess] CHM: 1557 initial peaks found.
+2026-10-27T14:24:27Z [INFO] [MainProcess] Filter: 62 tiny segments (< 100 pts) and 1 pole or wall like segments dropped.
+2026-10-27T14:24:27Z [INFO] [MainProcess] PCA: 215 multi-tree clusters detected, adding 25 new trees.
+2026-10-27T14:24:27Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:24:27Z [INFO] [MainProcess] -> Segmentation done in: 21.0 s
+2026-10-27T14:24:27Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:24:27Z [INFO] [MainProcess] Retrieved 2 features (total: 2)
+2026-10-27T14:24:27Z [INFO] [MainProcess] Found 2 BAG building footprints.
+2026-10-27T14:24:27Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T14:25:00Z [INFO] [MainProcess] Created 2,531 records
+2026-10-27T14:25:00Z [INFO] [MainProcess] Exported 2531 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T14:30:34Z [INFO] [MainProcess] 2531 trees -> 328,947 vertices 637,530 faces  (388.2 s total)
+2026-10-27T14:30:35Z [INFO] [MainProcess] Merged 1 tiles -> 2531 trees, 637,530 faces -> merged_lod3.1*.obj
+2026-10-27T14:43:57Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:43:57.696653+00:00Z========================================
+2026-10-27T14:43:57Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:43:57Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:43:57Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154357\target_region.geojson
+2026-10-27T14:43:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:43:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:43:57Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:43:57Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:43:57Z [INFO] [MainProcess] Found 2 intersecting tiles: ['094000_439000', '095000_439000']
+2026-10-27T14:43:57Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:44:03Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:44:03Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:44:04Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:44:04Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T14:44:04Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:44:30Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:44:30Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:44:30Z [INFO] [MainProcess] Completed data collection in 32.1 seconds.
+2026-10-27T14:44:30Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154357/
+2026-10-27T14:44:30Z [INFO] [MainProcess] Found  3,560,092 vegetation pts and  2,443,205 ground pts (for DTM)
+2026-10-27T14:44:33Z [INFO] [MainProcess] After SOR:  3,322,050 pts remaining
+2026-10-27T14:44:33Z [INFO] [MainProcess] 0
+2026-10-27T14:44:33Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:44:33Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:44:33Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:44:33Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:44:33Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:44:34Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:44:34Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:44:34Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:44:34Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:44:35Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:44:45Z [INFO] [MainProcess] CHM: 1472 initial peaks found.
+2026-10-27T14:44:45Z [INFO] [MainProcess] Filter: 50 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:44:45Z [INFO] [MainProcess] PCA: 202 multi-tree clusters detected, adding 19 new trees.
+2026-10-27T14:44:45Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:44:45Z [INFO] [MainProcess] -> Segmentation done in: 12.6 s
+2026-10-27T14:44:45Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:44:46Z [INFO] [MainProcess] Retrieved 1 features (total: 1)
+2026-10-27T14:44:46Z [INFO] [MainProcess] Found 1 BAG building footprints.
+2026-10-27T14:44:46Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T14:44:55Z [INFO] [MainProcess] Created 1,366 records
+2026-10-27T14:44:55Z [INFO] [MainProcess] Exported 1366 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T14:46:32Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:46:32.162757+00:00Z========================================
+2026-10-27T14:46:32Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:46:32Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:46:32Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154632\target_region.geojson
+2026-10-27T14:46:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:46:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:46:32Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:46:32Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:46:32Z [INFO] [MainProcess] Found 2 intersecting tiles: ['094000_439000', '095000_439000']
+2026-10-27T14:46:32Z [INFO] [MainProcess] Processing 2 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:46:38Z [INFO] [MainProcess] [094000_439000] OK (CACHED)
+2026-10-27T14:46:38Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:46:38Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:46:38Z [INFO] [MainProcess] Found 2 .laz file(s) to process.
+2026-10-27T14:46:38Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:47:15Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:47:15Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:47:15Z [INFO] [MainProcess] Completed data collection in 43.4 seconds.
+2026-10-27T14:47:15Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154632/
+2026-10-27T14:47:16Z [INFO] [MainProcess] Found  3,560,092 vegetation pts and  2,443,205 ground pts (for DTM)
+2026-10-27T14:47:19Z [INFO] [MainProcess] After SOR:  3,322,050 pts remaining
+2026-10-27T14:47:19Z [INFO] [MainProcess] 0
+2026-10-27T14:47:19Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:47:19Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:47:19Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:47:19Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:47:19Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:47:19Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:47:19Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:47:20Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:47:20Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:47:20Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:47:30Z [INFO] [MainProcess] CHM: 1472 initial peaks found.
+2026-10-27T14:47:30Z [INFO] [MainProcess] Filter: 50 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:47:30Z [INFO] [MainProcess] PCA: 202 multi-tree clusters detected, adding 19 new trees.
+2026-10-27T14:47:30Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:47:30Z [INFO] [MainProcess] -> Segmentation done in: 11.7 s
+2026-10-27T14:47:30Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:47:33Z [INFO] [MainProcess] Retrieved 1 features (total: 1)
+2026-10-27T14:47:33Z [INFO] [MainProcess] Found 1 BAG building footprints.
+2026-10-27T14:47:34Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T14:47:43Z [INFO] [MainProcess] Created 1,366 records
+2026-10-27T14:47:43Z [INFO] [MainProcess] Exported 1366 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T14:48:10Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T14:48:10.814108+00:00Z========================================
+2026-10-27T14:48:10Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T14:48:10Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T14:48:10Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154810\target_region.geojson
+2026-10-27T14:48:10Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:48:10Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:48:10Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T14:48:10Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T14:48:11Z [INFO] [MainProcess] Found 1 intersecting tiles: ['095000_439000']
+2026-10-27T14:48:11Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T14:48:16Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T14:48:17Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T14:48:17Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-27T14:48:17Z [INFO] [MainProcess] Opening laz file
+2026-10-27T14:48:30Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T14:48:30Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T14:48:30Z [INFO] [MainProcess] Completed data collection in 19.8 seconds.
+2026-10-27T14:48:30Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_154810/
+2026-10-27T14:48:31Z [INFO] [MainProcess] Found  2,025,763 vegetation pts and  1,460,984 ground pts (for DTM)
+2026-10-27T14:48:32Z [INFO] [MainProcess] After SOR:  1,892,020 pts remaining
+2026-10-27T14:48:32Z [INFO] [MainProcess] 0
+2026-10-27T14:48:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:48:32Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T14:48:32Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T14:48:32Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T14:48:32Z [INFO] [MainProcess] Created 1 records
+2026-10-27T14:48:33Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:48:33Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:48:33Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T14:48:33Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T14:48:34Z [INFO] [MainProcess] Generated window bins
+2026-10-27T14:48:39Z [INFO] [MainProcess] CHM: 971 initial peaks found.
+2026-10-27T14:48:39Z [INFO] [MainProcess] Filter: 28 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T14:48:39Z [INFO] [MainProcess] PCA: 140 multi-tree clusters detected, adding 13 new trees.
+2026-10-27T14:48:39Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T14:48:39Z [INFO] [MainProcess] -> Segmentation done in: 7.5 s
+2026-10-27T14:48:40Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T14:48:40Z [INFO] [MainProcess] Retrieved 0 features (total: 0)
+2026-10-27T14:48:40Z [ERROR] [MainProcess] No BAG buildings returned.
+NoneType: None
+2026-10-27T14:48:40Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T14:48:43Z [INFO] [MainProcess] Created 884 records
+2026-10-27T14:48:43Z [INFO] [MainProcess] Exported 884 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T15:00:55Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T15:00:55.385081+00:00Z========================================
+2026-10-27T15:00:55Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T15:00:55Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T15:00:55Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160055\target_region.geojson
+2026-10-27T15:00:55Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:00:55Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:00:55Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T15:00:55Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T15:00:55Z [INFO] [MainProcess] Found 1 intersecting tiles: ['095000_439000']
+2026-10-27T15:00:55Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T15:01:01Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T15:01:01Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T15:01:01Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-27T15:01:01Z [INFO] [MainProcess] Opening laz file
+2026-10-27T15:01:20Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T15:01:20Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T15:01:20Z [INFO] [MainProcess] Completed data collection in 25.4 seconds.
+2026-10-27T15:01:20Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160055/
+2026-10-27T15:01:21Z [INFO] [MainProcess] Found  2,647,458 vegetation pts and  1,935,841 ground pts (for DTM)
+2026-10-27T15:01:25Z [INFO] [MainProcess] After SOR:  2,470,742 pts remaining
+2026-10-27T15:01:25Z [INFO] [MainProcess] 0
+2026-10-27T15:01:25Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:01:25Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T15:01:25Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T15:01:25Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T15:01:25Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:01:26Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:01:26Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:01:27Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:01:27Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:01:28Z [INFO] [MainProcess] Generated window bins
+2026-10-27T15:01:38Z [INFO] [MainProcess] CHM: 1440 initial peaks found.
+2026-10-27T15:01:38Z [INFO] [MainProcess] Filter: 35 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T15:01:38Z [INFO] [MainProcess] PCA: 149 multi-tree clusters detected, adding 11 new trees.
+2026-10-27T15:01:38Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T15:01:38Z [INFO] [MainProcess] -> Segmentation done in: 12.9 s
+2026-10-27T15:01:38Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T15:01:38Z [INFO] [MainProcess] Retrieved 0 features (total: 0)
+2026-10-27T15:01:38Z [ERROR] [MainProcess] No BAG buildings returned.
+NoneType: None
+2026-10-27T15:01:38Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T15:01:44Z [INFO] [MainProcess] Created 1,346 records
+2026-10-27T15:01:44Z [INFO] [MainProcess] Exported 1346 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T15:02:13Z [INFO] [MainProcess] 1346 trees -> 113,475 vertices 215,946 faces  (48.3 s total)
+2026-10-27T15:02:14Z [INFO] [MainProcess] Merged 1 tiles -> 1346 trees, 215,946 faces -> merged_lod3.1*.obj
+2026-10-27T15:02:35Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T15:02:35.168491+00:00Z========================================
+2026-10-27T15:02:35Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T15:02:35Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T15:02:35Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160235\target_region.geojson
+2026-10-27T15:02:35Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:02:35Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:02:35Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T15:02:35Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T15:02:35Z [INFO] [MainProcess] Found 1 intersecting tiles: ['095000_439000']
+2026-10-27T15:02:35Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T15:02:41Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T15:02:41Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T15:02:41Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-27T15:02:41Z [INFO] [MainProcess] Opening laz file
+2026-10-27T15:02:55Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T15:02:55Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T15:02:55Z [INFO] [MainProcess] Completed data collection in 20.2 seconds.
+2026-10-27T15:02:55Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160235/
+2026-10-27T15:02:56Z [INFO] [MainProcess] Found  2,647,458 vegetation pts and  1,935,841 ground pts (for DTM)
+2026-10-27T15:02:57Z [INFO] [MainProcess] After SOR:  2,470,742 pts remaining
+2026-10-27T15:02:57Z [INFO] [MainProcess] 0
+2026-10-27T15:02:57Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:02:57Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T15:02:58Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T15:02:58Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T15:02:58Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:02:58Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:02:59Z [INFO] [MainProcess] Generated window bins
+2026-10-27T15:03:06Z [INFO] [MainProcess] CHM: 1440 initial peaks found.
+2026-10-27T15:03:06Z [INFO] [MainProcess] Filter: 35 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T15:03:06Z [INFO] [MainProcess] PCA: 149 multi-tree clusters detected, adding 11 new trees.
+2026-10-27T15:03:06Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T15:03:06Z [INFO] [MainProcess] -> Segmentation done in: 8.6 s
+2026-10-27T15:03:06Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T15:03:06Z [INFO] [MainProcess] Retrieved 0 features (total: 0)
+2026-10-27T15:03:06Z [ERROR] [MainProcess] No BAG buildings returned.
+NoneType: None
+2026-10-27T15:03:06Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T15:03:13Z [INFO] [MainProcess] Created 1,346 records
+2026-10-27T15:03:13Z [INFO] [MainProcess] Exported 1346 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T15:03:35Z [INFO] [MainProcess] 1346 trees -> 113,475 vertices 215,946 faces  (38.1 s total)
+2026-10-27T15:03:36Z [INFO] [MainProcess] Merged 1 tiles -> 1346 trees, 215,946 faces -> merged_lod3.1*.obj
+2026-10-27T15:03:54Z [INFO] [MainProcess] 
+======================================== NEW SESSION 2026-10-27T15:03:54.214656+00:00Z========================================
+2026-10-27T15:03:54Z [INFO] [MainProcess] Logging to: cases\target_region\logs\get_data.log
+2026-10-27T15:03:54Z [INFO] [MainProcess] Starting data download for the defined AOI
+2026-10-27T15:03:54Z [INFO] [MainProcess] Loading AOI from C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160354\target_region.geojson
+2026-10-27T15:03:54Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:03:54Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:03:54Z [INFO] [MainProcess] Buffered AOI saved as GPKG and GeoJSON
+2026-10-27T15:03:54Z [INFO] [MainProcess] Loading AHN index to find intersections...
+2026-10-27T15:03:54Z [INFO] [MainProcess] Found 1 intersecting tiles: ['095000_439000']
+2026-10-27T15:03:54Z [INFO] [MainProcess] Processing 1 AHN tiles and 0 3D BAG tiles in parallel using 2 cores.
+2026-10-27T15:04:03Z [INFO] [MainProcess] [095000_439000] OK (CACHED)
+2026-10-27T15:04:04Z [INFO] [MainProcess] Starting clip and merge of AHN tiles...
+2026-10-27T15:04:04Z [INFO] [MainProcess] Found 1 .laz file(s) to process.
+2026-10-27T15:04:04Z [INFO] [MainProcess] Opening laz file
+2026-10-27T15:04:25Z [INFO] [MainProcess] Merged & clipped point cloud saved
+2026-10-27T15:04:25Z [INFO] [MainProcess] AHN clip and merge process completed.
+2026-10-27T15:04:25Z [INFO] [MainProcess] Completed data collection in 31.4 seconds.
+2026-10-27T15:04:25Z [INFO] [MainProcess] Processing 1 tile -> C:\Users\annas\Documents\GEOIT1501-Trees\DATA\OUT\20261027_160354/
+2026-10-27T15:04:26Z [INFO] [MainProcess] Found  2,647,458 vegetation pts and  1,935,841 ground pts (for DTM)
+2026-10-27T15:04:27Z [INFO] [MainProcess] After SOR:  2,470,742 pts remaining
+2026-10-27T15:04:27Z [INFO] [MainProcess] 0
+2026-10-27T15:04:27Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:04:27Z [INFO] [MainProcess] Filtering points for polygon...
+2026-10-27T15:04:28Z [INFO] [MainProcess] Starting segmentation for sub-polygon...
+2026-10-27T15:04:28Z [INFO] [MainProcess] Determining urban class of area
+2026-10-27T15:04:28Z [INFO] [MainProcess] Created 1 records
+2026-10-27T15:04:28Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:04:28Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:04:28Z [WARNING] [MainProcess] CPLE_AppDefined in PROJ: proj_create_from_database: C:\Program Files\PostgreSQL\18\share\contrib\postgis-3.6\proj\proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 5 is expected. It comes from another PROJ installation.
+2026-10-27T15:04:28Z [WARNING] [MainProcess] CPLE_AppDefined in The definition of projected CRS EPSG:32631 got from GeoTIFF keys is not the same as the one from the EPSG registry, which may cause issues during reprojection operations. Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the EPSG code.
+2026-10-27T15:04:29Z [INFO] [MainProcess] Generated window bins
+2026-10-27T15:04:36Z [INFO] [MainProcess] CHM: 1440 initial peaks found.
+2026-10-27T15:04:36Z [INFO] [MainProcess] Filter: 35 tiny segments (< 100 pts) and 0 pole or wall like segments dropped.
+2026-10-27T15:04:36Z [INFO] [MainProcess] PCA: 149 multi-tree clusters detected, adding 11 new trees.
+2026-10-27T15:04:36Z [INFO] [MainProcess] Merged segmentation results
+2026-10-27T15:04:36Z [INFO] [MainProcess] -> Segmentation done in: 8.7 s
+2026-10-27T15:04:36Z [INFO] [MainProcess] Querying BAG buildings
+2026-10-27T15:04:36Z [INFO] [MainProcess] Retrieved 0 features (total: 0)
+2026-10-27T15:04:36Z [ERROR] [MainProcess] No BAG buildings returned.
+NoneType: None
+2026-10-27T15:04:36Z [INFO] [MainProcess] Buildings (BAG): removed 0 trees inside footprints
+2026-10-27T15:04:43Z [INFO] [MainProcess] Created 1,346 records
+2026-10-27T15:04:43Z [INFO] [MainProcess] Exported 1346 tree locations to clipped_output_tree_locations.gpkg
+2026-10-27T15:04:57Z [INFO] [MainProcess] 1346 trees -> 4,632,520 vertices 9,256,510 faces  (29.4 s total)
+2026-10-27T15:05:13Z [INFO] [MainProcess] Merged 1 tiles -> 1346 trees, 9,256,510 faces -> merged_lod3.1*.obj

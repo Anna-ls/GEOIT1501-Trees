@@ -70,7 +70,7 @@ def download_bag_cityjson(download_url: str, output_dir: Path, tile_id: str, ove
         if not overwrite and json_path.exists():
             return {"tile_id": tile_id, "status": "ok (cached)", "path": str(json_path)}
 
-        response = requests.get(download_url, stream=True)
+        response = requests.get(download_url, stream=True, headers={'Accept-Encoding': 'identity'})
         response.raise_for_status()
 
         target_path = gz_path if is_gzipped else json_path

@@ -251,10 +251,23 @@ def segment_trees_chm(
     max_elongation = multi_tree_kwargs.pop("max_elongation", 3.0)
     max_offset_ratio = multi_tree_kwargs.pop("max_offset_ratio", 1.5)
 
-    x_min = min(pts_veg[:, 0].min(), pts_ground[:, 0].min())
-    y_min = min(pts_veg[:, 1].min(), pts_ground[:, 1].min())
-    x_max = max(pts_veg[:, 0].max(), pts_ground[:, 0].max())
-    y_max = max(pts_veg[:, 1].max(), pts_ground[:, 1].max())
+    if len(pts_veg) == 0:
+        return (
+            np.zeros(0, dtype=np.int32),
+            np.zeros((1, 1), dtype=np.float64),
+            (0.0, 0.0, cell_size)
+        )
+
+    x_min = pts_veg[:, 0].min()
+    y_min = pts_veg[:, 1].min()
+    x_max = pts_veg[:, 0].max()
+    y_max = pts_veg[:, 1].max()
+
+    if len(pts_ground) > 0:
+        x_min = min(x_min, pts_ground[:, 0].min())
+        y_min = min(y_min, pts_ground[:, 1].min())
+        x_max = max(x_max, pts_ground[:, 0].max())
+        y_max = max(y_max, pts_ground[:, 1].max())
 
     nx = int(np.ceil((x_max - x_min) / cell_size)) + 1
     ny = int(np.ceil((y_max - y_min) / cell_size)) + 1
@@ -287,7 +300,9 @@ def segment_trees_chm(
         np.nan,
     ).reshape(ny, nx)
     nan_mask = np.isnan(dtm)
-    if nan_mask.any():
+    if nan_mask.all():
+        dtm[:] = pts_veg[:, 2].min() if len(pts_veg) > 0 else 0.0
+    elif nan_mask.any():
         fill_idx = distance_transform_edt(
             nan_mask, return_distances=False, return_indices=True
         )
