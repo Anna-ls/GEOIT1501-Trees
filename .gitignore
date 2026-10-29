@@ -31,3 +31,5 @@ env/
 .DS_Store
 val3ditypy
 synthesis/data
+DATA_OLD/
+data/
