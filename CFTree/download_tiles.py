@@ -15,7 +15,7 @@ def download_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool
     tile_folder = output_dir / "tiles" / tile_id
     tile_folder.mkdir(parents=True, exist_ok=True)
 
-    ahn_version = "AHN6_2025" if "AHN6" in base_url else "AHN5"
+    ahn_version = "AHN6_2026" if "AHN6" in base_url else "AHN5"
 
     laz_url = f"{base_url}/{ahn_version}_C_{tile_id}.COPC.LAZ"
     laz_path = tile_folder / "raw.laz"

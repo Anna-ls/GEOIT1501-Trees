@@ -191,15 +191,15 @@ def generate_window_bins(area_type: str, min_height: float = 2.5) -> list:
     curves = {
         # Low Built-up / Parks (High canopy overlap, intricate multi-layered structure)
         # Mapped to Plot 6: Complex, Multi-Layered Mixed forest (95-121 pts/m2)
-        "low_built_up": {"a": 0.065, "b": -0.042, "c": 0.003},
+        "low_built_up": {"a": 3.061, "b": -0.052, "c": 0.003},
 
         # Mid Built-up / Suburban (Moderate overlap, mix of gardens and street trees)
         # Mapped to Plot 5: Complex, Single-Layered Mixed forest (30 pts/m2)
-        "mid_built_up": {"a": -0.765, "b": 0.098, "c": -0.0003},
+        "mid_built_up": {"a": 1.344, "b": 0.090, "c": -0.0001},
 
         # Densely Built-up (Isolated street trees, constrained crowns, clear boundaries)
         # Mapped to Plot 2: Simple, Mixed forest (11 pts/m2 - clear crown boundaries)
-        "dense_built_up": {"a": 0.707, "b": -0.059, "c": 0.003}
+        "dense_built_up": {"a": 2.759, "b": -0.078, "c": 0.004}
     }
 
     coeffs = curves.get(area_type, curves["mid_built_up"])
@@ -219,7 +219,6 @@ def generate_window_bins(area_type: str, min_height: float = 2.5) -> list:
         r_final = max(1.0, float(r_calc))
 
         window_bins.append((h_min, h_max, r_final))
-
     return window_bins
 
 def segment_trees_chm(
