@@ -12,6 +12,7 @@ from scipy.spatial import cKDTree
 
 from tree4cfd.buildings import filter_trees_in_buildings
 from tree4cfd.segmentation import segment_trees_chm
+from synthesis.determine_lcz_of_area import determine_lcz_of_area
 
 # ---- CONFIGURATION ---------------------------------------------------
 def configuration(case_name):
@@ -199,7 +200,7 @@ def validation_pipeline(case_name, parameters: dict):
         f"  Loaded {len(pts_veg):,} vegetation points "
         f"and {len(pts_ground):,} ground points."
     )
-
+    area_type = determine_lcz_of_area(PARK_POLYGON_PATH)
     # ---------------------------------------------------
     # 4. Call external segmentation module
     # ---------------------------------------------------
@@ -213,6 +214,7 @@ def validation_pipeline(case_name, parameters: dict):
         peak_min_dist_m=parameters["peak_min_dist_m"],
         min_tree_points=parameters["min_tree_points"],
         resolve_multi_trees=parameters["resolve_multi_trees"],
+        area_type=area_type,
         multi_tree_kwargs=multi_tree_kwargs
     )
 
