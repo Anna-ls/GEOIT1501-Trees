@@ -362,39 +362,28 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     # ---------------------------------------------------------------
 
     if isinstance(polygon, (str, Path)):
-
         polygon_gdf = gpd.read_file(polygon)
-
         if polygon_gdf.empty:
             raise ValueError(
                 f"No geometries found in {polygon}"
             )
-
         if polygon_gdf.crs is None:
             raise ValueError(
                 "Input polygon has no CRS."
             )
-
         polygon_gdf = polygon_gdf.to_crs(crs)
-
     elif isinstance(polygon, gpd.GeoDataFrame):
-
         polygon_gdf = polygon.copy()
-
         if polygon_gdf.empty:
             raise ValueError(
                 "Input GeoDataFrame contains no geometries."
             )
-
         if polygon_gdf.crs is None:
             raise ValueError(
                 "Input GeoDataFrame has no CRS."
             )
-
         polygon_gdf = polygon_gdf.to_crs(crs)
-
     else:
-
         # Shapely Polygon / MultiPolygon
         polygon_gdf = gpd.GeoDataFrame(
             {"geometry": [polygon]},
@@ -404,14 +393,8 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
 
     # Dissolve multiple features into one geometry
     polygon_geom = polygon_gdf.geometry.union_all()
-
-    minx, miny, maxx, maxy = polygon_geom.bounds
-
-    # print(
-    #     f"  [+] Querying BAG buildings inside "
-    #     f"{minx:.1f}, {miny:.1f}, "
-    #     f"{maxx:.1f}, {maxy:.1f}"
-    # )
+    polygon_4326 = polygon_gdf.to_crs("EPSG:4326").geometry.union_all()
+    minx, miny, maxx, maxy = polygon_4326.bounds
 
     # ---------------------------------------------------------------
     # 2. BAG OGC API
@@ -421,19 +404,11 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
         "https://api.pdok.nl/kadaster/bag/ogc/v2/"
         "collections/pand/items"
     )
-
     params = {
         "bbox": f"{minx},{miny},{maxx},{maxy}",
-        "bbox-crs": (
-            "http://www.opengis.net/def/crs/EPSG/0/28992"
-        ),
-        "crs": (
-            "http://www.opengis.net/def/crs/EPSG/0/28992"
-        ),
         "f": "json",
         "limit": 2000,
     }
-
     features = []
 
     # ---------------------------------------------------------------
@@ -441,7 +416,6 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     # ---------------------------------------------------------------
 
     while url:
-
         response = requests.get(
             url,
             params=params,
@@ -454,27 +428,16 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
             continue
 
         data = response.json()
-
         page_features = data.get("features", [])
-
         features.extend(page_features)
-
-        # print(
-        #     f"      Retrieved {len(page_features):,} "
-        #     f"features "
-        #     f"(total: {len(features):,})"
-        # )
 
         # Find next page
         next_url = None
-
         for link in data.get("links", []):
             if link.get("rel") == "next":
                 next_url = link.get("href")
                 break
-
         url = next_url
-
         # The next URL already contains its parameters
         params = None
 
@@ -483,9 +446,7 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     # ---------------------------------------------------------------
 
     if not features:
-
         print("  [!] No BAG buildings returned.")
-
         return gpd.GeoDataFrame(
             geometry=[],
             crs=crs
@@ -495,16 +456,12 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     properties = []
 
     for feature in features:
-
         geometry = feature.get("geometry")
-
         if geometry is None:
             continue
-
         geometries.append(
             shape(geometry)
         )
-
         properties.append(
             feature.get("properties", {})
         )
@@ -512,8 +469,9 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     buildings = gpd.GeoDataFrame(
         properties,
         geometry=geometries,
-        crs=crs
+        crs="EPSG:4326"
     )
+    buildings = buildings.to_crs(crs)
 
     # ---------------------------------------------------------------
     # 5. Exact spatial filtering
@@ -524,13 +482,6 @@ def get_building_footprints(polygon, crs="EPSG:28992", plot_buildings=False):
     ].copy()
 
     buildings.reset_index(drop=True, inplace=True)
-
-    # print(
-    #     f"  [✓] Found {len(buildings):,} "
-    #     f"BAG building footprints."
-    # )
-
-    
 
     if plot_buildings:
         # Plot building footprints
@@ -611,9 +562,16 @@ def get_building_features(buildings: gpd.GeoDataFrame, area: str | Path, crs="EP
     if len(clipped) == 0:
         return {
             "study_area_m2": area_m2,
+            "building_covered_area_m2": 0.0,
             "building_coverage_ratio": 0.0,
+            "building_coverage_percent": 0.0,
             "building_count": 0,
             "buildings_per_hectare": 0.0,
+            "mean_building_area_m2": 0.0,
+            "median_building_area_m2": 0.0,
+            "std_building_area_m2": 0.0,
+            "p90_building_area_m2": 0.0,
+            "mean_building_compactness": 0.0,
         }
 
     # Union prevents overlapping footprints being counted twice

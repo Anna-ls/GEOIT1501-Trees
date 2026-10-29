@@ -11,6 +11,7 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 from tree4cfd.buildings import filter_trees_in_buildings
+from synthesis.building_filtering_bag import filter_trees_in_buildings_bag
 from tree4cfd.segmentation import segment_trees_chm
 from synthesis.determine_lcz_of_area import determine_lcz_of_area
 
@@ -220,7 +221,7 @@ def validation_pipeline(case_name, parameters: dict):
 
     print("  Filtering trees inside building footprints...")
     epsg_code = CRS.to_epsg() if hasattr(CRS, "to_epsg") else int(CRS.split(":")[-1])
-    labels, removed_count = filter_trees_in_buildings(
+    labels, removed_count = filter_trees_in_buildings_bag(
         labels=labels,
         pts_xy=pts_veg[:, :2],
         translation=(0.0, 0.0),

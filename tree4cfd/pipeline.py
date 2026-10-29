@@ -27,6 +27,7 @@ from scipy.ndimage import distance_transform_edt
 from shapely.affinity import translate as translate_geometry
 import shapely
 from synthesis.cgal_wrap import wrap_and_simplify
+from synthesis.inventory_overlap import validate_against_inventories
 
 from .inventory import (
     build_inventory_index,
@@ -706,26 +707,20 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     if progress_callback:
         progress_callback("Exporting tree locations...")
 
+    # Match trees to inventory if it overlaps with a concave hull of one of the available cities
+    precision, recall, f1_score = 0, 0, 0
     trees_gdf = extract_detected_trees(pts_veg, labels, crs, translation=translation)
     if not trees_gdf.empty:
         out_file = cfg.paths.output_dir / f"{tile_name}_tree_locations.gpkg"
         trees_gdf.to_file(out_file, driver="GPKG")
         logging.info(f"Exported {len(trees_gdf)} tree locations to {out_file.name}")
 
-    # 6. Match surviving trees to the loaded inventory (CSV sidecar + trunk source)
+        if cfg.inventory.enabled:
+            eval_geom = splitted_polygon.geometry.union_all()
+
+            precision, recall, f1_score = validate_against_inventories(eval_geom, trees_gdf, Path(root_dir / "DATA" / "inventory"), Path(root_dir / "DATA" / "inventory" / "inventory_hulls.gpkg"))
+
     inv_local = inv_recs = None
-    # if cfg.inventory.enabled and inventory is not None:
-    #     inv_csv = cfg.paths.output_dir / f"{tile_name}_trees.csv"
-    #     n_matched, n_alive, n_dbh = annotate_and_write(
-    #         inv_csv, labels, pts_veg[:, :2], cfg.translation, epsg,
-    #         inventory, cfg.inventory.match_dist
-    #     )
-    #     print(
-    #         f"    inventory: matched {n_matched}/{n_alive} trees, "
-    #         f"{len(n_dbh)} with DBH -> {inv_csv.name}"
-    #     )
-    #     inv_lonlat, inv_recs = inventory
-    #     inv_local = inventory_local_xy(inv_lonlat, epsg, cfg.translation)
 
     if progress_callback:
         progress_callback(f"Reconstructing 3D meshes...")
@@ -744,7 +739,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     logging.info(f"{tm.n_crowns} trees -> {len(tm.crown_v) + len(tm.trunk_v):,} vertices {n_faces:,} faces  ({time.perf_counter() - t0:.1f} s total)")
 
     meshing_time = time.perf_counter() - t_start_mesh
-    return tm, segmentation_time, cleaning_time, meshing_time
+    return tm, segmentation_time, cleaning_time, meshing_time, precision, recall, f1_score
 
 
 def _write_meshes(stem: Path, tm: TileMeshes, separate: bool) -> None:
@@ -823,6 +818,8 @@ def run_pipeline(cfg: Config, polygon: Path = None, progress_callback=None):
     metas = []  # collected meshes for merging
     seen = set()
 
+    precision, recall, f1_score = None, None, None
+
     for i, tile in enumerate(tiles, 1):
         name = _tile_name(tile)
         if name in seen:
@@ -844,7 +841,7 @@ def run_pipeline(cfg: Config, polygon: Path = None, progress_callback=None):
         if result is None:
             continue
 
-        tm, seg_time, clean_time, mesh_time = result
+        tm, seg_time, clean_time, mesh_time, precision, recall, f1_score = result
         total_seg += seg_time
         total_clean += clean_time
         total_mesh += mesh_time
@@ -861,4 +858,4 @@ def run_pipeline(cfg: Config, polygon: Path = None, progress_callback=None):
         _write_meshes(stem, merged, sep)
         logging.info(f"Merged {len(metas)} tiles -> {merged.n_crowns} trees, {len(merged.crown_f) + len(merged.trunk_f):,} faces -> {stem.name}*.obj")
 
-    return total_seg, total_clean, total_mesh
+    return total_seg, total_clean, total_mesh, precision, recall, f1_score

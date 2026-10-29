@@ -20,7 +20,7 @@
     "smooth_sigma": 2.0,
     "min_height": 3.0,
     "peak_min_dist": 5.0,
-    "min_tree_pts": 150
+    "min_tree_pts": 50
   },
   "trunk": {
     "q_base": 0.20,
@@ -38,11 +38,15 @@
   },
   "buildings": {
     "enabled": true,
-    "buffer": 2
+    "buffer": 1.5
   },
   "output": {
     "merge_tiles": true,
     "separate_crown_trunk": true,
     "merge_touching_crowns": false
+  },
+  "inventory": {
+    "enabled": true,
+    "gpkg_path": "C:/Users/annas/Documents/GEOIT1501-Trees/DATA/IN/AOI_inventory.gpkg"
   }
 }

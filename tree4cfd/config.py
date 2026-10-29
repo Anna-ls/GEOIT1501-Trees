@@ -147,6 +147,7 @@ class Inventory:
     ckan_datasets: List[str] = field(
         default_factory=lambda: ["arbrat-viari", "arbrat-zona", "arbrat-parcs"]
     )
+    gpkg_path: str = ""
 
 
 @dataclass

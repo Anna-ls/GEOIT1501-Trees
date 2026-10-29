@@ -79,6 +79,7 @@ else:
     uploaded_file = st.file_uploader("Upload a GeoJSON file defining your AOI", type=["geojson", "json"])
 
 execution_times = {}
+scores = {}
 total_time = 0
 
 # ---------------------------------------------------------------
@@ -182,7 +183,7 @@ if st.button("Run Reconstruction Pipeline"):
                     "smooth_sigma": 2.8,
                     "min_height": 2.0,
                     "peak_min_dist": 1.8,
-                    "min_tree_pts": 100,
+                    "min_tree_pts": 60,
                     "resolve_multi_trees": True,
                     "multi_tree_kwargs": {
                         "max_elongation": 3.0,
@@ -216,6 +217,9 @@ if st.button("Run Reconstruction Pipeline"):
                     "merge_tiles": True,
                     "separate_crown_trunk": True,
                     "merge_touching_crowns": merge_touching
+                },
+                "inventory": {
+                    "enabled": True,
                 }
             }
             with open(config_json_path, "w") as f:
@@ -231,13 +235,21 @@ if st.button("Run Reconstruction Pipeline"):
                 status_text.info(msg)
 
             with st.spinner('Reconstructing tree crowns and trunks...'):
-                seg_time, clean_time, mesh_time = run_pipeline(cfg, polygon=Path(geojson_path), progress_callback=update_ui)
+                seg_time, clean_time, mesh_time, precision, recall, f1_score = run_pipeline(cfg, polygon=Path(geojson_path), progress_callback=update_ui)
             execution_times['4. Tree Segmentation'] = seg_time
             execution_times['5. Filter & Clean'] = clean_time
             execution_times['6. Reconstruct 3D Meshes'] = mesh_time
 
+            scores['Precision'] = precision
+            scores['Recall'] = recall
+            scores['F1 Score'] = f1_score
+
+            scores_data = {type: round(value, 2) for type, value in scores.items()}
+            with open(out_dir / "scores.json", "w") as f:
+                json.dump(scores_data, f, indent=4)
+
             status_text.empty()
-            st.success(f"Tree reconstruction complete! Download output file using the button;")
+            st.success(f"Tree reconstruction complete! Download output files using the buttons")
 
             total_time = sum(execution_times.values())
 
@@ -253,9 +265,20 @@ if st.button("Run Reconstruction Pipeline"):
             # Format the dictionary for a clean Streamlit table
             summary_data = {
                 "Pipeline Step": list(execution_times.keys()) + ["Total Execution Time"],
-                "Duration (Seconds)": [round(t, 2) for t in execution_times.values()] + [round(total_time, 2)]
+                "Duration (Seconds)": [
+                    "Not enabled" if k == '3. Clip & Merge 3D buildings' and v == 0
+                    else str(round(v, 2))
+                    for k, v in execution_times.items()
+                ] + [str(round(total_time, 2))]
             }
             st.table(pd.DataFrame(summary_data))
+
+            if not precision is None or recall is None or f1_score is None:
+                st.subheader("Precision, Recall and F1-Score")
+                scores_data = {
+                    "Type": list(scores.keys()),
+                    "Value": [round(v, 2) for v in scores.values()]
+                }
 
         except Exception as e:
             st.error(f"An error occurred while running the pipeline: {e}")

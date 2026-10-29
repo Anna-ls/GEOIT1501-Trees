@@ -14,36 +14,49 @@ def download_tile(tile_id: str, output_dir: Path, base_url: str, overwrite: bool
     """Download LAZ for one tile."""
     tile_folder = output_dir / "tiles" / tile_id
     tile_folder.mkdir(parents=True, exist_ok=True)
-
-    ahn_version = "AHN6_2026" if "AHN6" in base_url else "AHN5"
-
-    laz_url = f"{base_url}/{ahn_version}_C_{tile_id}.COPC.LAZ"
     laz_path = tile_folder / "raw.laz"
 
-    try:
-        if overwrite or not laz_path.exists():
-            logging.info(f"[{tile_id}] Downloading COPC.LAZ")
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            }
-            req = urllib.request.Request(laz_url, headers=headers)
+    if "AHN6" in base_url:
+        ahn_versions = ["AHN6_2025", "AHN6_2026"]
+    else:
+        ahn_versions = ["AHN5"]
 
-            with urllib.request.urlopen(req) as response, open(str(laz_path), 'wb') as out_file:
-                out_file.write(response.read())
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
 
-        else:
-            logging.info(f"[{tile_id}] Skipping existing LAZ")
-
+    if not overwrite and laz_path.exists():
+        logging.info(f"[{tile_id}] Skipping existing LAZ")
         return {
             "tile_id": tile_id,
             "status": "ok",
             "paths": {"laz": laz_path},
         }
 
-    except urllib.error.URLError as e:
-        logging.warning(f"[{tile_id}] Download failed: {e}")
-        return {
-            "tile_id": tile_id,
-            "status": "failed",
-            "paths": {"laz": laz_path},
-        }
+    for version in ahn_versions:
+        laz_url = f"{base_url}/{version}_C_{tile_id}.COPC.LAZ"
+        try:
+            logging.info(f"[{tile_id}] Attempting download: {laz_url}")
+            req = urllib.request.Request(laz_url, headers=headers)
+
+            with urllib.request.urlopen(req) as response, open(str(laz_path), 'wb') as out_file:
+                out_file.write(response.read())
+
+            return {
+                "tile_id": tile_id,
+                "status": "ok",
+                "paths": {"laz": laz_path},
+            }
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                continue
+            else:
+                logging.warning(f"[{tile_id}] HTTP error on {version}: {e}")
+        except urllib.error.URLError as e:
+            logging.warning(f"[{tile_id}] Download failed on {version}: {e}")
+
+    return {
+        "tile_id": tile_id,
+        "status": "failed",
+        "paths": {"laz": laz_path},
+    }

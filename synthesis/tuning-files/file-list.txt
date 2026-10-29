@@ -1,2 +1,6 @@
-amsterdam_mid-1
-amsterdam_mid-2
+delft_mid-1
+delft_mid-2
+delft_dense-1
+delft_dense-2
+delft_low-2
+delft_low-1
