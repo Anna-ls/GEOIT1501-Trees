@@ -1,0 +1,32 @@
+name: synthesis-app
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - cgal
+  - pip
+  - pip:
+    - streamlit
+    - folium
+    - streamlit-folium
+    - pyvista
+    - trimesh
+    - laspy
+    - geopandas
+    - laspy[laszip]
+    - laspy[lazrs]
+    - numpy
+    - scipy
+    - scikit-image
+    - shapely
+    - pyproj
+    - requests
+    - geopandas
+    - scikit-learn
+    - pandas
+    - pystac_client
+    - planetary_computer
+    - rioxarray
+    - tqdm
+    - seaborn
