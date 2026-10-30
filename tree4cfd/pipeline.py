@@ -539,7 +539,7 @@ def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, transla
             "point_count": len(cluster)
         })
 
-    return gpd.GeoDataFrame(tree_records, crs=crs)
+    return gpd.GeoDataFrame(tree_records, geometry="geometry", crs=crs)
 
 def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     """Process one tile end to end and return its crown/trunk meshes.
@@ -647,6 +647,8 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
                     crs=splitted_polygon.crs,
                 )
             ),
+            resolve_multi_trees=cfg.segmentation.resolve_multi_trees,
+            multi_tree_kwargs=cfg.segmentation.multi_tree_kwargs
         )
 
         temp_results.append({
@@ -660,18 +662,9 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         temp_results,
         n_points=len(pts_veg),
     )
+    n_trees_found = len(np.unique(labels[labels > 0]))
+    logging.info(f"Merged segmentation results, found {n_trees_found} trees.")
 
-    logging.info("Merged segmentation results")
-
-    # labels, dtm, georef = segment_trees_chm(
-    #     pts_veg, pts_ground,
-    #     cell_size=cfg.segmentation.cell_size,
-    #     smooth_sigma=cfg.segmentation.smooth_sigma,
-    #     min_height=cfg.segmentation.min_height,
-    #     peak_min_dist_m=cfg.segmentation.peak_min_dist,
-    #     min_tree_points=cfg.segmentation.min_tree_pts,
-    #     area_type="mid_built_up"
-    # )
     logging.info(f"-> Segmentation done in: {time.perf_counter() - t0:.1f} s")
     del pts_ground
 
@@ -703,6 +696,9 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
                 cache_dir=cfg.buildings.cache_dir,
             )
             logging.info(f"Buildings (OSM): removed {n_removed} trees inside footprints")
+
+    n_trees_new = len(np.unique(labels[labels > 0]))
+    logging.info(f"Merged segmentation results, found {n_trees_new} trees.")
 
     if progress_callback:
         progress_callback("Exporting tree locations...")

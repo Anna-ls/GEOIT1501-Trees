@@ -357,10 +357,6 @@ def segment_trees_chm(
         mask = labels == lbl
         cluster_pts = pts_veg[mask]
 
-        if np.min(cluster_pts[:, 2]) > 7.0:
-            labels[mask] = 0
-            continue
-
         metrics = analyse_cluster(cluster_pts)
 
         # Drop poles and walls

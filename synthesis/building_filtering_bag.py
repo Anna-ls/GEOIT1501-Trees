@@ -51,7 +51,7 @@ def get_building_footprints(polygon, crs="EPSG:28992"):
         "bbox-crs": ("http://www.opengis.net/def/crs/EPSG/0/28992"),
         "crs": ("http://www.opengis.net/def/crs/EPSG/0/28992"),
         "f": "json",
-        "limit": 10000,
+        "limit": 1000,
     }
     features = []
 

@@ -244,7 +244,7 @@ if st.button("Run Reconstruction Pipeline"):
             scores['Recall'] = recall
             scores['F1 Score'] = f1_score
 
-            scores_data = {type: round(value, 2) for type, value in scores.items()}
+            scores_data = {type: value for type, value in scores.items()}
             with open(out_dir / "scores.json", "w") as f:
                 json.dump(scores_data, f, indent=4)
 
@@ -277,7 +277,7 @@ if st.button("Run Reconstruction Pipeline"):
                 st.subheader("Precision, Recall and F1-Score")
                 scores_data = {
                     "Type": list(scores.keys()),
-                    "Value": [round(v, 2) for v in scores.values()]
+                    "Value": [v for v in scores.values()]
                 }
 
         except Exception as e:
