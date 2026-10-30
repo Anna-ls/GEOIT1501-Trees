@@ -21,3 +21,4 @@ rioxarray
 tqdm
 seaborn
 requests
+CGAL

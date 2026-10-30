@@ -357,6 +357,15 @@ def segment_trees_chm(
         mask = labels == lbl
         cluster_pts = pts_veg[mask]
 
+        cluster_r = r_v[mask]
+        cluster_c = c_v[mask]
+
+        height_above_ground = cluster_pts[:, 2] - dtm[cluster_r, cluster_c]
+
+        if np.min(height_above_ground) > 7.0:
+            labels[mask] = 0
+            continue
+
         metrics = analyse_cluster(cluster_pts)
 
         # Drop poles and walls
