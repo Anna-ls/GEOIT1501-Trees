@@ -115,6 +115,9 @@ def evaluate_spatial_accuracy(detected_gdf: gpd.GeoDataFrame, registry_gdf: gpd.
         print("  [!] Cannot compute spatial accuracy: one of the input point sets is empty.")
         return 0.0, 0.0, 0.0
 
+    if detected_gdf.crs != registry_gdf.crs:
+        registry_gdf = registry_gdf.to_crs(detected_gdf.crs)
+
     ref_coords = np.array(list(zip(registry_gdf.geometry.x, registry_gdf.geometry.y)))
     det_coords = np.array(list(zip(detected_gdf.geometry.x, detected_gdf.geometry.y)))
 

@@ -79,10 +79,17 @@ def download_bag_cityjson(download_url: str, output_dir: Path, tile_id: str, ove
                 f.write(chunk)
 
         if is_gzipped:
-            with gzip.open(gz_path, 'rb') as f_in:
-                with open(json_path, 'wb') as f_out:
-                    shutil.copyfileobj(f_in, f_out)
-            gz_path.unlink()
+            with gzip.open(gz_path, 'rb') as f_check:
+                magic = f_check.read(2)
+                if magic == b'\x1f\x8b':
+                    # File is actually gzipped; decompress it
+                    with gzip.open(gz_path, 'rb') as f_in:
+                        with open(json_path, 'wb') as f_out:
+                            shutil.copyfileobj(f_in, f_out)
+                    gz_path.unlink()
+                else:
+                    # requests auto-decompressed it; rename the file directly
+                    shutil.move(gz_path, json_path)
 
         return {"tile_id": tile_id, "status": "ok", "path": str(json_path)}
 
