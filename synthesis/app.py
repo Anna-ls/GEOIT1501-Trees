@@ -279,6 +279,7 @@ if st.button("Run Reconstruction Pipeline"):
                     "Type": list(scores.keys()),
                     "Value": [v for v in scores.values()]
                 }
+                st.table(pd.DataFrame(scores_data))
 
         except Exception as e:
             st.error(f"An error occurred while running the pipeline: {e}")

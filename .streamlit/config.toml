@@ -1,0 +1,5 @@
+[theme]
+primaryColor = "#00FF00" # Changes the active state of buttons and sliders
+backgroundColor = "#000000" # Main background
+secondaryBackgroundColor = "#0E21B0" # Sidebar and secondary boxes
+textColor = "#FFFFFF" # Main text color
