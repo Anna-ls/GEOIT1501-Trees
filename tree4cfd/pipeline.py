@@ -84,7 +84,7 @@ def get_outlines(tiles):
 
     return {"geometry": bounding_box_4326}
 
-def split_polygon(polygon, cell_size=1000):
+def split_polygon(polygon, cell_size=500):
     if isinstance(polygon, (str, Path)):
         gdf = gpd.read_file(polygon)
         geom = gdf.geometry.iloc[0]

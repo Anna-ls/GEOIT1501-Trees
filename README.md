@@ -93,6 +93,8 @@ From the app, you can:
 - run the reconstruction pipeline,
 - download generated OBJ meshes and preview them in 3D.
 
+The main drawback of this application is the amount of server space available. It's not possible to run it on large areas.
+
 ## Command-line usage
 
 The core library also exposes a CLI:
