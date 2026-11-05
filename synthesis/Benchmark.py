@@ -95,11 +95,11 @@ class Benchmark:
             success = (process.returncode == 0)
             status_str = "SUCCESS" if success else f"FAILED (Code {process.returncode})"
 
-            with open(root_dir / "config_files_segmentation" / config_file, "r") as f:
+            with open(root_dir / "tuning-files" / "config_files_segmentation" / config_file, "r") as f:
                 json_file = json.load(f)
 
             # Validation values, reference and detected trees counts
-            with open(f"./parameters_segmentation.json", "r") as f:
+            with open(f"./tuning-files/parameters_segmentation.json", "r") as f:
                 params = json.load(f)
 
             # Unpack spatial validation metrics
@@ -203,7 +203,7 @@ class Benchmark:
     def inspect(self, file):
         print(f"Running inspection with {file}...")
         return subprocess.Popen(
-            ["python", "-m", "tree4cfd", "inspect", "--config", str(root_dir / "config_files_segmentation" / file)],
+            ["python", "-m", "tree4cfd", "inspect", "--config", str(root_dir /"tuning-files" / "config_files_segmentation" / file)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

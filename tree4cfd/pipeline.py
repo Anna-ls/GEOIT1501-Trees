@@ -2,30 +2,31 @@
 
 from __future__ import annotations
 
-import re
-import time
+import logging, math, re, time
 from pathlib import Path
 from typing import NamedTuple
 import geopandas as gpd
 from shapely.geometry import shape, box
-import math
 root_dir = Path(__file__).resolve().parent.parent
 
 import numpy as np
-import logging
 
 from .buildings import filter_trees_in_buildings
 from synthesis.building_filtering_bag import filter_trees_in_buildings_bag
 from .cleaning import remove_outliers_sor, voxel_downsample
 from .config import Config
 from .crown import kept_component_mask, segment_to_marching_cubes
+
+import shapely, shapely.geometry
+from shapely.geometry import shape, box
+from shapely.affinity import translate as translate_geometry
+
 from scipy.spatial import cKDTree
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import connected_components
-from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from scipy.ndimage import distance_transform_edt
-from shapely.affinity import translate as translate_geometry
-import shapely
+
+from synthesis.determine_lcz_of_area import determine_lcz_of_area
 from synthesis.cgal_wrap import wrap_and_simplify
 from synthesis.inventory_overlap import validate_against_inventories
 
@@ -83,7 +84,7 @@ def get_outlines(tiles):
 
     return {"geometry": bounding_box_4326}
 
-def split_polygon(polygon, cell_size=500):
+def split_polygon(polygon, cell_size=1000):
     if isinstance(polygon, (str, Path)):
         gdf = gpd.read_file(polygon)
         geom = gdf.geometry.iloc[0]
@@ -182,14 +183,12 @@ def combine_tile_results(tile_results, n_points):
     labels_all = np.zeros(n_points, dtype=np.int32)
     next_label = 1
 
-    for result in tile_results:
-        local_labels = np.asarray(
-            result["labels"], dtype=np.int32
-        ).ravel()
+    global_label_to_radius = {}
 
-        point_indices = np.asarray(
-            result["point_indices"], dtype=np.int64
-        ).ravel()
+    for result in tile_results:
+        local_labels = np.asarray(result["labels"], dtype=np.int32).ravel()
+        point_indices = np.asarray(result["point_indices"], dtype=np.int64).ravel()
+        local_radii = result.get("label_to_radius", {})
 
         if len(local_labels) != len(point_indices):
             raise ValueError(
@@ -201,12 +200,15 @@ def combine_tile_results(tile_results, n_points):
         if np.any(point_indices < 0) or np.any(point_indices >= n_points):
             raise ValueError("Point index out of bounds")
 
-        # Assign globally unique IDs to positive labels.
         positive = local_labels > 0
         if positive.any():
             local_labels = local_labels.copy()
-            local_labels[positive] += next_label - 1
+            offset = next_label - 1
+            local_labels[positive] += offset
             next_label = int(local_labels.max()) + 1
+
+            for loc_lbl, rad in local_radii.items():
+                global_label_to_radius[loc_lbl + offset] = rad
 
         # Restore labels to their original vegetation point positions.
         labels_all[point_indices] = local_labels
@@ -240,7 +242,7 @@ def combine_tile_results(tile_results, n_points):
         nearest_dtm = dtm_all[tuple(nearest)]
         dtm_all[~valid] = nearest_dtm[~valid]
 
-    return labels_all, dtm_all, (x_min, y_min, cell_size)
+    return labels_all, dtm_all, (x_min, y_min, cell_size), global_label_to_radius
 
 
 def filter_points_by_polygon(pts, polygon):
@@ -509,9 +511,10 @@ def group_touching_crowns(pts, labels, threshold=0.5):
     return new_labels
 
 
-def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, translation: np.ndarray = None) -> gpd.GeoDataFrame:
+def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, label_to_radius, translation: np.ndarray = None):
     """Converts segmented tree point labels into GeoPandas point centroids."""
-    tree_records = []
+    point_records = []
+    hull_records = []
     unique_labels = np.unique(labels)
 
     if translation is None:
@@ -527,19 +530,37 @@ def extract_detected_trees(pts_veg: np.ndarray, labels: np.ndarray, crs, transla
         # Take highest point (tree top) as point geometry
         max_idx = np.argmax(cluster[:, 2])
         top_x, top_y, top_z = cluster[max_idx]
+        pt_geom = gpd.points_from_xy([top_x + off_x], [top_y + off_y])[0]
 
-        rw_x = top_x + off_x
-        rw_y = top_y + off_y
-        rw_z = top_z + off_z
+        tree_radius = label_to_radius.get(int(lbl), 0.0)
 
-        tree_records.append({
+        point_records.append({
             "tree_id": int(lbl),
-            "geometry": gpd.points_from_xy([rw_x], [rw_y])[0],
-            "z_max": float(rw_z),
+            "geometry": pt_geom,
+            "z_max": float(top_z + off_z),
+            "point_count": len(cluster),
+            "window_radius": tree_radius
+        })
+
+        rw_x = cluster[:, 0] + off_x
+        rw_y = cluster[:, 1] + off_y
+
+        multi_point = shapely.geometry.MultiPoint(np.column_stack((rw_x, rw_y)))
+        hull = multi_point.convex_hull
+
+        if hull.geom_type in ['Point', 'LineString']:
+            hull = hull.buffer(0.5)
+
+        hull_records.append({
+            "tree_id": int(lbl),
+            "geometry": hull,
             "point_count": len(cluster)
         })
 
-    return gpd.GeoDataFrame(tree_records, geometry="geometry", crs=crs)
+    points_gdf = gpd.GeoDataFrame(point_records, geometry="geometry", crs=crs)
+    hulls_gdf = gpd.GeoDataFrame(hull_records, geometry="geometry", crs=crs)
+
+    return points_gdf, hulls_gdf
 
 def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
     """Process one tile end to end and return its crown/trunk meshes.
@@ -633,7 +654,7 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
         temp_pts_ground = pts_ground[ground_mask]
 
         logging.info("Starting segmentation for sub-polygon...")
-        labels, dtm, georef = segment_trees_chm(
+        labels, dtm, georef, label_to_radius = segment_trees_chm(
             temp_pts_veg,
             temp_pts_ground,
             cell_size=cfg.segmentation.cell_size,
@@ -656,9 +677,10 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
             "point_indices": veg_indices,
             "dtm": dtm,
             "georef": georef,
+            "label_to_radius": label_to_radius,
         })
 
-    labels, dtm, georef = combine_tile_results(
+    labels, dtm, georef, label_to_radius = combine_tile_results(
         temp_results,
         n_points=len(pts_veg),
     )
@@ -705,16 +727,18 @@ def build_tile(tile: Path, cfg: Config, progress_callback=None, polygon=None):
 
     # Match trees to inventory if it overlaps with a concave hull of one of the available cities
     precision, recall, f1_score = 0, 0, 0
-    trees_gdf = extract_detected_trees(pts_veg, labels, crs, translation=translation)
-    if not trees_gdf.empty:
+    points_gdf, hulls_gdf = extract_detected_trees(pts_veg, labels, crs, label_to_radius, translation=translation)
+    if not points_gdf.empty:
         out_file = cfg.paths.output_dir / f"{tile_name}_tree_locations.gpkg"
-        trees_gdf.to_file(out_file, driver="GPKG")
-        logging.info(f"Exported {len(trees_gdf)} tree locations to {out_file.name}")
+        points_gdf.to_file(out_file, driver="GPKG", layer="highest_points")
+        hulls_gdf.to_file(out_file, driver="GPKG", layer="convex_hulls")
+
+        logging.info(f"Exported {len(points_gdf)} tree points and hulls to {out_file.name}")
 
         if cfg.inventory.enabled:
             eval_geom = splitted_polygon.geometry.union_all()
 
-            precision, recall, f1_score = validate_against_inventories(eval_geom, trees_gdf, Path(root_dir / "DATA" / "inventory"), Path(root_dir / "DATA" / "inventory" / "inventory_hulls.gpkg"))
+            precision, recall, f1_score = validate_against_inventories(eval_geom, points_gdf, Path(root_dir / "resources" / "inventory"), Path(root_dir / "resources" / "inventory" / "inventory_hulls.gpkg"))
 
     inv_local = inv_recs = None
 

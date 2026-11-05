@@ -151,6 +151,7 @@ def find_peaks_variable_window(
         cell_size: float
 ):
     detected_peaks = []
+    detected_radii = []
     chm_search = chm_smooth.copy()
     ny, nx = int(chm_smooth.shape[0]), int(chm_smooth.shape[1])
 
@@ -171,6 +172,7 @@ def find_peaks_variable_window(
                 continue
 
             detected_peaks.append((py, px))
+            detected_radii.append(w_radius)
             y_start, y_end = max(0, py - w_radius), min(ny, py + w_radius + 1)
             x_start, x_end = max(0, px - w_radius), min(nx, px + w_radius + 1)
 
@@ -183,7 +185,7 @@ def find_peaks_variable_window(
     if not detected_peaks:
         return np.empty((0, 2), dtype=int)
 
-    return np.array(detected_peaks)
+    return np.array(detected_peaks), np.array(detected_radii)
 
 def generate_window_bins(area_type: str, min_height: float = 2.5) -> list:
     # Equation: radius = a + b*h + c*h^2
@@ -233,7 +235,7 @@ def segment_trees_chm(
     min_tree_points: int = 100,
     resolve_multi_trees: bool = True,
     multi_tree_kwargs: dict = None
-) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float]]:
+):
     """Segment individual trees from a CHM.
 
     Returns
@@ -254,7 +256,8 @@ def segment_trees_chm(
         return (
             np.zeros(0, dtype=np.int32),
             np.zeros((1, 1), dtype=np.float64),
-            (0.0, 0.0, cell_size)
+            (0.0, 0.0, cell_size),
+            {}
         )
 
     x_min = pts_veg[:, 0].min()
@@ -318,7 +321,7 @@ def segment_trees_chm(
     window_bins = generate_window_bins(area_type, min_height)
     logging.info("Generated window bins")
 
-    peaks = find_peaks_variable_window(chm_smooth, window_bins, cell_size=cell_size)
+    peaks, radii = find_peaks_variable_window(chm_smooth, window_bins, cell_size=cell_size)
     tree_mask = chm_smooth >= min_height
 
     if len(peaks) == 0:
@@ -327,6 +330,7 @@ def segment_trees_chm(
             np.zeros(len(pts_veg), dtype=np.int32),
             dtm,
             (x_min, y_min, cell_size),
+            {}
         )
 
     # WATERSHED
@@ -337,6 +341,7 @@ def segment_trees_chm(
     labels = labels_2d[r_v, c_v].astype(np.int32)
     unique_lbls, counts = np.unique(labels, return_counts=True)
 
+    label_to_radius = {i+1: r for i, r in enumerate(radii)}
     next_new_label = labels.max() + 1
     suspect_count = 0
     small_dropped = 0
@@ -399,6 +404,7 @@ def segment_trees_chm(
                         indices_to_change = original_indices[new_label_mask]
 
                         labels[indices_to_change] = next_new_label
+                        label_to_radius[next_new_label] = label_to_radius.get(lbl, 0.0)
                         next_new_label += 1
 
                     added_trees += (len(peaks_3d) - 1)
@@ -407,4 +413,4 @@ def segment_trees_chm(
     logging.info(f"Filter: {small_dropped} tiny segments (< {min_tree_points} pts) and {pole_wall_dropped} pole or wall like segments dropped.")
     logging.info(f"PCA: {suspect_count} multi-tree clusters detected, adding {added_trees} new trees.")
 
-    return labels, dtm, (x_min, y_min, cell_size)
+    return labels, dtm, (x_min, y_min, cell_size), label_to_radius
