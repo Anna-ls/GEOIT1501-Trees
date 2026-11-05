@@ -679,7 +679,7 @@ def main():
                                                                           "ndvi_median",
                                                                           ], title="Building and NDVIFeatures by Urban Class")
 
-    with open(f"{root_dir}/synthesis/tuning-files/ndvi_building_features.json", "w") as f:
+    with open(f"{root_dir}/tuning-files/ndvi_building_features.json", "w") as f:
         json.dump(results, f, indent=4, default=json_serializer)
 
 

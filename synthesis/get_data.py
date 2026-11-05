@@ -115,11 +115,12 @@ def process_geojson(
         raise FileNotFoundError(f"GeoJSON file not found: {geojson_path}")
 
     case = geojson_path.stem
+    output_dir = geojson_path.parent
 
     cfg = get_config(case_name=case)
     n_cores = cfg.get("default_cores", 1)
 
-    setup_logger(case, "get_data", log_level)
+    setup_logger(case, "get_data", log_level, custom_log_dir=output_dir)
 
     logging.info(f"Starting data download for the defined AOI")
     # ---------------------------------------------------
@@ -128,7 +129,6 @@ def process_geojson(
     root_dir = Path(__file__).resolve().parent.parent
     resources_dir = root_dir / "resources"
 
-    output_dir = geojson_path.parent
     tiles_dir = root_dir / "DATA" / "OUT"
 
     buffered_aoi_path = output_dir / f"{case}_buffered.geojson"

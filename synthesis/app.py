@@ -273,7 +273,7 @@ if st.button("Run Reconstruction Pipeline"):
             }
             st.table(pd.DataFrame(summary_data))
 
-            if not precision is None or recall is None or f1_score is None:
+            if precision is not None and recall is not None and f1_score is not None:
                 st.subheader("Precision, Recall and F1-Score")
                 scores_data = {
                     "Type": list(scores.keys()),

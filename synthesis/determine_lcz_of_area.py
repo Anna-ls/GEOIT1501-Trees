@@ -160,7 +160,7 @@ def group_training_parameters(train_parameters):
     return class_profiles
 
 def load_lcz_parameters():
-    lcz_features_path = Path(f"{root_dir}/synthesis/tuning-files/ndvi_building_features.json")
+    lcz_features_path = Path(f"{root_dir}/tuning-files/ndvi_building_features.json")
 
     with open(lcz_features_path, "r") as f:
             lcz_features = json.load(f)

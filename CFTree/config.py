@@ -27,7 +27,7 @@ DEFAULT_CONFIG = {
 # ---------------------------------------------------------------------
 # Logging setup
 # ---------------------------------------------------------------------
-def setup_logger(case: str, logfile_name: str, level: str = "INFO") -> Path:
+def setup_logger(case: str, logfile_name: str, level: str = "INFO", custom_log_dir: Path | None = None) -> Path:
     """
     Set up a logger that writes to cases/<case>/logs/<logfile_name>.log.
 
@@ -36,9 +36,12 @@ def setup_logger(case: str, logfile_name: str, level: str = "INFO") -> Path:
     - Uses UTC ISO-8601 timestamps.
     - Adds a NEW SESSION banner at start.
     """
-    case_root = DEFAULT_CONFIG["case_root"]
-    case_path = case_root / case
-    log_dir = case_path / "logs"
+    if custom_log_dir:
+        log_dir = Path(custom_log_dir)
+    else:
+        case_root = DEFAULT_CONFIG["case_root"]
+        case_path = case_root / case
+        log_dir = case_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / f"{logfile_name}.log"
 
